@@ -29,6 +29,7 @@
 
         public override void PostUpdateInput()
         {
+            // Turn off text pulse.
             if(!Terraria.ModLoader.ModContent.GetInstance<Config>().textPulse)
             {
                 Main.cursorAlpha = 0.6f;

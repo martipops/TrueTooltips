@@ -19,8 +19,11 @@
         public override bool PreDrawTooltip(Item item, ReadOnlyCollection<TooltipLine> lines, ref int x, ref int y)
         {
             Color bgColor = GetInstance<Config>().bgColor;
+
+            // Get the texts of all tooltip lines for calculating width and height of the background but remove the parts of the priceLine line's text that only change the color.
             IEnumerable<string> lineTexts = lines.Select(l => l.mod == mod.Name && l.Name == "priceLine" ? System.Text.RegularExpressions.Regex.Replace(l.text, @"\[.{9}|]|\s$", "") : l.text);
 
+            // Draw the background; As wide as the widest line and as high as the sum of the height of all lines, + padding.
             if(bgColor.A > 0)
                 Utils.DrawInvBG(spriteBatch, new Rectangle(x - 10, y - 10, (int)lineTexts.Max(l => fontMouseText.MeasureString(l).X) + 20, (int)lineTexts.Sum(l => fontMouseText.MeasureString(l).Y) + 15), new Color(bgColor.R * bgColor.A / 255, bgColor.G * bgColor.A / 255, bgColor.B * bgColor.A / 255, bgColor.A));
 
@@ -33,6 +36,8 @@
             float itemKnockback = item.knockBack;
             Player player = LocalPlayer;
 
+            // If the item can use ammo, search through the player's inventory, then the ammo slots.
+            // If the inventory-item is the matching ammo, assign it to currentAmmo.
             if(item.useAmmo > 0)
             {
                 foreach(Item invItem in player.inventory)
@@ -86,6 +91,7 @@
                         wandConsumes = lines.Find(l => l.Name == "WandConsumes"),
                         wellFedExpert = lines.Find(l => l.Name == "WellFedExpert");
 
+            // Calculate the correct knockback value. {
             if(item.summon)
                 itemKnockback += player.minionKB;
 
@@ -97,7 +103,9 @@
 
             ItemLoader.GetWeaponKnockback(item, player, ref itemKnockback);
             PlayerHooks.GetWeaponKnockback(player, item, ref itemKnockback);
+            // }
 
+            // Add the ammo line if the item has ammo, otherwise add a line showing what ammo the item needs.
             if(config.ammoLine && item.useAmmo > 0)
             {
                 if(currentAmmo != null)
@@ -117,6 +125,7 @@
                 { overrideColor = RarityTrash });
             }
 
+            // Add the price line if the item isn't a coin.
             if(config.priceLine)
             {
                 int price = item.stack * (item.buy ? item.GetStoreValue() : item.value / 5);
@@ -132,6 +141,7 @@
                 lines.RemoveAll(l => l.Name == "Price" || l.Name == "SpecialPrice");
             }
 
+            // Show the mod that adds the item.
             if(config.modName)
             {
                 if(currentAmmo?.modItem != null)
@@ -149,6 +159,7 @@
             if(critChance != null) critChance.overrideColor = config.critChance;
             if(defense != null) defense.overrideColor = config.defense;
 
+            // Replace damage value with sum of weapon- and ammo damage.
             if(dmg != null)
             {
                 if(config.wpnPlusAmmoDmg && currentAmmo != null)
@@ -168,6 +179,7 @@
             if(healLife != null) healLife.overrideColor = config.healLife;
             if(healMana != null) healMana.overrideColor = config.healMana;
 
+            // Show knockback as number and combine weapon- and ammo knockback.
             if(knockback != null)
             {
                 if(config.knockbackLine)
@@ -185,6 +197,7 @@
             if(social != null) social.overrideColor = config.social;
             if(socialDescr != null) socialDescr.overrideColor = config.socialDescr;
 
+            // Show attack speed as number.
             if(speed != null)
             {
                 if(config.speedLine)
@@ -199,6 +212,7 @@
             if(wandConsumes != null) wandConsumes.overrideColor = config.wandConsumes;
             if(wellFedExpert != null) wellFedExpert.overrideColor = config.wellFedExpert;
 
+            // Recolor modifier lines.
             foreach(TooltipLine line in lines)
             {
                 if(line.isModifierBad) line.overrideColor = config.badMod;
@@ -211,6 +225,8 @@
             if(config.baitPow.A == 0) lines.Remove(baitPow);
             if(config.buffTime.A == 0) lines.Remove(buffTime);
             if(config.consumable.A == 0) lines.Remove(consumable);
+
+            // Remove crit line from ammo.
             if(config.critChance.A == 0 || (item.ammo > 0 && !config.ammoCrit)) lines.Remove(critChance);
             if(config.defense.A == 0) lines.Remove(defense);
             if(config.dmg.A == 0) lines.Remove(dmg);
@@ -224,6 +240,8 @@
             if(config.hammerPow.A == 0) lines.Remove(hammerPow);
             if(config.healLife.A == 0) lines.Remove(healLife);
             if(config.healMana.A == 0) lines.Remove(healMana);
+
+            // Remove knockback line if item has no knockback.
             if(config.knockback.A == 0 || itemKnockback + (currentAmmo != null ? player.GetWeaponKnockback(currentAmmo, currentAmmo.knockBack) : 0) == 0) lines.Remove(knockback);
             if(config.material.A == 0) lines.Remove(material);
             if(config.needsBait.A == 0) lines.Remove(needsBait);
@@ -243,10 +261,16 @@
 
         public override void PostDrawTooltip(Item item, ReadOnlyCollection<DrawableTooltipLine> lines)
         {
+            // Calling RarityColor in ModifyTooltips causes crash because of an infinite loop.
             if(currentAmmo != null)
                 rarityColor = RarityColor(currentAmmo);
         }
 
+        /// <summary>
+        /// Returns the rarity color, including custom rarity color, of the input item.
+        /// </summary>
+        // Calls all methods overriding ModifyTooltips with the input item and a list containing a TooltipLine object with "ItemName" assigned to its Name field as arguments.
+        // The overriding methods then assign to the TooltipLine object's overrideColor field and the list is returned.
         internal static Color RarityColor(Item item)
         {
             int var1 = 1;
@@ -275,6 +299,9 @@
                 }[item.rare];
         }
 
+        /// <summary>
+        /// Makes the input color pulse and returns it.
+        /// </summary>
         internal static Color TextPulse(Color color) => new Color(color.R * mouseTextColor / 255, color.G * mouseTextColor / 255, color.B * mouseTextColor / 255, mouseTextColor);
     }
 }
