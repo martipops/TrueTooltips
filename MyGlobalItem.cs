@@ -20,8 +20,8 @@
         {
             Color bgColor = GetInstance<Config>().bgColor;
 
-            // Get the texts of all tooltip lines for calculating width and height of the background but remove the parts of the priceLine line's text that only change the color.
-            IEnumerable<string> lineTexts = lines.Select(l => l.mod == mod.Name && l.Name == "priceLine" ? System.Text.RegularExpressions.Regex.Replace(l.text, @"\[.{9}|]|\s$", "") : l.text);
+            // Get the texts of all tooltip lines for calculating width and height of the background but remove the parts that only change the color.
+            IEnumerable<string> lineTexts = lines.Select(l => System.Text.RegularExpressions.Regex.Replace(l.text, @"(?<!\\)\[c/.+:|(?<=(?<!\\)\[c/.+:.*)]|\s*$", ""));
 
             // Draw the background; As wide as the widest line and as high as the sum of the height of all lines, + padding.
             if(bgColor.A > 0)
@@ -136,7 +136,7 @@
                     copper = price % 100;
 
                 if(!(item.type > 70 && item.type < 75))
-                    lines.Add(new TooltipLine(mod, "priceLine", item.buy && item.shopSpecialCurrency == 0 ? $"[c/{TextPulse(new Color(240, 100, 120)).Hex3()}:{price} defender medals]" : (plat > 0 ? $"[c/{TextPulse(CoinPlatinum).Hex3()}:{plat} platinum] " : "") + (gold > 0 ? $"[c/{TextPulse(CoinGold).Hex3()}:{gold} gold] " : "") + (silver > 0 ? $"[c/{TextPulse(CoinSilver).Hex3()}:{silver} silver] " : "") + (copper > 0 ? $"[c/{TextPulse(CoinCopper).Hex3()}:{copper} copper]" : "")));
+                    lines.Add(new TooltipLine(mod, "", item.buy && item.shopSpecialCurrency == 0 ? $"[c/{TextPulse(new Color(240, 100, 120)).Hex3()}:{price} defender medals]" : (plat > 0 ? $"[c/{TextPulse(CoinPlatinum).Hex3()}:{plat} platinum] " : "") + (gold > 0 ? $"[c/{TextPulse(CoinGold).Hex3()}:{gold} gold] " : "") + (silver > 0 ? $"[c/{TextPulse(CoinSilver).Hex3()}:{silver} silver] " : "") + (copper > 0 ? $"[c/{TextPulse(CoinCopper).Hex3()}:{copper} copper]" : "")));
 
                 lines.RemoveAll(l => l.Name == "Price" || l.Name == "SpecialPrice");
             }
