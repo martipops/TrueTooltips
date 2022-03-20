@@ -21,7 +21,7 @@
             Color bgColor = GetInstance<Config>().bgColor;
 
             // Get the texts of all tooltip lines for calculating width and height of the background but remove the parts that only change the color.
-            IEnumerable<string> lineTexts = lines.Select(l => System.Text.RegularExpressions.Regex.Replace(l.text, @"(?<!\\)\[c/.+:|(?<=(?<!\\)\[c/.+:.*)]|\s*$", ""));
+            IEnumerable<string> lineTexts = lines.Select(l => System.Text.RegularExpressions.Regex.Replace(l.text, @"(?<!\\)\[c/[^:]+:|(?<=(?<!\\)\[c/[^:]+:.*)]|\s*$", ""));
 
             // Draw the background; As wide as the widest line and as high as the sum of the height of all lines, + padding.
             if(bgColor.A > 0)
