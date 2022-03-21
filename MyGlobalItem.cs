@@ -27,7 +27,7 @@
             if(bgColor.A > 0)
                 Utils.DrawInvBG(spriteBatch, new Rectangle(x - 10, y - 10, (int)lineTexts.Max(l => fontMouseText.MeasureString(l).X) + 20, (int)lineTexts.Sum(l => fontMouseText.MeasureString(l).Y) + 15), new Color(bgColor.R * bgColor.A / 255, bgColor.G * bgColor.A / 255, bgColor.B * bgColor.A / 255, bgColor.A));
 
-            return base.PreDrawTooltip(item, lines, ref x, ref y);
+            return true;
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> lines)
@@ -36,7 +36,7 @@
             float itemKnockback = item.knockBack;
             Player player = LocalPlayer;
 
-            // If the item can use ammo, search through the player's inventory, then the ammo slots.
+            // If the item can use ammo, search through the player's whole inventory, then only the ammo slots.
             // If the inventory-item is the matching ammo, assign it to currentAmmo.
             if(item.useAmmo > 0)
             {
@@ -56,6 +56,17 @@
                     }
             }
             else currentAmmo = null;
+
+            // Give more tooltip lines to the Coin Gun.
+            if(item.type == 905)
+            {
+                int coinGunCrit = player.rangedCrit - player.inventory[player.selectedItem].crit + item.crit;
+
+                ItemLoader.GetWeaponCrit(item, player, ref coinGunCrit);
+                PlayerHooks.GetWeaponCrit(player, item, ref coinGunCrit);
+
+                lines.InsertRange(1, new[] { new TooltipLine(mod, "Damage", "0 ranged damage"), new TooltipLine(mod, "CritChance", coinGunCrit + "% critical strike chance"), new TooltipLine(mod, "Speed", ""), new TooltipLine(mod, "Knockback", "") });
+            }
 
             TooltipLine ammoLine = new TooltipLine(mod, "", currentAmmo?.HoverName) { overrideColor = rarityColor },
                         ammo = lines.Find(l => l.Name == "Ammo"),
@@ -91,19 +102,9 @@
                         wandConsumes = lines.Find(l => l.Name == "WandConsumes"),
                         wellFedExpert = lines.Find(l => l.Name == "WellFedExpert");
 
-            // Calculate the correct knockback value. {
-            if(item.summon)
-                itemKnockback += player.minionKB;
-
-            if(item.type == 3106 && player.inventory[player.selectedItem].type == 3106)
-                itemKnockback *= 2 - player.stealth;
-
-            if(item.useAmmo == 1836 || (item.useAmmo == 40 && player.magicQuiver))
-                itemKnockback *= 1.1f;
-
-            ItemLoader.GetWeaponKnockback(item, player, ref itemKnockback);
-            PlayerHooks.GetWeaponKnockback(player, item, ref itemKnockback);
-            // }
+            // Add the velocity line.
+            if(config.velocityLine && item.shootSpeed > 0)
+                lines.Insert(lines.IndexOf(knockback ?? speed ?? critChance ?? dmg ?? equipable ?? lines.Find(l => l.Name == "ItemName")) + 1, new TooltipLine(mod, "", item.shootSpeed + (currentAmmo != null && config.wpnPlusAmmoVelocity ? currentAmmo.shootSpeed : 0) + " velocity"));
 
             // Add the ammo line if the item has ammo, otherwise add a line showing what ammo the item needs.
             if(config.ammoLine && item.useAmmo > 0)
@@ -182,6 +183,18 @@
             // Show knockback as number and combine weapon- and ammo knockback.
             if(knockback != null)
             {
+                if(item.summon)
+                    itemKnockback += player.minionKB;
+
+                if(item.type == 3106 && player.inventory[player.selectedItem].type == 3106)
+                    itemKnockback *= 2 - player.stealth;
+
+                if(item.useAmmo == 1836 || (item.useAmmo == 40 && player.magicQuiver))
+                    itemKnockback *= 1.1f;
+
+                ItemLoader.GetWeaponKnockback(item, player, ref itemKnockback);
+                PlayerHooks.GetWeaponKnockback(player, item, ref itemKnockback);
+
                 if(config.knockbackLine)
                     knockback.text = Math.Round(itemKnockback + (currentAmmo != null && config.wpnPlusAmmoKb ? player.GetWeaponKnockback(currentAmmo, currentAmmo.knockBack) : 0), 2) + " knockback";
 
@@ -251,7 +264,9 @@
             if(config.setBonus.A == 0) lines.Remove(setBonus);
             if(config.social.A == 0) lines.Remove(social);
             if(config.socialDescr.A == 0) lines.Remove(socialDescr);
-            if(config.speed.A == 0) lines.Remove(speed);
+
+            // Remove speed line from coins.
+            if(config.speed.A == 0 || (item.type > 70 && item.type < 75)) lines.Remove(speed);
             if(config.tileBoost.A == 0) lines.Remove(tileBoost);
             if(config.useMana.A == 0) lines.Remove(useMana);
             if(config.vanity.A == 0) lines.Remove(vanity);

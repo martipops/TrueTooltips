@@ -15,6 +15,11 @@
         DefaultValue(true)]
         public bool ammoLine;
 
+        [Label("Velocity Line"),
+        Tooltip("Shows the item's velocity. May not always be accurate due to items shooting multiple different projectiles, projectiles changing velocity mid flight, etc.."),
+        DefaultValue(true)]
+        public bool velocityLine;
+
         [Label("Better Price Line"),
         Tooltip("Correct sell price for items with custom price, always visible, better color coding, cleaner. Replaces vanilla price line."),
         DefaultValue(true)]
@@ -37,6 +42,9 @@
         Tooltip("Requires Better Knockback Line to be on."),
         DefaultValue(true)]
         public bool wpnPlusAmmoKb;
+
+        [Label("Combine weapon and ammo velocity"), DefaultValue(true)]
+        public bool wpnPlusAmmoVelocity;
 
         [Label("Mod name next to item name"),
         Tooltip("Shows the mod that adds the item next to the item's name."),
