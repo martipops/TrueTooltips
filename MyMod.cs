@@ -30,11 +30,12 @@
         public override void PostUpdateInput()
         {
             // Turn off text pulse.
-            if(!Terraria.ModLoader.ModContent.GetInstance<Config>().textPulse)
-            {
-                Main.cursorAlpha = 0.6f;
-                Main.mouseTextColor = 255;
-            }
+            if(Terraria.ModLoader.ModContent.GetInstance<Config>() != null)
+                if(!Terraria.ModLoader.ModContent.GetInstance<Config>().textPulse)
+                {
+                    Main.cursorAlpha = 0.6f;
+                    Main.mouseTextColor = 255;
+                }
         }
     }
 }
