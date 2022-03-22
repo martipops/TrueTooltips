@@ -17,8 +17,8 @@
 
         [Label("Velocity Line"),
         Tooltip("Shows the item's velocity. May not always be accurate due to items shooting multiple different projectiles, projectiles changing velocity mid flight, etc.."),
-        DefaultValue(true)]
-        public bool velocityLine;
+        DefaultValue(typeof(Color), "255,255,255,255")]
+        public Color velocityLine;
 
         [Label("Better Price Line"),
         Tooltip("Correct sell price for items with custom price, always visible, better color coding, cleaner. Replaces vanilla price line."),

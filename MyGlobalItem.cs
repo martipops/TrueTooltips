@@ -21,7 +21,7 @@
             Color bgColor = GetInstance<Config>().bgColor;
 
             // Get the texts of all tooltip lines for calculating width and height of the background but remove the parts that only change the color.
-            IEnumerable<string> lineTexts = lines.Select(l => System.Text.RegularExpressions.Regex.Replace(l.text, @"(?<!\\)\[c/[^:]+:|(?<=(?<!\\)\[c/[^:]+:.*)]|\s*$", ""));
+            IEnumerable<string> lineTexts = lines.Select(l => System.Text.RegularExpressions.Regex.Replace(l.text, @"(?<!\\)\[c/.+?:|(?<=(?<!\\)\[c/.+?:.*)]|\s*$", ""));
 
             // Draw the background; As wide as the widest line and as high as the sum of the height of all lines, + padding.
             if(bgColor.A > 0)
@@ -38,10 +38,10 @@
 
             // If the item can use ammo, search through the player's whole inventory, then only the ammo slots.
             // If the inventory-item is the matching ammo, assign it to currentAmmo.
-            if(item.useAmmo > 0)
+            if(item.useAmmo > 0 || item.fishingPole > 0)
             {
                 foreach(Item invItem in player.inventory)
-                    if(invItem.active && invItem.ammo == item.useAmmo)
+                    if(invItem.active && (item.useAmmo > 0 && invItem.ammo == item.useAmmo || item.fishingPole > 0 && invItem.bait > 0))
                     {
                         currentAmmo = invItem;
                         break;
@@ -49,7 +49,7 @@
                     else currentAmmo = null;
 
                 for(int i = 54; i < 58; i++)
-                    if(player.inventory[i].active && player.inventory[i].ammo == item.useAmmo)
+                    if(player.inventory[i].active && (item.useAmmo > 0 && player.inventory[i].ammo == item.useAmmo || item.fishingPole > 0 && player.inventory[i].bait > 0))
                     {
                         currentAmmo = player.inventory[i];
                         break;
@@ -57,10 +57,10 @@
             }
             else currentAmmo = null;
 
-            // Give more tooltip lines to the Coin Gun.
+            // Add missing lines to Coin Gun.
             if(item.type == 905)
             {
-                int coinGunCrit = player.rangedCrit - player.inventory[player.selectedItem].crit + item.crit;
+                int coinGunCrit = player.rangedCrit - player.inventory[player.selectedItem].crit;
 
                 ItemLoader.GetWeaponCrit(item, player, ref coinGunCrit);
                 PlayerHooks.GetWeaponCrit(player, item, ref coinGunCrit);
@@ -88,6 +88,7 @@
                         healMana = lines.Find(l => l.Name == "HealMana"),
                         knockback = lines.Find(l => l.Name == "Knockback"),
                         material = lines.Find(l => l.Name == "Material"),
+                        name = lines.Find(l => l.Name == "ItemName"),
                         needsBait = lines.Find(l => l.Name == "NeedsBait"),
                         pickPow = lines.Find(l => l.Name == "PickPower"),
                         placeable = lines.Find(l => l.Name == "Placeable"),
@@ -103,15 +104,33 @@
                         wellFedExpert = lines.Find(l => l.Name == "WellFedExpert");
 
             // Add the velocity line.
-            if(config.velocityLine && item.shootSpeed > 0)
-                lines.Insert(lines.IndexOf(knockback ?? speed ?? critChance ?? dmg ?? equipable ?? lines.Find(l => l.Name == "ItemName")) + 1, new TooltipLine(mod, "", item.shootSpeed + (currentAmmo != null && config.wpnPlusAmmoVelocity ? currentAmmo.shootSpeed : 0) + " velocity"));
+            if(config.velocityLine.A > 0 && item.shootSpeed > 0)
+                lines.Insert(lines.IndexOf(knockback ?? speed ?? critChance ?? dmg ?? equipable ?? name) + 1, new TooltipLine(mod, "Velocity", item.shootSpeed + (currentAmmo != null && config.wpnPlusAmmoVelocity ? currentAmmo.shootSpeed : 0) + " velocity") { overrideColor = config.velocityLine });
+
+            // Add missing lines to coins.
+            if(item.type > 70 && item.type < 75)
+            {
+                if(!lines.Contains(dmg))
+                {
+                    lines.Insert(1, new TooltipLine(mod, "Damage", player.GetWeaponDamage(item) + " ranged damage"));
+
+                    dmg = lines.Find(l => l.Name == "Damage");
+                }
+
+                lines.Insert(lines.IndexOf(lines.Find(l => l.Name == "Velocity") ?? dmg ?? name) + 1, new TooltipLine(mod, "Ammo", "Ammo"));
+                lines.Add(new TooltipLine(mod, "Material", "Material"));
+
+                ammo = lines.Find(l => l.Name == "Ammo");
+                material = lines.Find(l => l.Name == "Material");
+            }
 
             // Add the ammo line if the item has ammo, otherwise add a line showing what ammo the item needs.
-            if(config.ammoLine && item.useAmmo > 0)
+            if(config.ammoLine)
             {
                 if(currentAmmo != null)
                     lines.Add(ammoLine);
-                else lines.Add(new TooltipLine(mod, "", "No " + (
+                else if(item.useAmmo > 0 || item.fishingPole > 0) lines.Add(
+                    new TooltipLine(mod, "", "No " + (item.fishingPole > 0 ? "Bait" :
                     new Dictionary<int, string>
                     {
                         [40] = "Arrow",
@@ -123,7 +142,7 @@
                         [780] = "Solution",
                         [931] = "Flare"
                     }.TryGetValue(item.useAmmo, out string value) ? value : Lang.GetItemNameValue(item.useAmmo)))
-                { overrideColor = RarityTrash });
+                    { overrideColor = RarityTrash });
             }
 
             // Add the price line if the item isn't a coin.
@@ -149,7 +168,7 @@
                     ammoLine.text += " - " + currentAmmo.modItem.mod.DisplayName;
 
                 if(item.modItem != null)
-                    lines.Find(l => l.Name == "ItemName").text += " - " + item.modItem.mod.DisplayName;
+                    name.text += " - " + item.modItem.mod.DisplayName;
             }
 
             if(ammo != null) ammo.overrideColor = config.ammo;
