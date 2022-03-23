@@ -5,6 +5,7 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using Terraria;
     using Terraria.ModLoader;
     using static Terraria.ID.Colors;
@@ -21,7 +22,7 @@
             Color bgColor = GetInstance<Config>().bgColor;
 
             // Get the texts of all tooltip lines for calculating width and height of the background but remove the parts that only change the color.
-            IEnumerable<string> lineTexts = lines.Select(l => System.Text.RegularExpressions.Regex.Replace(l.text, @"(?<!\\)\[c/.+?:|(?<=(?<!\\)\[c/.+?:.*)]|\s*$", ""));
+            IEnumerable<string> lineTexts = lines.Select(l => Regex.Replace(l.text, @"(?<!\\)\[c/.+?:|(?<=(?<!\\)\[c/.+?:.*)]|\s*$", ""));
 
             // Draw the background; As wide as the widest line and as high as the sum of the height of all lines, + padding.
             if(bgColor.A > 0)
@@ -38,10 +39,10 @@
 
             // If the item can use ammo, search through the player's whole inventory, then only the ammo slots.
             // If the inventory-item is the matching ammo, assign it to currentAmmo.
-            if(item.useAmmo > 0 || item.fishingPole > 0)
+            if(item.useAmmo > 0 || item.fishingPole > 0 || item.tileWand > 0)
             {
                 foreach(Item invItem in player.inventory)
-                    if(invItem.active && (item.useAmmo > 0 && invItem.ammo == item.useAmmo || item.fishingPole > 0 && invItem.bait > 0))
+                    if(invItem.active && (item.useAmmo > 0 && invItem.ammo == item.useAmmo || item.fishingPole > 0 && invItem.bait > 0 || item.tileWand > 0 && invItem.type == item.tileWand))
                     {
                         currentAmmo = invItem;
                         break;
@@ -49,7 +50,7 @@
                     else currentAmmo = null;
 
                 for(int i = 54; i < 58; i++)
-                    if(player.inventory[i].active && (item.useAmmo > 0 && player.inventory[i].ammo == item.useAmmo || item.fishingPole > 0 && player.inventory[i].bait > 0))
+                    if(player.inventory[i].active && item.useAmmo > 0 && player.inventory[i].ammo == item.useAmmo)
                     {
                         currentAmmo = player.inventory[i];
                         break;
@@ -129,7 +130,7 @@
             {
                 if(currentAmmo != null)
                     lines.Add(ammoLine);
-                else if(item.useAmmo > 0 || item.fishingPole > 0) lines.Add(
+                else if(item.useAmmo > 0 || item.fishingPole > 0 || item.tileWand > 0) lines.Add(
                     new TooltipLine(mod, "", "No " + (item.fishingPole > 0 ? "Bait" :
                     new Dictionary<int, string>
                     {
@@ -141,8 +142,11 @@
                         [771] = "Rocket",
                         [780] = "Solution",
                         [931] = "Flare"
-                    }.TryGetValue(item.useAmmo, out string value) ? value : Lang.GetItemNameValue(item.useAmmo)))
+                    }.TryGetValue(item.useAmmo, out string value) ? value : Lang.GetItemNameValue(item.useAmmo > 0 ? item.useAmmo : item.tileWand)))
                     { overrideColor = RarityTrash });
+
+                lines.Remove(needsBait);
+                lines.Remove(wandConsumes);
             }
 
             // Add the price line if the item isn't a coin.
@@ -156,7 +160,7 @@
                     copper = price % 100;
 
                 if(!(item.type > 70 && item.type < 75))
-                    lines.Add(new TooltipLine(mod, "", item.buy && item.shopSpecialCurrency == 0 ? $"[c/{TextPulse(new Color(240, 100, 120)).Hex3()}:{price} defender medals]" : (plat > 0 ? $"[c/{TextPulse(CoinPlatinum).Hex3()}:{plat} platinum] " : "") + (gold > 0 ? $"[c/{TextPulse(CoinGold).Hex3()}:{gold} gold] " : "") + (silver > 0 ? $"[c/{TextPulse(CoinSilver).Hex3()}:{silver} silver] " : "") + (copper > 0 ? $"[c/{TextPulse(CoinCopper).Hex3()}:{copper} copper]" : "")));
+                    lines.Add(new TooltipLine(mod, "", item.buy && item.shopSpecialCurrency >= 0 ? new Regex($@"{Lang.tip[50].Value}\s").Replace(lines.Find(l => l.Name == "SpecialPrice").text, "", 1) : (plat > 0 ? $"[c/{TextPulse(CoinPlatinum).Hex3()}:{plat} platinum] " : "") + (gold > 0 ? $"[c/{TextPulse(CoinGold).Hex3()}:{gold} gold] " : "") + (silver > 0 ? $"[c/{TextPulse(CoinSilver).Hex3()}:{silver} silver] " : "") + (copper > 0 ? $"[c/{TextPulse(CoinCopper).Hex3()}:{copper} copper]" : "")));
 
                 lines.RemoveAll(l => l.Name == "Price" || l.Name == "SpecialPrice");
             }
