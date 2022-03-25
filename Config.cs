@@ -11,7 +11,7 @@
         [Header("[c/ffff00:Custom Tooltip Lines]")]
 
         [Label("Ammo Line"),
-        Tooltip("Shows the item's ammo's name, amount and rarity, shows the mod that adds the ammo if \"Mod name next to item name\" is on and shows the ammo the item needs if the item has no ammo."),
+        Tooltip("Shows the item's ammo's name, amount and rarity, shows the mod that adds the ammo if \"Mod name next to item name\" is on and shows the ammo the item needs if the item has no ammo. \nWorks with fishing poles and tile wands."),
         DefaultValue(true)]
         public bool ammoLine;
 
@@ -51,12 +51,57 @@
         DefaultValue(true)]
         public bool modName;
 
-        [Header("[c/ffff00:Background Color]")]
+        [Header("[c/ffff00:Background]")]
 
-        [Label(""), DefaultValue(typeof(Color), "63,81,151,255")]
+        [Label("Color"), DefaultValue(typeof(Color), "63,81,151,255")]
         public Color bgColor;
 
+        [Label("Right Padding"),
+        Range(0, 999),
+        DefaultValue(10)]
+        public int paddingRight;
+
+        [Label("Left Padding"),
+        Range(0, 999),
+        DefaultValue(10)]
+        public int paddingLeft;
+
+        [Label("Top Padding"),
+        Range(0, 999),
+        DefaultValue(10)]
+        public int paddingTop;
+
+        [Label("Bottom Padding"),
+        Range(0, 999),
+        DefaultValue(10)]
+        public int paddingBottom;
+
+        [Header("[c/ffff00:Offset]")]
+
+        [Label("X"),
+        Tooltip("X position of the tooltip."),
+        Range(0, 999),
+        DefaultValue(16)]
+        public int x;
+
+        [Label("Y"),
+        Tooltip("Y position of the tooltip."),
+        Range(0, 999),
+        DefaultValue(16)]
+        public int y;
+
+        [Label("Spacing"),
+        Tooltip("Add extra space between lines."),
+        Range(0, 999),
+        DefaultValue(0)]
+        public int spacing;
+
         [Header("[c/ffff00:Miscellaneous]")]
+
+        [Label("Sprite"),
+        Tooltip("Display the item's sprite in the tooltip."),
+        DefaultValue(true)]
+        public bool sprite;
 
         [Label("Text Pulse"), DefaultValue(false)]
         public bool textPulse;

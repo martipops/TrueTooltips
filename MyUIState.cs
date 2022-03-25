@@ -13,22 +13,18 @@
             int x = mouseX + (ThickMouse ? 16 : 10),
                 y = mouseY + (ThickMouse ? 16 : 10);
 
-            // When hovering over an item in the hotbar, draw its name with the correct color.
             for(int i = 0, num = 20; i < 10; i++)
             {
                 if(mouseX >= num && mouseX <= num + hotbarScale[i] * inventoryBackTexture.Width && mouseY > (int)(19 + 22 * (1 - hotbarScale[i])) && mouseY < (int)(21 + 22 * (1 - hotbarScale[i])) + hotbarScale[i] * inventoryBackTexture.Height && !(LocalPlayer.channel || LocalPlayer.ghost || LocalPlayer.hbLocked || LocalPlayer.inventory[i].type == 0 || PlayerInput.IgnoreMouseInterface || playerInventory))
                 {
                     ChatManager.DrawColorCodedStringWithShadow(spriteBatch, fontMouseText, LocalPlayer.inventory[i].HoverName, new Vector2(x, y), TextPulse(RarityColor(LocalPlayer.inventory[i])), 0, Vector2.Zero, Vector2.One);
 
-                    // Prevents item's names from being drawn twice.
                     hoverItemName = "";
                 }
 
                 num += (int)(hotbarScale[i] * inventoryBackTexture.Width) + 4;
             }
 
-            // When hovering over a dropped item, draw its name with the correct color.
-            // Loop through all dropped items in reverse to draw the name of the frontmost item.
             for(int i = 400; i >= 0; i--)
             {
                 Rectangle itemTexDim = itemTexture[item[i].type].Bounds;
@@ -42,7 +38,6 @@
                     PlayerInput.SetZoom_Test();
                     PlayerInput.SetZoom_UI();
 
-                    // Prevents other item's names from being drawn.
                     mouseText = true;
                 }
             }
