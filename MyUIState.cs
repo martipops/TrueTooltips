@@ -31,7 +31,7 @@
             for(int i = 400; i >= 0; i--)
             {
                 //Rectangle itemTexDim = itemTexture[item[i].type].Bounds;
-                GetItemDrawFrame(item[i].type, out Texture2D itemTexture, out Rectangle itemFrame);
+                GetItemDrawFrame(item[i].type, out _, out Rectangle itemFrame);
 
                 if(item[i].active && new Rectangle((int)item[i].position.X + item[i].width / 2 - itemFrame.Width / 2, (int)item[i].position.Y + item[i].height - itemFrame.Height, itemFrame.Width, itemFrame.Height).Contains((int)screenPosition.X + mouseX, (int)screenPosition.Y + mouseY) && !mouseText)
                 {

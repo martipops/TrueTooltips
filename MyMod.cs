@@ -7,7 +7,7 @@
 
     class MyMod : ModSystem
     {
-        readonly UserInterface ui = new UserInterface();
+        readonly UserInterface ui = new();
 
         public override void Load()
         {

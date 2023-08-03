@@ -1,7 +1,4 @@
-﻿using Terraria.ModLoader;
-using Terraria.ID;
-
-namespace TrueTooltips
+﻿namespace TrueTooltips
 {
     using Microsoft.Xna.Framework;
     using System;
@@ -23,9 +20,9 @@ namespace TrueTooltips
         static Color rarityColor;
         static Item currentAmmo;
 
-        static string[] names = { "Ammo", "AmmoLine", "AxePower", "BaitPower", "Consumable", "CritChance", "Damage", "Defense", "Equipable", "FishingPower", "HammerPower", "HealLife", "HealMana", "ItemName", "Knockback", "Material", "PickPower", "Placeable", "PriceLine", "Speed", "TileBoost", "UseMana", "Velocity" };
+        static readonly string[] names = { "Ammo", "AmmoLine", "AxePower", "BaitPower", "Consumable", "CritChance", "Damage", "Defense", "Equipable", "FishingPower", "HammerPower", "HealLife", "HealMana", "ItemName", "Knockback", "Material", "PickPower", "Placeable", "PriceLine", "Speed", "TileBoost", "UseMana", "Velocity" };
 
-        static Dictionary<int, Color> rarityColors = new Dictionary<int, Color>
+        static readonly Dictionary<int, Color> rarityColors = new()
         {
             [-11] = new Color(255, 175, 0),
             [-1] = RarityTrash,
@@ -129,7 +126,7 @@ namespace TrueTooltips
                 lines.InsertRange(1, new[] { new TooltipLine(Mod, "Damage", "0 ranged damage"), new TooltipLine(Mod, "CritChance", coinGunCrit + "% critical strike chance"), new TooltipLine(Mod, "Speed", ""), new TooltipLine(Mod, "Knockback", "") });
             }
 
-            TooltipLine ammoLine = new TooltipLine(Mod, "AmmoLine", currentAmmo?.HoverName) { OverrideColor = rarityColor },
+            TooltipLine ammoLine = new(Mod, "AmmoLine", currentAmmo?.HoverName) { OverrideColor = rarityColor },
                         ammo = lines.Find(l => l.Name == "Ammo"),
                         axePow = lines.Find(l => l.Name == "AxePower"),
                         baitPow = lines.Find(l => l.Name == "BaitPower"),
@@ -350,6 +347,6 @@ namespace TrueTooltips
             return ItemLoader.ModifyTooltips(item, ref var1, new[] { "ItemName" }, ref var2, ref var3, ref var4, ref var5, out _, -1)[0].OverrideColor ?? rarityColors[item.rare];
         }
 
-        internal static Color TextPulse(Color color) => new Color(color.R * mouseTextColor / 255, color.G * mouseTextColor / 255, color.B * mouseTextColor / 255, mouseTextColor);
+        internal static Color TextPulse(Color color) => new(color.R * mouseTextColor / 255, color.G * mouseTextColor / 255, color.B * mouseTextColor / 255, mouseTextColor);
     }
 }
