@@ -1,5 +1,4 @@
-/*.png
-/*.sln
-/*.txt
-/.vs/
-/obj/
+\bin\* 
+\.vs\*
+\obj\*
+*.psd

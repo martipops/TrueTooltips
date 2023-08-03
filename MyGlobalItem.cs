@@ -1,4 +1,7 @@
-﻿namespace TrueTooltips
+﻿using Terraria.ModLoader;
+using Terraria.ID;
+
+namespace TrueTooltips
 {
     using Microsoft.Xna.Framework;
     using System;
@@ -7,6 +10,8 @@
     using System.Linq;
     using System.Text.RegularExpressions;
     using Terraria;
+    using Terraria.GameContent;
+    using Terraria.ID;
     using Terraria.ModLoader;
     using Terraria.UI.Chat;
     using static Terraria.ID.Colors;
@@ -41,7 +46,7 @@
         public override bool PreDrawTooltip(Item item, ReadOnlyCollection<TooltipLine> lines, ref int _x, ref int _y)
         {
             Config config = GetInstance<Config>();
-            var texture = itemTexture[item.type];
+            GetItemDrawFrame(item.type, out var texture, out var itemFrame);
             Rectangle dimensions = itemAnimations[item.type]?.GetFrame(texture) ?? texture.Frame();
 
             int x = mouseX + config.x + (ThickMouse ? 6 : 0),
@@ -53,12 +58,12 @@
 
             foreach(TooltipLine line in lines)
             {
-                int lineWidth = (int)ChatManager.GetStringSize(fontMouseText, line.text, Vector2.One).X + (lines.IndexOf(line) <= index && config.sprite ? max + 10 : 0);
+                int lineWidth = (int)ChatManager.GetStringSize(FontAssets.MouseText.Value, line.Text, Vector2.One).X + (lines.IndexOf(line) <= index && config.sprite ? max + 10 : 0);
 
                 if(lineWidth > width)
                     width = lineWidth;
 
-                height += (int)fontMouseText.MeasureString(line.text).Y + config.spacing + (lines.IndexOf(line) == index + 1 && config.sprite ? 10 + (height < dimensions.Height ? dimensions.Height - height : 0) : 0);
+                height += (int)FontAssets.MouseText.Value.MeasureString(line.Text).Y + config.spacing + (lines.IndexOf(line) == index + 1 && config.sprite ? 10 + (height < dimensions.Height ? dimensions.Height - height : 0) : 0);
             }
 
             if(x + width + config.paddingRight > screenWidth)
@@ -82,9 +87,9 @@
             {
                 int yOffset = lines.IndexOf(line) == index + 1 && config.sprite ? 10 + (y < textureY ? textureY - y : 0) : 0;
 
-                ChatManager.DrawColorCodedStringWithShadow(spriteBatch, fontMouseText, line.text, new Vector2(x + (lines.IndexOf(line) <= index && config.sprite ? max + 10 : 0), y + yOffset), TextPulse(line.overrideColor ?? (lines.IndexOf(line) == 0 ? rarityColors[item.rare] : Color.White)), 0, Vector2.Zero, Vector2.One);
+                ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, line.Text, new Vector2(x + (lines.IndexOf(line) <= index && config.sprite ? max + 10 : 0), y + yOffset), TextPulse(line.OverrideColor ?? (lines.IndexOf(line) == 0 ? rarityColors[item.rare] : Color.White)), 0, Vector2.Zero, Vector2.One);
 
-                y += (int)fontMouseText.MeasureString(line.text).Y + config.spacing + yOffset;
+                y += (int)FontAssets.MouseText.Value.MeasureString(line.Text).Y + config.spacing + yOffset;
             }
 
             return false;
@@ -115,17 +120,16 @@
             }
             else currentAmmo = null;
 
-            if(item.type == 905)
+            if(item.type == ItemID.CoinGun)
             {
-                int coinGunCrit = player.rangedCrit - player.inventory[player.selectedItem].crit;
+                int coinGunCrit = (int) (player.GetCritChance(DamageClass.Ranged) - player.inventory[player.selectedItem].crit);
 
-                ItemLoader.GetWeaponCrit(item, player, ref coinGunCrit);
-                PlayerHooks.GetWeaponCrit(player, item, ref coinGunCrit);
+                coinGunCrit = player.GetWeaponCrit(item);
 
-                lines.InsertRange(1, new[] { new TooltipLine(mod, "Damage", "0 ranged damage"), new TooltipLine(mod, "CritChance", coinGunCrit + "% critical strike chance"), new TooltipLine(mod, "Speed", ""), new TooltipLine(mod, "Knockback", "") });
+                lines.InsertRange(1, new[] { new TooltipLine(Mod, "Damage", "0 ranged damage"), new TooltipLine(Mod, "CritChance", coinGunCrit + "% critical strike chance"), new TooltipLine(Mod, "Speed", ""), new TooltipLine(Mod, "Knockback", "") });
             }
 
-            TooltipLine ammoLine = new TooltipLine(mod, "AmmoLine", currentAmmo?.HoverName) { overrideColor = rarityColor },
+            TooltipLine ammoLine = new TooltipLine(Mod, "AmmoLine", currentAmmo?.HoverName) { OverrideColor = rarityColor },
                         ammo = lines.Find(l => l.Name == "Ammo"),
                         axePow = lines.Find(l => l.Name == "AxePower"),
                         baitPow = lines.Find(l => l.Name == "BaitPower"),
@@ -161,7 +165,7 @@
                         wellFedExpert = lines.Find(l => l.Name == "WellFedExpert");
 
             if(config.velocityLine.A > 0 && item.shootSpeed > 0)
-                lines.Insert(lines.IndexOf(knockback ?? speed ?? critChance ?? dmg ?? equipable ?? name) + 1, new TooltipLine(mod, "Velocity", item.shootSpeed + (currentAmmo != null && config.wpnPlusAmmoVelocity ? currentAmmo.shootSpeed : 0) + " velocity") { overrideColor = config.velocityLine });
+                lines.Insert(lines.IndexOf(knockback ?? speed ?? critChance ?? dmg ?? equipable ?? name) + 1, new TooltipLine(Mod, "Velocity", item.shootSpeed + (currentAmmo != null && config.wpnPlusAmmoVelocity ? currentAmmo.shootSpeed : 0) + " velocity") { OverrideColor = config.velocityLine });
 
             int index = lines.FindLastIndex(l => names.Contains(l.Name)) + 1;
 
@@ -169,13 +173,13 @@
             {
                 if(!lines.Contains(dmg))
                 {
-                    lines.Insert(1, new TooltipLine(mod, "Damage", player.GetWeaponDamage(item) + " ranged damage"));
+                    lines.Insert(1, new TooltipLine(Mod, "Damage", player.GetWeaponDamage(item) + " ranged damage"));
 
                     dmg = lines.Find(l => l.Name == "Damage");
                 }
 
-                lines.Insert(lines.IndexOf(lines.Find(l => l.Name == "Velocity") ?? dmg ?? name) + 1, new TooltipLine(mod, "Ammo", "Ammo"));
-                lines.Add(new TooltipLine(mod, "Material", "Material"));
+                lines.Insert(lines.IndexOf(lines.Find(l => l.Name == "Velocity") ?? dmg ?? name) + 1, new TooltipLine(Mod, "Ammo", "Ammo"));
+                lines.Add(new TooltipLine(Mod, "Material", "Material"));
 
                 ammo = lines.Find(l => l.Name == "Ammo");
                 material = lines.Find(l => l.Name == "Material");
@@ -190,8 +194,8 @@
                     silver = price / 100 % 100,
                     copper = price % 100;
 
-                if(price > 0 && !(item.type > 70 && item.type < 75))
-                    lines.Insert(index, new TooltipLine(mod, "PriceLine", item.buy && item.shopSpecialCurrency >= 0 ? new Regex($@"{Lang.tip[50].Value}\s").Replace(lines.Find(l => l.Name == "SpecialPrice").text, "", 1) : (plat > 0 ? $"[c/{TextPulse(CoinPlatinum).Hex3()}:{plat} platinum] " : "") + (gold > 0 ? $"[c/{TextPulse(CoinGold).Hex3()}:{gold} gold] " : "") + (silver > 0 ? $"[c/{TextPulse(CoinSilver).Hex3()}:{silver} silver] " : "") + (copper > 0 ? $"[c/{TextPulse(CoinCopper).Hex3()}:{copper} copper]" : "")));
+                if(price > 0 && !(item.type > ItemID.WormFood && item.type < ItemID.FallenStar))
+                    lines.Insert(index, new TooltipLine(Mod, "PriceLine", item.buy && item.shopSpecialCurrency >= 0 ? new Regex($@"{Lang.tip[50].Value}\s").Replace(lines.Find(l => l.Name == "SpecialPrice").Text, "", 1) : (plat > 0 ? $"[c/{TextPulse(CoinPlatinum).Hex3()}:{plat} platinum] " : "") + (gold > 0 ? $"[c/{TextPulse(CoinGold).Hex3()}:{gold} gold] " : "") + (silver > 0 ? $"[c/{TextPulse(CoinSilver).Hex3()}:{silver} silver] " : "") + (copper > 0 ? $"[c/{TextPulse(CoinCopper).Hex3()}:{copper} copper]" : "")));
 
                 lines.RemoveAll(l => l.Name == "Price" || l.Name == "SpecialPrice");
             }
@@ -201,7 +205,7 @@
                 if(currentAmmo != null)
                     lines.Insert(index, ammoLine);
                 else if(item.useAmmo > 0 || item.fishingPole > 0 || item.tileWand > 0)
-                    lines.Insert(index, new TooltipLine(mod, "AmmoLine", "No " + (item.fishingPole > 0 ? "Bait" : new Dictionary<int, string> { [40] = "Arrow", [71] = "Coin", [97] = "Bullet", [169] = "Sand", [283] = "Dart", [771] = "Rocket", [780] = "Solution", [931] = "Flare" }.TryGetValue(item.useAmmo, out string value) ? value : Lang.GetItemNameValue(item.useAmmo > 0 ? item.useAmmo : item.tileWand))) { overrideColor = RarityTrash });
+                    lines.Insert(index, new TooltipLine(Mod, "AmmoLine", "No " + (item.fishingPole > 0 ? "Bait" : new Dictionary<int, string> { [40] = "Arrow", [71] = "Coin", [97] = "Bullet", [169] = "Sand", [283] = "Dart", [771] = "Rocket", [780] = "Solution", [931] = "Flare" }.TryGetValue(item.useAmmo, out string value) ? value : Lang.GetItemNameValue(item.useAmmo > 0 ? item.useAmmo : item.tileWand))) { OverrideColor = RarityTrash });
 
                 lines.Remove(needsBait);
                 lines.Remove(wandConsumes);
@@ -209,92 +213,90 @@
 
             if(config.modName)
             {
-                if(currentAmmo?.modItem != null)
-                    ammoLine.text += " - " + currentAmmo.modItem.mod.DisplayName;
+                if(currentAmmo?.ModItem != null)
+                    ammoLine.Text += " - " + currentAmmo.ModItem.Mod.DisplayName;
 
-                if(item.modItem != null)
-                    name.text += " - " + item.modItem.mod.DisplayName;
+                if(item.ModItem != null)
+                    name.Text += " - " + item.ModItem.Mod.DisplayName;
             }
 
-            if(ammo != null) ammo.overrideColor = config.ammo;
-            if(axePow != null) axePow.overrideColor = config.axePow;
-            if(baitPow != null) baitPow.overrideColor = config.baitPow;
-            if(buffTime != null) buffTime.overrideColor = config.buffTime;
-            if(consumable != null) consumable.overrideColor = config.consumable;
-            if(critChance != null) critChance.overrideColor = config.critChance;
-            if(defense != null) defense.overrideColor = config.defense;
+            if(ammo != null) ammo.OverrideColor = config.ammo;
+            if(axePow != null) axePow.OverrideColor = config.axePow;
+            if(baitPow != null) baitPow.OverrideColor = config.baitPow;
+            if(buffTime != null) buffTime.OverrideColor = config.buffTime;
+            if(consumable != null) consumable.OverrideColor = config.consumable;
+            if(critChance != null) critChance.OverrideColor = config.critChance;
+            if(defense != null) defense.OverrideColor = config.defense;
 
             if(dmg != null)
             {
                 if(config.wpnPlusAmmoDmg && currentAmmo != null)
-                    dmg.text = dmg.text.Replace(dmg.text.Split(' ').First(), player.GetWeaponDamage(item) + player.GetWeaponDamage(currentAmmo) + "");
+                    dmg.Text = dmg.Text.Replace(dmg.Text.Split(' ').First(), player.GetWeaponDamage(item) + player.GetWeaponDamage(currentAmmo) + "");
 
-                if(ModLoader.GetMod("_ColoredDamageTypes") == null)
-                    dmg.overrideColor = config.dmg;
+                dmg.OverrideColor = config.dmg;
             }
 
-            if(equipable != null) equipable.overrideColor = config.equipable;
-            if(etherianMana != null) etherianMana.overrideColor = config.etherianMana;
-            if(expert != null) expert.overrideColor = config.expert;
-            if(fav != null) fav.overrideColor = config.fav;
-            if(favDescr != null) favDescr.overrideColor = config.favDescr;
-            if(fishingPow != null) fishingPow.overrideColor = config.fishingPow;
-            if(hammerPow != null) hammerPow.overrideColor = config.hammerPow;
-            if(healLife != null) healLife.overrideColor = config.healLife;
-            if(healMana != null) healMana.overrideColor = config.healMana;
+            if(equipable != null) equipable.OverrideColor = config.equipable;
+            if(etherianMana != null) etherianMana.OverrideColor = config.etherianMana;
+            if(expert != null) expert.OverrideColor = config.expert;
+            if(fav != null) fav.OverrideColor = config.fav;
+            if(favDescr != null) favDescr.OverrideColor = config.favDescr;
+            if(fishingPow != null) fishingPow.OverrideColor = config.fishingPow;
+            if(hammerPow != null) hammerPow.OverrideColor = config.hammerPow;
+            if(healLife != null) healLife.OverrideColor = config.healLife;
+            if(healMana != null) healMana.OverrideColor = config.healMana;
 
             if(knockback != null)
             {
-                if(item.summon)
-                    itemKnockback += player.minionKB;
+                if(item.CountsAsClass(DamageClass.Summon))
+                    itemKnockback += player.GetKnockback(DamageClass.Summon).Base;
 
-                if(item.type == 3106 && player.inventory[player.selectedItem].type == 3106)
+                if(item.type == ItemID.PsychoKnife && player.inventory[player.selectedItem].type == 3106)
                     itemKnockback *= 2 - player.stealth;
 
                 if(item.useAmmo == 1836 || (item.useAmmo == 40 && player.magicQuiver))
                     itemKnockback *= 1.1f;
 
-                ItemLoader.GetWeaponKnockback(item, player, ref itemKnockback);
-                PlayerHooks.GetWeaponKnockback(player, item, ref itemKnockback);
+                itemKnockback = player.GetWeaponKnockback(item);
 
                 if(config.knockbackLine)
-                    knockback.text = Math.Round(itemKnockback + (currentAmmo != null && config.wpnPlusAmmoKb ? player.GetWeaponKnockback(currentAmmo, currentAmmo.knockBack) : 0), 2) + " knockback";
+                    knockback.Text = Math.Round(itemKnockback + (currentAmmo != null && config.wpnPlusAmmoKb ? player.GetWeaponKnockback(currentAmmo, currentAmmo.knockBack) : 0), 2) + " knockback";
 
-                knockback.overrideColor = config.knockback;
+                knockback.OverrideColor = config.knockback;
             }
 
-            if(material != null) material.overrideColor = config.material;
-            if(needsBait != null) needsBait.overrideColor = config.needsBait;
-            if(pickPow != null) pickPow.overrideColor = config.pickPow;
-            if(placeable != null) placeable.overrideColor = config.placeable;
-            if(quest != null) quest.overrideColor = config.quest;
-            if(setBonus != null) setBonus.overrideColor = config.setBonus;
-            if(social != null) social.overrideColor = config.social;
-            if(socialDescr != null) socialDescr.overrideColor = config.socialDescr;
+            if(material != null) material.OverrideColor = config.material;
+            if(needsBait != null) needsBait.OverrideColor = config.needsBait;
+            if(pickPow != null) pickPow.OverrideColor = config.pickPow;
+            if(placeable != null) placeable.OverrideColor = config.placeable;
+            if(quest != null) quest.OverrideColor = config.quest;
+            if(setBonus != null) setBonus.OverrideColor = config.setBonus;
+            if(social != null) social.OverrideColor = config.social;
+            if(socialDescr != null) socialDescr.OverrideColor = config.socialDescr;
 
             if(speed != null)
             {
                 if(config.speedLine)
-                    speed.text = Math.Round(60 / (item.reuseDelay + (item.useAnimation * (item.melee ? player.meleeSpeed : 1))), 2) + " attacks per second";
+                    speed.Text = Math.Round(60 / (item.reuseDelay + (item.useAnimation * (item.CountsAsClass(DamageClass.Melee) ? player.GetAttackSpeed(DamageClass.Melee) : 1))), 2) + " attacks per second";
 
-                speed.overrideColor = config.speed;
+                speed.OverrideColor = config.speed;
             }
 
-            if(tileBoost != null) tileBoost.overrideColor = config.tileBoost;
-            if(useMana != null) useMana.overrideColor = config.useMana;
-            if(vanity != null) vanity.overrideColor = config.vanity;
-            if(wandConsumes != null) wandConsumes.overrideColor = config.wandConsumes;
-            if(wellFedExpert != null) wellFedExpert.overrideColor = config.wellFedExpert;
+            if(tileBoost != null) tileBoost.OverrideColor = config.tileBoost;
+            if(useMana != null) useMana.OverrideColor = config.useMana;
+            if(vanity != null) vanity.OverrideColor = config.vanity;
+            if(wandConsumes != null) wandConsumes.OverrideColor = config.wandConsumes;
+            if(wellFedExpert != null) wellFedExpert.OverrideColor = config.wellFedExpert;
 
             foreach(TooltipLine line in lines)
             {
-                if(line.isModifierBad) line.overrideColor = config.badMod;
-                else if(line.isModifier) line.overrideColor = config.goodMod;
+                if(line.IsModifierBad) line.OverrideColor = config.badMod;
+                else if(line.IsModifier) line.OverrideColor = config.goodMod;
             }
 
             if(config.ammo.A == 0) lines.Remove(ammo);
             if(config.axePow.A == 0) lines.Remove(axePow);
-            if(config.badMod.A == 0) lines.RemoveAll(l => l.isModifierBad);
+            if(config.badMod.A == 0) lines.RemoveAll(l => l.IsModifierBad);
             if(config.baitPow.A == 0) lines.Remove(baitPow);
             if(config.buffTime.A == 0) lines.Remove(buffTime);
             if(config.consumable.A == 0) lines.Remove(consumable);
@@ -308,7 +310,7 @@
             if(config.fav.A == 0) lines.Remove(fav);
             if(config.favDescr.A == 0) lines.Remove(favDescr);
             if(config.fishingPow.A == 0) lines.Remove(fishingPow);
-            if(config.goodMod.A == 0) lines.RemoveAll(l => !l.isModifierBad && l.isModifier);
+            if(config.goodMod.A == 0) lines.RemoveAll(l => !l.IsModifierBad && l.IsModifier);
             if(config.hammerPow.A == 0) lines.Remove(hammerPow);
             if(config.healLife.A == 0) lines.Remove(healLife);
             if(config.healMana.A == 0) lines.Remove(healMana);
@@ -345,7 +347,7 @@
             var var4 = new bool[1];
             int var5 = -1;
 
-            return ItemLoader.ModifyTooltips(item, ref var1, new[] { "ItemName" }, ref var2, ref var3, ref var4, ref var5, out _)[0].overrideColor ?? rarityColors[item.rare];
+            return ItemLoader.ModifyTooltips(item, ref var1, new[] { "ItemName" }, ref var2, ref var3, ref var4, ref var5, out _, -1)[0].OverrideColor ?? rarityColors[item.rare];
         }
 
         internal static Color TextPulse(Color color) => new Color(color.R * mouseTextColor / 255, color.G * mouseTextColor / 255, color.B * mouseTextColor / 255, mouseTextColor);

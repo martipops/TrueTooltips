@@ -1,0 +1,8 @@
+displayName = True Tooltips [1.4.4.9]
+author = Martipops
+version = 2023.8.3.3
+side = Client
+hideCode = false
+hideResources = false
+includeSource = true
+buildIgnore = *.csproj, bin\*, .vs\*, *.sln, obj\*
