@@ -3,14 +3,17 @@
     using Microsoft.Xna.Framework;
     using Terraria;
     using Terraria.UI;
+    using Terraria.ModLoader;
 
-    class MyMod : Terraria.ModLoader.Mod
+    class MyMod : ModSystem
     {
-        readonly UserInterface ui = new UserInterface();
+        readonly UserInterface ui = new();
 
-        public override void Load() => ui.SetState(new MyUIState());
-
-        public override void ModifyInterfaceLayers(System.Collections.Generic.List<GameInterfaceLayer> layers)
+        public override void Load()
+        {
+            ui.SetState(new MyUIState());
+        }
+        public override void ModifyInterfaceLayers(System.Collections.Generic.List<GameInterfaceLayer> layers)/* tModPorter Note: Removed. Use ModSystem.ModifyInterfaceLayers */
         {
             int mouseText = layers.FindIndex(l => l.Name == "Vanilla: Mouse Text");
 
@@ -25,9 +28,9 @@
             }
         }
 
-        public override void UpdateUI(GameTime gameTime) => ui?.Update(gameTime);
+        public override void UpdateUI(GameTime gameTime)/* tModPorter Note: Removed. Use ModSystem.UpdateUI */ => ui?.Update(gameTime);
 
-        public override void PostUpdateInput()
+        public override void PostUpdateInput()/* tModPorter Note: Removed. Use ModSystem.PostUpdateInput */
         {
             if(Terraria.ModLoader.ModContent.GetInstance<Config>() != null)
                 if(!Terraria.ModLoader.ModContent.GetInstance<Config>().textPulse)
