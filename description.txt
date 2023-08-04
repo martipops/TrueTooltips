@@ -1,6 +1,7 @@
-A port of Graumen's True Tooltip mod for 1.4.4
+A port of Graumen's True Tooltip mod for 1.4.3
 
 Fully customizable tooltip-enhancing mod.
+
 
 Features
 
@@ -8,7 +9,7 @@ Change the color of- or turn off most vanilla tooltip lines. Set the alpha value
 
 Change the position and line spacing of the tooltip.
 
-Show the item's full-size sprite.
+Show the item's full-size sprite (BROKEN AS OF NOW).
 
 Ammo Line
 Shows the item's ammo's name, amount and rarity, shows the mod that adds the ammo if "Mod name next to item name" is on and shows the ammo the item needs if the item has no ammo. Works with fishing poles and tile wands.
