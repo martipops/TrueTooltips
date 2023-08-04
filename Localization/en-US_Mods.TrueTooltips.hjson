@@ -1,5 +1,7 @@
 Configs: {
 	Config: {
+		DisplayName: Config
+
 		Headers: {
 			CustomTooltipLines: Custom Tooltip Lines
 			Background: Background

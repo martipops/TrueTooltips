@@ -13,8 +13,10 @@
         {
             ui.SetState(new MyUIState());
         }
-        public override void ModifyInterfaceLayers(System.Collections.Generic.List<GameInterfaceLayer> layers)/* tModPorter Note: Removed. Use ModSystem.ModifyInterfaceLayers */
+        public override void ModifyInterfaceLayers(System.Collections.Generic.List<GameInterfaceLayer> layers)
         {
+            Main.SettingsEnabled_OpaqueBoxBehindTooltips = false;
+
             int mouseText = layers.FindIndex(l => l.Name == "Vanilla: Mouse Text");
 
             if(mouseText >= 0)
@@ -28,9 +30,9 @@
             }
         }
 
-        public override void UpdateUI(GameTime gameTime)/* tModPorter Note: Removed. Use ModSystem.UpdateUI */ => ui?.Update(gameTime);
+        public override void UpdateUI(GameTime gameTime) => ui?.Update(gameTime);
 
-        public override void PostUpdateInput()/* tModPorter Note: Removed. Use ModSystem.PostUpdateInput */
+        public override void PostUpdateInput()
         {
             if(Terraria.ModLoader.ModContent.GetInstance<Config>() != null)
                 if(!Terraria.ModLoader.ModContent.GetInstance<Config>().textPulse)

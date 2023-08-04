@@ -1,4 +1,4 @@
-﻿namespace TrueTooltips
+﻿﻿namespace TrueTooltips
 {
     using Microsoft.Xna.Framework;
     using System;
@@ -76,7 +76,7 @@
                 y = config.paddingTop;
 
             Utils.DrawInvBG(spriteBatch, new Rectangle(x - config.paddingLeft, y - config.paddingTop, width + config.paddingLeft + config.paddingRight, height + config.paddingTop + config.paddingBottom), new Color(config.bgColor.R * config.bgColor.A / 255, config.bgColor.G * config.bgColor.A / 255, config.bgColor.B * config.bgColor.A / 255, config.bgColor.A));
-            if(config.sprite) spriteBatch.Draw(texture, new Vector2(x + (max - dimensions.Width) / 2, y), dimensions, Color.White);
+            if(config.sprite) spriteBatch.Draw(texture, new Vector2(x + (max - dimensions.Width) / 2, y+ (max - dimensions.Height) / 2), dimensions, Color.White);
 
             int textureY = y + dimensions.Height;
 

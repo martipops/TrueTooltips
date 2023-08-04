@@ -1,3 +1,6 @@
+Original mod Author: Graumen
+### Join my [Discord server](https://discord.gg/MKcjBKwBVu) to discuss the mod!
+
 # Features
 
 - Change the color of- or turn off most vanilla tooltip lines. Set the alpha value to 0 to turn a line off.

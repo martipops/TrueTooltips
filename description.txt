@@ -1,4 +1,7 @@
-A port of Graumen's True Tooltip mod for 1.4.4
+A port of Graumen's True Tooltip mod for 1.4.3/1.4.4
+
+Join the discord to report bugs & suggest changes:
+https://discord.gg/MKcjBKwBVu
 
 Fully customizable tooltip-enhancing mod.
 
