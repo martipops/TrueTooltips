@@ -100,7 +100,7 @@
 
         [Label("Sprite [BROKEN]"),
         Tooltip("Display the item's sprite in the tooltip. [BROKEN]---Working on a fix"),
-        DefaultValue(true)]
+        DefaultValue(false)]
         public bool sprite;
 
         [Label("Text Pulse"), DefaultValue(false)]
