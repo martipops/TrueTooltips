@@ -1,6 +1,6 @@
-displayName = True Tooltips [1.4.3.6]
+displayName = True Tooltips
 author = Martipops
-version = 2023.8.3.4
+version = 2023.8.3.5
 homepage = https://github.com/martipops/TrueTooltips
 side = Client
 hideCode = false

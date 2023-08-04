@@ -98,9 +98,9 @@
 
         [Header("[c/ffff00:Miscellaneous]")]
 
-        [Label("Sprite [BROKEN]"),
-        Tooltip("Display the item's sprite in the tooltip. [BROKEN]---Working on a fix"),
-        DefaultValue(false)]
+        [Label("Sprite"),
+        Tooltip("Display the item's sprite in the tooltip."),
+        DefaultValue(true)]
         public bool sprite;
 
         [Label("Text Pulse"), DefaultValue(false)]

@@ -43,21 +43,23 @@
         public override bool PreDrawTooltip(Item item, ReadOnlyCollection<TooltipLine> lines, ref int _x, ref int _y)
         {
             Config config = GetInstance<Config>();
+            Rectangle dimensions = item.getRect();
 
             int x = mouseX + config.x + (ThickMouse ? 6 : 0),
                 y = mouseY + config.y + (ThickMouse ? 6 : 0),
                 width = 0,
                 height = -config.spacing,
+                max = new[] { dimensions.Width, dimensions.Height, 50 }.Max(),
                 index = lines.ToList().FindLastIndex(l => names.Contains(l.Name));
 
             foreach(TooltipLine line in lines)
             {
-                int lineWidth = (int)ChatManager.GetStringSize(FontAssets.MouseText.Value, line.Text, Vector2.One).X;
+                int lineWidth = (int)ChatManager.GetStringSize(FontAssets.MouseText.Value, line.Text, Vector2.One).X + (lines.IndexOf(line) <= index && config.sprite ? max + 10 : 0);
 
                 if(lineWidth > width)
                     width = lineWidth;
 
-                height += (int)FontAssets.MouseText.Value.MeasureString(line.Text).Y + config.spacing;
+                height += (int)FontAssets.MouseText.Value.MeasureString(line.Text).Y + config.spacing + (lines.IndexOf(line) == index + 1 && config.sprite ? 10 + (height < dimensions.Height ? dimensions.Height - height : 0) : 0);
             }
 
             if(x + width + config.paddingRight > screenWidth)
@@ -71,17 +73,18 @@
 
             if(y - config.paddingTop < 0)
                 y = config.paddingTop;
-
-            Utils.DrawInvBG(spriteBatch, new Rectangle(x - config.paddingLeft, y - config.paddingTop, width + config.paddingLeft + config.paddingRight, height + config.paddingTop + config.paddingBottom), new Color(config.bgColor.R * config.bgColor.A / 255, config.bgColor.G * config.bgColor.A / 255, config.bgColor.B * config.bgColor.A / 255, config.bgColor.A));
-
-
+            Rectangle r = new(x - config.paddingLeft, y - config.paddingTop, width + config.paddingLeft + config.paddingRight, height + config.paddingTop + config.paddingBottom);
+            Utils.DrawInvBG(spriteBatch, r, new Color(config.bgColor.R * config.bgColor.A / 255, config.bgColor.G * config.bgColor.A / 255, config.bgColor.B * config.bgColor.A / 255, config.bgColor.A));
+            if(config.sprite) DrawItemIcon(spriteBatch, item, new Vector2(x+max/2, y+max/2), Color.White, max);
+            int textureY = y + dimensions.Height;
 
             foreach(TooltipLine line in lines)
             {
+                int yOffset = lines.IndexOf(line) == index + 1 && config.sprite ? 10 + (y < textureY ? textureY - y : 0) : 0;
 
-                ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, line.Text, new Vector2(x, y), TextPulse(line.OverrideColor ?? (lines.IndexOf(line) == 0 ? rarityColors[item.rare] : Color.White)), 0, Vector2.Zero, Vector2.One);
+                ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, line.Text, new Vector2(x + (lines.IndexOf(line) <= index && config.sprite ? max + 10 : 0), y + yOffset), TextPulse(line.OverrideColor ?? (lines.IndexOf(line) == 0 ? rarityColors[item.rare] : Color.White)), 0, Vector2.Zero, Vector2.One);
 
-                y += (int)FontAssets.MouseText.Value.MeasureString(line.Text).Y + config.spacing;
+                y += (int)FontAssets.MouseText.Value.MeasureString(line.Text).Y + config.spacing + yOffset;
             }
 
             return false;
