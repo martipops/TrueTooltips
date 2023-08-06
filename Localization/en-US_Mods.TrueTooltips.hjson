@@ -118,172 +118,172 @@ Configs: {
 
 		tileBoost: {
 			Label: +- X range
-			Tooltip: How much more/less range the tool has, in tiles.
+			Tooltip: How much more/less range the tool has, in tiles. (A=0 to disable)
 		}
 
 		ammo: {
 			Label: Ammo
-			Tooltip: The item is ammo.
+			Tooltip: The item is ammo. (A=0 to disable)
 		}
 
 		badMod: {
 			Label: Bad Modifier
-			Tooltip: ""
+			Tooltip: (A=0 to disable)
 		}
 
 		placeable: {
 			Label: Can be placed
-			Tooltip: The item can be placed.
+			Tooltip: The item can be placed. (A=0 to disable)
 		}
 
 		consumable: {
 			Label: Consumable
-			Tooltip: The item is consumable.
+			Tooltip: The item is consumable. (A=0 to disable)
 		}
 
 		wandConsumes: {
 			Label: Consumes X
-			Tooltip: What item a tile wand consumes.
+			Tooltip: What item a tile wand consumes. (A=0 to disable)
 		}
 
 		dmg: {
 			Label: Damage
-			Tooltip: The item's damage and class.
+			Tooltip: The item's damage and class. (A=0 to disable)
 		}
 
 		equipable: {
 			Label: Equipable
-			Tooltip: The item is equipable.
+			Tooltip: The item is equipable. (A=0 to disable)
 		}
 
 		social: {
 			Label: Equipped in social slot
-			Tooltip: The item is in a social slot.
+			Tooltip: The item is in a social slot. (A=0 to disable)
 		}
 
 		etherianMana: {
 			Label: Etherian Mana Warning
-			Tooltip: '''"Cannot be used without Etherian Mana until the Eternia Crystal has been defended"'''
+			Tooltip: Cannot be used without Etherian Mana until the Eternia Crystal has been defended (A=0 to disable)
 		}
 
 		expert: {
 			Label: Expert
-			Tooltip: The item is from Expert Mode.
+			Tooltip: The item is from Expert Mode. (A=0 to disable)
 		}
 
 		favDescr: {
 			Label: Favorite Description
-			Tooltip: '''"Quick trash, stacking, and selling will be blocked"'''
+			Tooltip: Quick trash, stacking, and selling will be blocked (A=0 to disable)
 		}
 
 		goodMod: {
 			Label: Good Modifier
-			Tooltip: Color of good mood
+			Tooltip: Color of good mood (A=0 to disable)
 		}
 
 		wellFedExpert: {
 			Label: Increases life regeneration
-			Tooltip: In Expert Mode, shows that the food increases life regeneration.
+			Tooltip: In Expert Mode, shows that the food increases life regeneration. (A=0 to disable)
 		}
 
 		knockback: {
 			Label: Knockback
-			Tooltip: The item's knockback.
+			Tooltip: The item's knockback. (A=0 to disable)
 		}
 
 		fav: {
 			Label: Marked as favorite
-			Tooltip: The item is marked as favorite.
+			Tooltip: The item is marked as favorite. (A=0 to disable)
 		}
 
 		material: {
 			Label: Material
-			Tooltip: The item can be used to craft something.
+			Tooltip: The item can be used to craft something. (A=0 to disable)
 		}
 
 		quest: {
 			Label: Quest Item
-			Tooltip: The item is a quest item.
+			Tooltip: The item is a quest item. (A=0 to disable)
 		}
 
 		needsBait: {
 			Label: Requires bait to catch fish
-			Tooltip: The fishing pole requires bait to catch fish.
+			Tooltip: The fishing pole requires bait to catch fish. (A=0 to disable)
 		}
 
 		healLife: {
 			Label: Restores X life
-			Tooltip: How much life the player restores when using the item.
+			Tooltip: How much life the player restores when using the item. (A=0 to disable)
 		}
 
 		healMana: {
 			Label: Restores X mana
-			Tooltip: How much mana the player restores when using the item.
+			Tooltip: How much mana the player restores when using the item. (A=0 to disable)
 		}
 
 		setBonus: {
 			Label: Set Bonus
-			Tooltip: The armor's set bonus description.
+			Tooltip: The armor's set bonus description. (A=0 to disable)
 		}
 
 		socialDescr: {
 			Label: Social Description
-			Tooltip: '''"No stats will be gained"'''
+			Tooltip: No stats will be gained (A=0 to disable)
 		}
 
 		speed: {
 			Label: Speed
-			Tooltip: The item's attack speed.
+			Tooltip: The item's attack speed. (A=0 to disable)
 		}
 
 		useMana: {
 			Label: Uses X mana
-			Tooltip: How much mana the item consumes when used.
+			Tooltip: How much mana the item consumes when used. (A=0 to disable)
 		}
 
 		vanity: {
 			Label: Vanity Item
-			Tooltip: The item is vanity.
+			Tooltip: The item is vanity. (A=0 to disable)
 		}
 
 		defense: {
 			Label: X defense
-			Tooltip: The item's defense.
+			Tooltip: The item's defense. (A=0 to disable)
 		}
 
 		buffTime: {
 			Label: X minute duration
-			Tooltip: The item's buff duration.
+			Tooltip: The item's buff duration. (A=0 to disable)
 		}
 
 		axePow: {
 			Label: X% axe power
-			Tooltip: The item's axe power.
+			Tooltip: The item's axe power. (A=0 to disable)
 		}
 
 		baitPow: {
 			Label: X% bait power
-			Tooltip: The bait's bait power.
+			Tooltip: The bait's bait power. (A=0 to disable)
 		}
 
 		critChance: {
 			Label: X% critical strike chance
-			Tooltip: The item's crit chance.
+			Tooltip: The item's crit chance. (A=0 to disable)
 		}
 
 		fishingPow: {
 			Label: X% fishing power
-			Tooltip: The fishing pole's fishing power.
+			Tooltip: The fishing pole's fishing power. (A=0 to disable)
 		}
 
 		hammerPow: {
 			Label: X% hammer powerTooltip:
-			Tooltip: The item's hammer power.
+			Tooltip: The item's hammer power. (A=0 to disable)
 		}
 
 		pickPow: {
 			Label: X% pickaxe power
-			Tooltip: The item's pickaxe power.
+			Tooltip: The item's pickaxe power. (A=0 to disable)
 		}
 
 		DisplayName: Config
