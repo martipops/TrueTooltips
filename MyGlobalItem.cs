@@ -20,12 +20,13 @@
     {
         static Color rarityColor;
         static Item currentAmmo;
+        static readonly Config config = GetInstance<Config>();
 
         static readonly string[] names = { "Ammo", "AmmoLine", "AxePower", "BaitPower", "Consumable", "CritChance", "Damage", "Defense", "Equipable", "FishingPower", "HammerPower", "HealLife", "HealMana", "ItemName", "Knockback", "Material", "PickPower", "Placeable", "PriceLine", "Speed", "TileBoost", "UseMana", "Velocity" };
 
         public override bool PreDrawTooltip(Item item, ReadOnlyCollection<TooltipLine> lines, ref int _x, ref int _y)
         {
-            Config config = GetInstance<Config>();
+
             Rectangle dimensions = item.getRect();
 
             int x = mouseX + config.x + (ThickMouse ? 6 : 0),
@@ -33,45 +34,55 @@
                 width = 0,
                 height = -config.spacing,
                 max = new[] { dimensions.Width, dimensions.Height, 50 }.Max(),
-                index = lines.ToList().FindLastIndex(l => names.Contains(l.Name));
+                index = lines.ToList().FindLastIndex(l => names.Contains(l.Name)),
+                spriteOffsetX = (config.sprite ? max + 10 : 0);
 
-            foreach(TooltipLine line in lines)
+
+            foreach (TooltipLine line in lines)
             {
-                int lineWidth = (int)ChatManager.GetStringSize(FontAssets.MouseText.Value, line.Text, Vector2.One).X + (lines.IndexOf(line) <= index && config.sprite ? max + 10 : 0);
+                int lineWidth = (int)ChatManager.GetStringSize(FontAssets.MouseText.Value, line.Text, Vector2.One).X + 10;
 
                 if(lineWidth > width)
-                    width = lineWidth;
+                    width = lineWidth + config.paddingRight;
 
-                height += (int)FontAssets.MouseText.Value.MeasureString(line.Text).Y + config.spacing + (lines.IndexOf(line) == index + 1 && config.sprite ? 10 + (height < dimensions.Height ? dimensions.Height - height : 0) : 0);
+                height += (int)FontAssets.MouseText.Value.MeasureString(line.Text).Y + config.spacing + (lines.IndexOf(line) == index + 1 && config.sprite ? (height < dimensions.Height ? dimensions.Height - height : 0) : 0);
             }
 
-            if(x + width + config.paddingRight > screenWidth)
-                x = screenWidth - width - config.paddingRight;
 
-            if(y + height + config.paddingBottom > screenHeight)
-                y = screenHeight - height - config.paddingBottom;
+            if (x + width + config.paddingRight + spriteOffsetX > screenWidth)
+            {
+                x = _x = screenWidth - width - config.paddingRight - spriteOffsetX;
+                _x += 4;
+            }
 
-            if(x - config.paddingLeft < 0)
-                x = config.paddingLeft;
+            if (y + height + config.paddingBottom > screenHeight)
+            {
+                y = _y = screenHeight - height - config.paddingBottom;
+                _y += 4;
+            }
 
-            if(y - config.paddingTop < 0)
-                y = config.paddingTop;
+            if (x - config.paddingLeft < 0)
+                x = _x = config.paddingLeft;
+
+            if (y - config.paddingTop < 0)
+                y = _y = config.paddingTop;
+
+            // adjust the width of the tooltip box with item icon frame
+            width += (spriteOffsetX) + config.paddingRight;
+
+            // adjust the tooltip list x position to make it appear on the right
+            _x += (spriteOffsetX);
 
             Utils.DrawInvBG(spriteBatch, new Rectangle(x - config.paddingLeft, y - config.paddingTop, width + config.paddingLeft + config.paddingRight, height + config.paddingTop + config.paddingBottom), new Color(config.bgColor.R * config.bgColor.A / 255, config.bgColor.G * config.bgColor.A / 255, config.bgColor.B * config.bgColor.A / 255, config.bgColor.A));
             if (config.sprite) DrawItemIcon(spriteBatch, item, new Vector2(x + max / 2, y + max / 2), Color.White, max);
 
-            int textureY = y + dimensions.Height;
+            return true;
+        }
 
-            foreach(TooltipLine line in lines)
-            {
-                int yOffset = lines.IndexOf(line) == index + 1 && config.sprite ? 10 + (y < textureY ? textureY - y : 0) : 0;
-
-                ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, line.Text, new Vector2(x + (lines.IndexOf(line) <= index && config.sprite ? max + 10 : 0), y + yOffset), TextPulse(line.OverrideColor ?? (lines.IndexOf(line) == 0 ? RarityColor(item.rare) : Color.White)), 0, Vector2.Zero, Vector2.One);
-
-                y += (int)FontAssets.MouseText.Value.MeasureString(line.Text).Y + config.spacing + yOffset;
-            }
-
-            return false;
+        public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset)
+        {
+            
+            return true;
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> lines)
@@ -314,7 +325,7 @@
 
         public override void PostDrawTooltip(Item item, ReadOnlyCollection<DrawableTooltipLine> lines)
         {
-            if(currentAmmo != null)
+            if (currentAmmo != null)
                 rarityColor = RarityColor(currentAmmo);
         }
 

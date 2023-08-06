@@ -120,6 +120,9 @@
         [DefaultValue(typeof(Color), "255,255,255,0")]
         public Color favDescr;
 
+        [DefaultValue(typeof(Color), "255,214,0,0")]
+        public Color fav;
+        
         [DefaultValue(typeof(Color), "120,190,120,255")]
         public Color goodMod;
 
@@ -128,9 +131,6 @@
 
         [DefaultValue(typeof(Color), "255,255,255,255")]
         public Color knockback;
-
-        [DefaultValue(typeof(Color), "255,255,255,0")]
-        public Color fav;
 
         [DefaultValue(typeof(Color), "255,255,255,255")]
         public Color material;
