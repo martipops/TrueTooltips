@@ -1,7 +1,9 @@
-A port of Graumen's True Tooltip mod for Terraria 1.4
+A port of Graumen's True Tooltip mod for Terraria 1.4.3/1.4.4
 
 Fully customizable tooltip-enhancing mod.
 
+Join the discord to report bugs & suggest changes:
+https://discord.gg/MKcjBKwBVu
 
 Features
 

@@ -8,6 +8,7 @@
     using System.Text.RegularExpressions;
     using Terraria;
     using Terraria.GameContent;
+    using Terraria.GameContent.UI;
     using Terraria.ID;
     using Terraria.ModLoader;
     using Terraria.UI.Chat;
@@ -21,24 +22,6 @@
         static Item currentAmmo;
 
         static readonly string[] names = { "Ammo", "AmmoLine", "AxePower", "BaitPower", "Consumable", "CritChance", "Damage", "Defense", "Equipable", "FishingPower", "HammerPower", "HealLife", "HealMana", "ItemName", "Knockback", "Material", "PickPower", "Placeable", "PriceLine", "Speed", "TileBoost", "UseMana", "Velocity" };
-
-        static readonly Dictionary<int, Color> rarityColors = new()
-        {
-            [-11] = new Color(255, 175, 0),
-            [-1] = RarityTrash,
-            [0] = RarityNormal,
-            [1] = RarityBlue,
-            [2] = RarityGreen,
-            [3] = RarityOrange,
-            [4] = RarityRed,
-            [5] = RarityPink,
-            [6] = RarityPurple,
-            [7] = RarityLime,
-            [8] = RarityYellow,
-            [9] = RarityCyan,
-            [10] = new Color(255, 40, 100),
-            [11] = new Color(180, 40, 255)
-        };
 
         public override bool PreDrawTooltip(Item item, ReadOnlyCollection<TooltipLine> lines, ref int _x, ref int _y)
         {
@@ -75,14 +58,14 @@
                 y = config.paddingTop;
             Rectangle r = new(x - config.paddingLeft, y - config.paddingTop, width + config.paddingLeft + config.paddingRight, height + config.paddingTop + config.paddingBottom);
             Utils.DrawInvBG(spriteBatch, r, new Color(config.bgColor.R * config.bgColor.A / 255, config.bgColor.G * config.bgColor.A / 255, config.bgColor.B * config.bgColor.A / 255, config.bgColor.A));
-            if(config.sprite) DrawItemIcon(spriteBatch, item, new Vector2(x+max/2, y+max/2), Color.White, max);
+            if(config.sprite) DrawItemIcon(spriteBatch, item, new Vector2(x + max  / 2, y + max  / 2), Color.White, max);
             int textureY = y + dimensions.Height;
 
             foreach(TooltipLine line in lines)
             {
                 int yOffset = lines.IndexOf(line) == index + 1 && config.sprite ? 10 + (y < textureY ? textureY - y : 0) : 0;
 
-                ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, line.Text, new Vector2(x + (lines.IndexOf(line) <= index && config.sprite ? max + 10 : 0), y + yOffset), TextPulse(line.OverrideColor ?? (lines.IndexOf(line) == 0 ? rarityColors[item.rare] : Color.White)), 0, Vector2.Zero, Vector2.One);
+                ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, line.Text, new Vector2(x + (lines.IndexOf(line) <= index && config.sprite ? max + 10 : 0), y + yOffset), TextPulse(line.OverrideColor ?? (lines.IndexOf(line) == 0 ? RarityColor(item.rare) : Color.White)), 0, Vector2.Zero, Vector2.One);
 
                 y += (int)FontAssets.MouseText.Value.MeasureString(line.Text).Y + config.spacing + yOffset;
             }
@@ -334,15 +317,14 @@
                 rarityColor = RarityColor(currentAmmo);
         }
 
-        internal static Color RarityColor(Item item)
-        {
-            int var1 = 1;
-            string[] var2 = { "" };
-            var var3 = new bool[1];
-            var var4 = new bool[1];
-            int var5 = -1;
+        internal static Color RarityColor(Item item) => RarityColor(item.rare);
 
-            return ItemLoader.ModifyTooltips(item, ref var1, new[] { "ItemName" }, ref var2, ref var3, ref var4, ref var5, out _)[0].OverrideColor ?? rarityColors[item.rare];
+        internal static Color RarityColor(int rare)
+        {
+            if (rare >= ItemRarityID.Count)
+                return RarityLoader.GetRarity(rare).RarityColor;
+
+            return ItemRarity.GetColor(rare);
         }
 
         internal static Color TextPulse(Color color) => new(color.R * mouseTextColor / 255, color.G * mouseTextColor / 255, color.B * mouseTextColor / 255, mouseTextColor);
