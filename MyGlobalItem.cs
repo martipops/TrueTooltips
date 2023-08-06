@@ -8,6 +8,7 @@
     using System.Text.RegularExpressions;
     using Terraria;
     using Terraria.GameContent;
+    using Terraria.GameContent.UI;
     using Terraria.ID;
     using Terraria.ModLoader;
     using Terraria.UI.Chat;
@@ -22,29 +23,10 @@
 
         static readonly string[] names = { "Ammo", "AmmoLine", "AxePower", "BaitPower", "Consumable", "CritChance", "Damage", "Defense", "Equipable", "FishingPower", "HammerPower", "HealLife", "HealMana", "ItemName", "Knockback", "Material", "PickPower", "Placeable", "PriceLine", "Speed", "TileBoost", "UseMana", "Velocity" };
 
-        static readonly Dictionary<int, Color> rarityColors = new()
-        {
-            [-11] = new Color(255, 175, 0),
-            [-1] = RarityTrash,
-            [0] = RarityNormal,
-            [1] = RarityBlue,
-            [2] = RarityGreen,
-            [3] = RarityOrange,
-            [4] = RarityRed,
-            [5] = RarityPink,
-            [6] = RarityPurple,
-            [7] = RarityLime,
-            [8] = RarityYellow,
-            [9] = RarityCyan,
-            [10] = new Color(255, 40, 100),
-            [11] = new Color(180, 40, 255)
-        };
-
         public override bool PreDrawTooltip(Item item, ReadOnlyCollection<TooltipLine> lines, ref int _x, ref int _y)
         {
             Config config = GetInstance<Config>();
-            GetItemDrawFrame(item.type, out var texture, out var itemFrame);
-            Rectangle dimensions = itemAnimations[item.type]?.GetFrame(texture) ?? texture.Frame();
+            Rectangle dimensions = item.getRect();
 
             int x = mouseX + config.x + (ThickMouse ? 6 : 0),
                 y = mouseY + config.y + (ThickMouse ? 6 : 0),
@@ -76,7 +58,7 @@
                 y = config.paddingTop;
 
             Utils.DrawInvBG(spriteBatch, new Rectangle(x - config.paddingLeft, y - config.paddingTop, width + config.paddingLeft + config.paddingRight, height + config.paddingTop + config.paddingBottom), new Color(config.bgColor.R * config.bgColor.A / 255, config.bgColor.G * config.bgColor.A / 255, config.bgColor.B * config.bgColor.A / 255, config.bgColor.A));
-            if(config.sprite) spriteBatch.Draw(texture, new Vector2(x + (max - dimensions.Width) / 2, y+ (max - dimensions.Height) / 2), dimensions, Color.White);
+            if (config.sprite) DrawItemIcon(spriteBatch, item, new Vector2(x + max / 2, y + max / 2), Color.White, max);
 
             int textureY = y + dimensions.Height;
 
@@ -84,7 +66,7 @@
             {
                 int yOffset = lines.IndexOf(line) == index + 1 && config.sprite ? 10 + (y < textureY ? textureY - y : 0) : 0;
 
-                ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, line.Text, new Vector2(x + (lines.IndexOf(line) <= index && config.sprite ? max + 10 : 0), y + yOffset), TextPulse(line.OverrideColor ?? (lines.IndexOf(line) == 0 ? rarityColors[item.rare] : Color.White)), 0, Vector2.Zero, Vector2.One);
+                ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, line.Text, new Vector2(x + (lines.IndexOf(line) <= index && config.sprite ? max + 10 : 0), y + yOffset), TextPulse(line.OverrideColor ?? (lines.IndexOf(line) == 0 ? RarityColor(item.rare) : Color.White)), 0, Vector2.Zero, Vector2.One);
 
                 y += (int)FontAssets.MouseText.Value.MeasureString(line.Text).Y + config.spacing + yOffset;
             }
@@ -336,15 +318,13 @@
                 rarityColor = RarityColor(currentAmmo);
         }
 
-        internal static Color RarityColor(Item item)
+        internal static Color RarityColor(Item item) => RarityColor(item.rare);
+        internal static Color RarityColor(int rare)
         {
-            int var1 = 1;
-            string[] var2 = { "" };
-            var var3 = new bool[1];
-            var var4 = new bool[1];
-            int var5 = -1;
+            if (rare >= ItemRarityID.Count)
+                return RarityLoader.GetRarity(rare).RarityColor;
 
-            return ItemLoader.ModifyTooltips(item, ref var1, new[] { "ItemName" }, ref var2, ref var3, ref var4, ref var5, out _, -1)[0].OverrideColor ?? rarityColors[item.rare];
+            return ItemRarity.GetColor(rare);
         }
 
         internal static Color TextPulse(Color color) => new(color.R * mouseTextColor / 255, color.G * mouseTextColor / 255, color.B * mouseTextColor / 255, mouseTextColor);
