@@ -92,8 +92,8 @@ Configs: {
 		}
 
 		sprite: {
-			Label: Sprite
-			Tooltip: Display the item's sprite in the tooltip.
+			Label: Item Icon
+			Tooltip: Display the item's icon in the tooltip.
 		}
 
 		spriteMax: {
