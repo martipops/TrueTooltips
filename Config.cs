@@ -76,6 +76,9 @@
         [DefaultValue(true)]
         public bool sprite;
 
+        [Range(1,200),DefaultValue(50)]
+        public int spriteMax;
+
         [DefaultValue(true)]
         public bool textPulse;
 

@@ -92,8 +92,13 @@ Configs: {
 		}
 
 		sprite: {
-			Label: Sprite
+			Label: Show Item Icon
 			Tooltip: Display the item's sprite in the tooltip.
+		}
+
+		spriteMax: {
+			Label: Icon Size Max
+			Tooltip: "The maximum size of the Item Icon"
 		}
 
 		textPulse: {
