@@ -1,291 +1,272 @@
 Configs: {
 	Config: {
-		Headers: {
-			CustomTooltipLines: Custom Tooltip Lines
-			Background: Background
-			Offset: Offset
-			Miscellaneous: Miscellaneous
-			VanillaTooltipLines: Vanilla Tooltip Lines
-		}
-
-		ammoLine: {
-			Label: Ammo Line
-			Tooltip:
-				'''
-				Shows the item's ammo's name, amount and rarity, shows the mod that adds the ammo if "Mod name next to item name" is on and shows the ammo the item needs if the item has no ammo. 
-				Works with fishing poles and tile wands.
-				'''
-		}
-
-		velocityLine: {
-			Label: Velocity Line
-			Tooltip:
-				'''
-				Shows the item's ammo's name, amount and rarity, shows the mod that adds the ammo if "Mod name next to item name" is on and shows the ammo the item needs if the item has no ammo. 
-				Works with fishing poles and tile wands.
-				'''
-		}
-
-		priceLine: {
-			Label: Better Price Line
-			Tooltip: Shows the item's velocity. May not always be accurate due to items shooting multiple different projectiles, projectiles changing velocity mid flight, etc..
-		}
-
-		speedLine: {
-			Label: Better Speed Line
-			Tooltip: Correct sell price for items with custom price, always visible, better color coding, cleaner. Replaces vanilla price line.
-		}
-
-		knockbackLine: {
-			Label: Better Knockback Line
-			Tooltip: Shows attacks per second. Replaces vanilla speed line.
-		}
-
-		wpnPlusAmmoDmg: {
-			Label: Combine weapon and ammo damage
-			Tooltip: Shows knockback as a number. Replaces vanilla knockback line.
-		}
-
-		wpnPlusAmmoKb: {
-			Label: Combine weapon and ammo knockback
-			Tooltip: Requires Better Knockback Line to be on.
-		}
-
-		wpnPlusAmmoVelocity: {
-			Label: Combine weapon and ammo velocity
-			Tooltip: Shows the mod that adds the item next to the item's name.
-		}
-
-		modName: {
-			Label: Mod name next to item name
-			Tooltip: Background color
-		}
-
-		bgColor: {
-			Label: Color
-			Tooltip: ""
-		}
-
-		paddingRight: {
-			Label: Right Padding
-			Tooltip: ""
-		}
-
-		paddingLeft: {
-			Label: Left Padding
-			Tooltip: ""
-		}
-
-		paddingTop: {
-			Label: Top Padding
-			Tooltip: ""
-		}
-
-		paddingBottom: {
-			Label: Bottom Padding
-			Tooltip: X position of the tooltip.
-		}
-
-		x: {
-			Label: X
-			Tooltip: Y position of the tooltip.
-		}
-
-		y: {
-			Label: Y
-			Tooltip: Add extra space between lines.
-		}
-
-		spacing: {
-			Label: Spacing
-			Tooltip: Display the item's sprite in the tooltip.
-		}
-
-		sprite: {
-			Label: Sprite
-			Tooltip: Display the item's sprite in the tooltip.
-		}
-
-		textPulse: {
-			Label: Text Pulse
-			Tooltip: Off by default because ammo crit chance doesn't affect crit chance.
-		}
-
-		ammoCrit: {
-			Label: Crit chance line for ammo
-			Tooltip: Off by default because ammo crit chance doesn't affect crit chance.
-		}
-
-		tileBoost: {
-			Label: +- X range
-			Tooltip: How much more/less range the tool has, in tiles. (A=0 to disable)
-		}
-
-		ammo: {
-			Label: Ammo
-			Tooltip: The item is ammo. (A=0 to disable)
-		}
-
-		badMod: {
-			Label: Bad Modifier
-			Tooltip: (A=0 to disable)
-		}
-
-		placeable: {
-			Label: Can be placed
-			Tooltip: The item can be placed. (A=0 to disable)
-		}
-
-		consumable: {
-			Label: Consumable
-			Tooltip: The item is consumable. (A=0 to disable)
-		}
-
-		wandConsumes: {
-			Label: Consumes X
-			Tooltip: What item a tile wand consumes. (A=0 to disable)
-		}
-
-		dmg: {
-			Label: Damage
-			Tooltip: The item's damage and class. (A=0 to disable)
-		}
-
-		equipable: {
-			Label: Equipable
-			Tooltip: The item is equipable. (A=0 to disable)
-		}
-
-		social: {
-			Label: Equipped in social slot
-			Tooltip: The item is in a social slot. (A=0 to disable)
-		}
-
-		etherianMana: {
-			Label: Etherian Mana Warning
-			Tooltip: Cannot be used without Etherian Mana until the Eternia Crystal has been defended (A=0 to disable)
-		}
-
-		expert: {
-			Label: Expert
-			Tooltip: The item is from Expert Mode. (A=0 to disable)
-		}
-
-		favDescr: {
-			Label: Favorite Description
-			Tooltip: Quick trash, stacking, and selling will be blocked (A=0 to disable)
-		}
-
-		goodMod: {
-			Label: Good Modifier
-			Tooltip: Color of good mood (A=0 to disable)
-		}
-
-		wellFedExpert: {
-			Label: Increases life regeneration
-			Tooltip: In Expert Mode, shows that the food increases life regeneration. (A=0 to disable)
-		}
-
-		knockback: {
-			Label: Knockback
-			Tooltip: The item's knockback. (A=0 to disable)
-		}
-
-		fav: {
-			Label: Marked as favorite
-			Tooltip: The item is marked as favorite. (A=0 to disable)
-		}
-
-		material: {
-			Label: Material
-			Tooltip: The item can be used to craft something. (A=0 to disable)
-		}
-
-		quest: {
-			Label: Quest Item
-			Tooltip: The item is a quest item. (A=0 to disable)
-		}
-
-		needsBait: {
-			Label: Requires bait to catch fish
-			Tooltip: The fishing pole requires bait to catch fish. (A=0 to disable)
-		}
-
-		healLife: {
-			Label: Restores X life
-			Tooltip: How much life the player restores when using the item. (A=0 to disable)
-		}
-
-		healMana: {
-			Label: Restores X mana
-			Tooltip: How much mana the player restores when using the item. (A=0 to disable)
-		}
-
-		setBonus: {
-			Label: Set Bonus
-			Tooltip: The armor's set bonus description. (A=0 to disable)
-		}
-
-		socialDescr: {
-			Label: Social Description
-			Tooltip: No stats will be gained (A=0 to disable)
-		}
-
-		speed: {
-			Label: Speed
-			Tooltip: The item's attack speed. (A=0 to disable)
-		}
-
-		useMana: {
-			Label: Uses X mana
-			Tooltip: How much mana the item consumes when used. (A=0 to disable)
-		}
-
-		vanity: {
-			Label: Vanity Item
-			Tooltip: The item is vanity. (A=0 to disable)
-		}
-
-		defense: {
-			Label: X defense
-			Tooltip: The item's defense. (A=0 to disable)
-		}
-
-		buffTime: {
-			Label: X minute duration
-			Tooltip: The item's buff duration. (A=0 to disable)
-		}
-
-		axePow: {
-			Label: X% axe power
-			Tooltip: The item's axe power. (A=0 to disable)
-		}
-
-		baitPow: {
-			Label: X% bait power
-			Tooltip: The bait's bait power. (A=0 to disable)
-		}
-
-		critChance: {
-			Label: X% critical strike chance
-			Tooltip: The item's crit chance. (A=0 to disable)
-		}
-
-		fishingPow: {
-			Label: X% fishing power
-			Tooltip: The fishing pole's fishing power. (A=0 to disable)
-		}
-
-		hammerPow: {
-			Label: X% hammer powerTooltip:
-			Tooltip: The item's hammer power. (A=0 to disable)
-		}
-
-		pickPow: {
-			Label: X% pickaxe power
-			Tooltip: The item's pickaxe power. (A=0 to disable)
-		}
-
 		DisplayName: Config
+
+		ammoLine : {
+			Label: "Ammo Line",
+			Tooltip: "Shows the item's ammo's name, amount and rarity, shows the mod that adds the ammo if \"Mod name next to item name\" is on and shows the ammo the item needs if the item has no ammo.\nWorks with fishing poles and tile wands."
+		}
+
+		velocityLine : {
+			Label: "Velocity Line",
+			Tooltip: "Shows the item's velocity. May not always be accurate due to items shooting multiple different projectiles, projectiles changing velocity mid flight, etc.."
+		}
+
+		priceLine : {
+			Label: "Better Price Line",
+			Tooltip: "Correct sell price for items with custom price, always visible, better color coding, cleaner. Replaces vanilla price line."
+		}
+
+		speedLine : {
+			Label: "Better Speed Line",
+			Tooltip: "Shows attacks per second. Replaces vanilla speed line."
+		}
+
+		knockbackLine : {
+			Label: "Better Knockback Line",
+			Tooltip: "Shows knockback as a number. Replaces vanilla knockback line."
+		}
+
+		wpnPlusAmmoDmg : {
+			Label: "Combine weapon and ammo damage"
+		}
+
+		wpnPlusAmmoKb : {
+			Label: "Combine weapon and ammo knockback",
+			Tooltip: "Requires Better Knockback Line to be on."
+		}
+
+		wpnPlusAmmoVelocity : {
+			Label: "Combine weapon and ammo velocity"
+		}
+
+		modName : {
+			Label: "Mod name next to item name",
+			Tooltip: "Shows the mod that adds the item next to the item's name."
+		}
+
+		bgColor : {
+			Label: "Color"
+		}
+
+		paddingRight : {
+			Label: "Right Padding"
+		}
+
+		paddingLeft : {
+			Label: "Left Padding"
+		}
+
+		paddingTop : {
+			Label: "Top Padding"
+		}
+
+		paddingBottom : {
+			Label: "Bottom Padding"
+		}
+
+		x : {
+			Label: "X",
+			Tooltip: "X position of the tooltip."
+		}
+
+		y : {
+			Label: "Y",
+			Tooltip: "Y position of the tooltip."
+		}
+
+		spacing : {
+			Label: "Spacing",
+			Tooltip: "Add extra space between lines."
+		}
+
+		sprite : {
+			Label: "Sprite",
+			Tooltip: "Display the item's sprite in the tooltip."
+		}
+
+		spriteMax : {
+			Label: Icon Size Max
+			Tooltip: "The maximum size of the Item Icon"
+		}
+
+		textPulse : {
+			Label: "Text Pulse"
+		}
+
+		ammoCrit : {
+			Label: "Crit chance line for ammo",
+			Tooltip: "Off by default because ammo crit chance doesn't affect crit chance."
+		}
+
+		tileBoost : {
+			Label: "+- X range",
+			Tooltip: "How much more/less range the tool has, in tiles. (A=0 to disable)"
+		}
+
+		ammo : {
+			Label: "Ammo",
+			Tooltip: "The item is ammo. (A=0 to disable)"
+		}
+
+		badMod : {
+			Label: "Bad Modifier",
+			Tooltip: "(A=0 to disable)"
+		}
+
+		placeable : {
+			Label: "Can be placed",
+			Tooltip: "The item can be placed. (A=0 to disable)"
+		}
+
+		consumable : {
+			Label: "Consumable",
+			Tooltip: "The item is consumable. (A=0 to disable)"
+		}
+
+		wandConsumes : {
+			Label: "Consumes X",
+			Tooltip: "What item a tile wand consumes. (A=0 to disable)"
+		}
+
+		dmg : {
+			Label: "Damage",
+			Tooltip: "The item's damage and class. (A=0 to disable)"
+		}
+
+		equipable : {
+			Label: "Equipable",
+			Tooltip: "The item is equipable. (A=0 to disable)"
+		}
+
+		social : {
+			Label: "Equipped in social slot",
+			Tooltip: "The item is in a social slot. (A=0 to disable)"
+		}
+
+		etherianMana : {
+			Label: "Etherian Mana Warning",
+			Tooltip: "\"Cannot be used without Etherian Mana until the Eternia Crystal has been defended\" (A=0 to disable)"
+		}
+
+		expert : {
+			Label: "Expert",
+			Tooltip: "The item is from Expert Mode. (A=0 to disable)"
+		}
+
+		fav : {
+			Label: "Marked as favorite",
+			Tooltip: "(A=0 to disable)"
+		}
+
+		favDescr : {
+			Label: "Favorite Description",
+			Tooltip: "\"Quick trash, stacking, and selling will be blocked\" (A=0 to disable)"
+		}
+
+		goodMod : {
+			Label: "Good Modifier",
+			Tooltip: "(A=0 to disable)"
+		}
+
+		wellFedExpert : {
+			Label: "Increases life regeneration",
+			Tooltip: "In Expert Mode, shows that the food increases life regeneration. (A=0 to disable)"
+		}
+
+		knockback : {
+			Label: "Knockback",
+			Tooltip: "The item's knockback. (A=0 to disable)"
+		}
+
+		material : {
+			Label: "Material",
+			Tooltip: "The item can be used to craft something. (A=0 to disable)"
+		}
+
+		quest : {
+			Label: "Quest Item",
+			Tooltip: "The item is a quest item. (A=0 to disable)"
+		}
+
+		needsBait : {
+			Label: "Requires bait to catch fish",
+			Tooltip: "The fishing pole requires bait to catch fish. (A=0 to disable)"
+		}
+
+		healLife : {
+			Label: "Restores X life",
+			Tooltip: "How much life the player restores when using the item. (A=0 to disable)"
+		}
+
+		healMana : {
+			Label: "Restores X mana",
+			Tooltip: "How much mana the player restores when using the item. (A=0 to disable)"
+		}
+
+		setBonus : {
+			Label: "Set Bonus",
+			Tooltip: "The armor's set bonus description. (A=0 to disable)"
+		}
+
+		socialDescr : {
+			Label: "Social Description",
+			Tooltip: "\"No stats will be gained\" (A=0 to disable)"
+		}
+
+		speed : {
+			Label: "Speed",
+			Tooltip: "The item's attack speed. (A=0 to disable)"
+		}
+
+		useMana : {
+			Label: "Uses X mana",
+			Tooltip: "How much mana the item consumes when used. (A=0 to disable)"
+		}
+
+		vanity : {
+			Label: "Vanity Item",
+			Tooltip: "The item is vanity. (A=0 to disable)"
+		}
+
+		defense : {
+			Label: "X defense",
+			Tooltip: "The item's defense. (A=0 to disable)"
+		}
+
+		buffTime : {
+			Label: "X minute duration",
+			Tooltip: "The item's buff duration. (A=0 to disable)"
+		}
+
+		axePow : {
+			Label: "X% axe power",
+			Tooltip: "The item's axe power. (A=0 to disable)"
+		}
+
+		baitPow : {
+			Label: "X% bait power",
+			Tooltip: "The bait's bait power. (A=0 to disable)"
+		}
+
+		critChance : {
+			Label: "X% critical strike chance",
+			Tooltip: "The item's crit chance. (A=0 to disable)"
+		}
+
+		fishingPow : {
+			Label: "X% fishing power",
+			Tooltip: "The fishing pole's fishing power. (A=0 to disable)"
+		}
+
+		hammerPow : {
+			Label: "X% hammer power",
+			Tooltip: "The item's hammer power. (A=0 to disable)"
+		}
+
+		pickPow : {
+			Label: "X% pickaxe power",
+			Tooltip: "The item's pickaxe power. (A=0 to disable)"
+		}
 	}
 }

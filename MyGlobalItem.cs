@@ -1,9 +1,6 @@
-﻿using Terraria.ID;
-
-namespace TrueTooltips
+﻿namespace TrueTooltips
 {
     using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Graphics;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -14,7 +11,6 @@ namespace TrueTooltips
     using Terraria.GameContent.UI;
     using Terraria.ID;
     using Terraria.ModLoader;
-    using Terraria.ModLoader.IO;
     using Terraria.UI.Chat;
     using static Terraria.ID.Colors;
     using static Terraria.Main;
