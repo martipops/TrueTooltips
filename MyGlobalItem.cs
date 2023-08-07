@@ -1,6 +1,9 @@
-﻿namespace TrueTooltips
+﻿using Terraria.ID;
+
+namespace TrueTooltips
 {
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -11,6 +14,7 @@
     using Terraria.GameContent.UI;
     using Terraria.ID;
     using Terraria.ModLoader;
+    using Terraria.ModLoader.IO;
     using Terraria.UI.Chat;
     using static Terraria.ID.Colors;
     using static Terraria.Main;
@@ -26,16 +30,16 @@
 
         public override bool PreDrawTooltip(Item item, ReadOnlyCollection<TooltipLine> lines, ref int _x, ref int _y)
         {
-
-            Rectangle dimensions = item.getRect();
+            var texture = TextureAssets.Item[item.type].Value;
+            Rectangle dimensions = itemAnimations[item.type]?.GetFrame(texture) ?? texture.Frame();
 
             int x = mouseX + config.x + (ThickMouse ? 6 : 0),
                 y = mouseY + config.y + (ThickMouse ? 6 : 0),
                 width = 0,
                 height = -config.spacing,
-                max = new[] { dimensions.Width, dimensions.Height, 50 }.Max(),
+                max = new[] { dimensions.Width, dimensions.Height, config.spriteMax }.Max(),
                 index = lines.ToList().FindLastIndex(l => names.Contains(l.Name)),
-                spriteOffsetX = (config.sprite ? max + 10 : 0);
+                spriteOffsetX = config.sprite ? max + 10 : 0;
 
 
             foreach (TooltipLine line in lines)
@@ -68,19 +72,13 @@
                 y = _y = config.paddingTop;
 
             // adjust the width of the tooltip box with item icon frame
-            width += (spriteOffsetX) + config.paddingRight;
+            width += spriteOffsetX + config.paddingRight;
 
             // adjust the tooltip list x position to make it appear on the right
-            _x += (spriteOffsetX);
+            _x += spriteOffsetX;
 
             Utils.DrawInvBG(spriteBatch, new Rectangle(x - config.paddingLeft, y - config.paddingTop, width + config.paddingLeft + config.paddingRight, height + config.paddingTop + config.paddingBottom), new Color(config.bgColor.R * config.bgColor.A / 255, config.bgColor.G * config.bgColor.A / 255, config.bgColor.B * config.bgColor.A / 255, config.bgColor.A));
-            if (config.sprite) DrawItemIcon(spriteBatch, item, new Vector2(x + max / 2, y + max / 2), Color.White, max);
-
-            return true;
-        }
-
-        public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset)
-        {
+            if (config.sprite) spriteBatch.Draw(texture, new Vector2(x + (max - dimensions.Width) / 2, y + (max - dimensions.Height) / 2), dimensions, Color.White);
 
             return true;
         }
@@ -159,7 +157,7 @@
 
             int index = lines.FindLastIndex(l => names.Contains(l.Name)) + 1;
 
-            if (item.type > 70 && item.type < 75)
+            if (item.type > ItemID.WormFood && item.type < ItemID.FallenStar)
             {
                 if (!lines.Contains(dmg))
                 {
@@ -241,7 +239,7 @@
                 if (item.CountsAsClass(DamageClass.Summon))
                     itemKnockback += player.GetKnockback(DamageClass.Summon).Base;
 
-                if (item.type == ItemID.PsychoKnife && player.inventory[player.selectedItem].type == 3106)
+                if (item.type == ItemID.PsychoKnife && player.inventory[player.selectedItem].type == ItemID.PsychoKnife)
                     itemKnockback *= 2 - player.stealth;
 
                 if (item.useAmmo == 1836 || (item.useAmmo == 40 && player.magicQuiver))
@@ -315,7 +313,7 @@
             if (config.social.A == 0) lines.Remove(social);
             if (config.socialDescr.A == 0) lines.Remove(socialDescr);
 
-            if (config.speed.A == 0 || (item.type > 70 && item.type < 75)) lines.Remove(speed);
+            if (config.speed.A == 0 || (item.type > ItemID.WormFood && item.type < ItemID.FallenStar)) lines.Remove(speed);
             if (config.tileBoost.A == 0) lines.Remove(tileBoost);
             if (config.useMana.A == 0) lines.Remove(useMana);
             if (config.vanity.A == 0) lines.Remove(vanity);

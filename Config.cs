@@ -98,10 +98,16 @@
 
         [Header("[c/ffff00:Miscellaneous]")]
 
-        [Label("Sprite"),
-        Tooltip("Display the item's sprite in the tooltip."),
+        [Label("Show Item Icon"),
+        Tooltip("Display the item's icon in the tooltip."),
         DefaultValue(true)]
         public bool sprite;
+
+        [Label("Icon Size Max"),
+		Tooltip("The maximum size of the Item Icon"),
+        Range(1,200),
+        DefaultValue(50)]
+        public int spriteMax;
 
         [Label("Text Pulse"), DefaultValue(false)]
         public bool textPulse;
