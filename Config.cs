@@ -8,7 +8,7 @@
     {
         public override ConfigScope Mode => ConfigScope.ClientSide;
 
-        [Header("[c/ffff00:Custom Tooltip Lines]")]
+        [Header("Custom Tooltip Lines")]
 
         [Label("Ammo Line"),
         Tooltip("Shows the item's ammo's name, amount and rarity, shows the mod that adds the ammo if \"Mod name next to item name\" is on and shows the ammo the item needs if the item has no ammo. \nWorks with fishing poles and tile wands."),
@@ -51,7 +51,7 @@
         DefaultValue(true)]
         public bool modName;
 
-        [Header("[c/ffff00:Background]")]
+        [Header("Background")]
 
         [Label("Color"), DefaultValue(typeof(Color), "63,81,151,255")]
         public Color bgColor;
@@ -76,7 +76,7 @@
         DefaultValue(10)]
         public int paddingBottom;
 
-        [Header("[c/ffff00:Offset]")]
+        [Header("Offset")]
 
         [Label("X"),
         Tooltip("X position of the tooltip."),
@@ -96,7 +96,7 @@
         DefaultValue(0)]
         public int spacing;
 
-        [Header("[c/ffff00:Miscellaneous]")]
+        [Header("Miscellaneous")]
 
         [Label("Show Item Icon"),
         Tooltip("Display the item's icon in the tooltip."),
@@ -117,7 +117,7 @@
         DefaultValue(false)]
         public bool ammoCrit;
 
-        [Header("[c/ffff00:Vanilla Tooltip Lines]")]
+        [Header("Vanilla Tooltip Lines")]
 
         [Label("+- X range"),
         Tooltip("How much more/less range the tool has, in tiles."),
