@@ -98,7 +98,7 @@
 
         [Header("Miscellaneous")]
 
-        [Label("Show Item Icon"),
+        [Label("Item Icon"),
         Tooltip("Display the item's icon in the tooltip."),
         DefaultValue(true)]
         public bool sprite;
