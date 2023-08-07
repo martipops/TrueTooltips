@@ -166,6 +166,11 @@
         DefaultValue(typeof(Color), "255,255,255,255")]
         public Color expert;
 
+        [Label("Marked as favorite"),
+        Tooltip("The item is marked as favorite."),
+        DefaultValue(typeof(Color), "255,255,255,0")]
+        public Color fav;
+
         [Label("Favorite Description"),
         Tooltip("\"Quick trash, stacking, and selling will be blocked\""),
         DefaultValue(typeof(Color), "255,255,255,0")]
@@ -183,11 +188,6 @@
         Tooltip("The item's knockback."),
         DefaultValue(typeof(Color), "255,255,255,255")]
         public Color knockback;
-
-        [Label("Marked as favorite"),
-        Tooltip("The item is marked as favorite."),
-        DefaultValue(typeof(Color), "255,255,255,0")]
-        public Color fav;
 
         [Label("Material"),
         Tooltip("The item can be used to craft something."),
