@@ -23,5 +23,5 @@ Other Features
 - Gives text that appears when hovering over items with custom rarity that are dropped or in the hotbar the right color and shows the name of the frontmost dropped item instead of the backmost.
 - Allows you to turn off text pulse.
 
-Join the discord to report bugs & suggest changes:
+Join the discord to see the full changelog, report bugs & suggest changes:
 https://discord.gg/MKcjBKwBVu
