@@ -1,9 +1,9 @@
 displayName = True Tooltips
 author = Martipops
-version = 2023.8.7.1
+version = 2023.8.8.1
 homepage = https://discord.gg/MKcjBKwBVu
 side = Client
 hideCode = false
 hideResources = false
 includeSource = true
-buildIgnore = *.csproj, bin\*, .vs\*, *.sln, obj\*
+buildIgnore = *.csproj, bin\*, .vs\*, *.sln, obj\*, *.psd, *.md

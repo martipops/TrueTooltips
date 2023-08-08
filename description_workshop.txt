@@ -29,5 +29,4 @@ New Features in 1.4.4
 - Items now have a customizable border/background.
 
 Join the discord to see the full changelog, report bugs & suggest changes:
-(click homepage)
 https://discord.gg/MKcjBKwBVu

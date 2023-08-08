@@ -41,6 +41,9 @@
         [DefaultValue(typeof(Color), "63,81,151,255")]
         public Color bgColor;
 
+        [DefaultValue(typeof(Color), "63,81,151,255")]
+        public Color spritebgColor;
+
         [Range(0, 999),
         DefaultValue(10)]
         public int paddingRight;
@@ -67,17 +70,31 @@
         DefaultValue(16)]
         public int y;
 
-        [Range(0, 999),
+        [Range(-15, 999),
         DefaultValue(0)]
         public int spacing;
 
-        [Header("Miscellaneous")]
+        [Header("ItemSprite")]
 
         [DefaultValue(true)]
         public bool sprite;
 
-        [Range(1,200),DefaultValue(50)]
-        public int spriteMax;
+        [DefaultValue(true)]
+        public bool spriteBorder;
+
+        [Range(0, 999),
+        DefaultValue(10)]
+        public int spriteBorderPadding;
+
+        [Range(1,999),
+        DefaultValue(30)]
+        public int spriteMin;
+
+        [Range(0, 999),
+        DefaultValue(10)]
+        public int spriteTextPadding;
+
+        [Header("Miscellaneous")]
 
         [DefaultValue(true)]
         public bool textPulse;

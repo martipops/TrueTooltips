@@ -52,8 +52,13 @@ Configs: {
 		}
 
 		bgColor: {
-			Label: Color
+			Label: Background Color
 			Tooltip: ""
+		}
+
+		spritebgColor: {
+			Label: Icon Frame Color
+			Tooltip: The background color of the border behind the item icon
 		}
 
 		paddingRight: {
@@ -88,7 +93,7 @@ Configs: {
 
 		spacing: {
 			Label: Spacing
-			Tooltip: Add extra space between lines.
+			Tooltip: Adds or removes space between lines.
 		}
 
 		sprite: {
@@ -96,9 +101,24 @@ Configs: {
 			Tooltip: Display the item's icon in the tooltip.
 		}
 
-		spriteMax: {
-			Label: Icon Size Max
-			Tooltip: The maximum size of the Item Icon
+		spriteBorderPadding: {
+			Label: Icon Border Padding
+			Tooltip: Distance between edge of item sprite, and icon border.
+		}
+
+		spriteBorder: {
+			Label: Icon Border
+			Tooltip: Toggle icon border
+		}
+
+		spriteMin: {
+			Label: Icon Minimum Size
+			Tooltip: The minimum size of the Item Icon.
+		}
+
+		spriteTextPadding: {
+			Label: Icon-Text Padding
+			Tooltip: Distance between Item Icon and tooltip text.
 		}
 
 		textPulse: {
@@ -285,6 +305,7 @@ Configs: {
 			CustomTooltipLines: Custom Tooltip Lines Header
 			Background: Background Header
 			Offset: Offset Header
+			ItemSprite: Item Sprite
 			Miscellaneous: Miscellaneous Header
 			VanillaTooltipLines: Vanilla Tooltip Lines Header
 		}

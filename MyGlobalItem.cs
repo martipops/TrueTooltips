@@ -1,6 +1,7 @@
 ﻿namespace TrueTooltips
 {
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -12,9 +13,11 @@
     using Terraria.ID;
     using Terraria.ModLoader;
     using Terraria.UI.Chat;
+    using static Humanizer.On;
     using static Terraria.ID.Colors;
     using static Terraria.Main;
     using static Terraria.ModLoader.ModContent;
+    using static Terraria.ModLoader.PlayerDrawLayer;
 
     class MyGlobalItem : GlobalItem
     {
@@ -26,62 +29,92 @@
 
         public override bool PreDrawTooltip(Item item, ReadOnlyCollection<TooltipLine> lines, ref int _x, ref int _y)
         {
-            var texture = TextureAssets.Item[item.type].Value;
-            Rectangle dimensions = itemAnimations[item.type]?.GetFrame(texture) ?? texture.Frame();
-
-            int x = mouseX + config.x + (ThickMouse ? 6 : 0),
-                y = mouseY + config.y + (ThickMouse ? 6 : 0),
-                width = 0,
-                height = -config.spacing,
-                max = new[] { dimensions.Width, dimensions.Height, config.spriteMax }.Max(),
-                index = lines.ToList().FindLastIndex(l => names.Contains(l.Name)),
-                spriteOffsetX = config.sprite ? max + 10 : 0;
+            // background rect
+            Rectangle bgRect = new(
+                mouseX + config.x + (ThickMouse ? 6 : 0), 
+                mouseY + config.y + (ThickMouse ? 6 : 0),
+                config.paddingLeft + config.paddingRight,
+                config.paddingTop + config.paddingBottom);
 
 
+
+            int[] textDim = TextDimensions(lines);
+
+            bgRect.Width += textDim[0];
+            bgRect.Height += textDim[1];
+
+            if (config.sprite)
+            {
+                var texture = TextureAssets.Item[item.type].Value;
+                Rectangle iconFrame = itemAnimations[item.type]?.GetFrame(texture) ?? texture.Frame();
+                int max = new[] { iconFrame.Width, iconFrame.Height, config.spriteMin }.Max();
+                int spritePadding = config.spriteBorder ? config.spriteBorderPadding : 0; 
+                int slotWidth = spritePadding * 2 + max;
+                int textOffsetX = slotWidth + config.spriteTextPadding;
+                bgRect.Width += textOffsetX;
+                bgRect.Height = Math.Max(bgRect.Height, slotWidth + config.paddingTop + config.paddingBottom);
+
+                ScreenBoundsCheck(ref bgRect);
+                MyInventoryBackground(bgRect, config.bgColor);
+
+                Rectangle iconSlot = new Rectangle(
+                        bgRect.X + config.paddingLeft,
+                        bgRect.Y + config.paddingTop,
+                        slotWidth,
+                        slotWidth);
+                if (config.spriteBorder)
+                {
+                    MyInventoryBackground(iconSlot, config.spritebgColor);
+                }
+                Rectangle iconRect = new Rectangle(
+                    iconSlot.X + (max - iconFrame.Width) / 2 + spritePadding, 
+                    iconSlot.Y + (max - iconFrame.Height) / 2 + spritePadding,
+                    iconFrame.Width, iconFrame.Height);
+                spriteBatch.Draw(texture, iconRect.TopLeft(), iconFrame, !item.color.Equals(Color.Transparent) ? item.color: Color.White) ;
+
+                _x = bgRect.X + config.paddingLeft + textOffsetX;
+            } 
+            else
+            {
+                ScreenBoundsCheck(ref bgRect);
+                MyInventoryBackground(bgRect, config.bgColor);
+                _x = bgRect.X + config.paddingLeft;
+            }
+
+            _y = bgRect.Y + config.paddingTop;
+            
+            return true;
+        }
+
+        internal static int[] TextDimensions(ReadOnlyCollection<TooltipLine> lines)
+        {
+            //set bgrect to text size
+            int maxW = 0;
+            int maxH = 0;
             foreach (TooltipLine line in lines)
             {
-                int lineWidth = (int)ChatManager.GetStringSize(FontAssets.MouseText.Value, line.Text, Vector2.One).X + 10;
+                int lineWidth = (int)ChatManager.GetStringSize(FontAssets.MouseText.Value, line.Text, Vector2.One).X;
 
-                if (lineWidth > width)
-                    width = lineWidth + config.paddingRight;
+                maxW = Math.Max(maxW, lineWidth); 
 
-                height += (int)FontAssets.MouseText.Value.MeasureString(line.Text).Y + config.spacing + (lines.IndexOf(line) == index + 1 && config.sprite ? (height < dimensions.Height ? dimensions.Height - height : 0) : 0);
+                maxH += (int)FontAssets.MouseText.Value.MeasureString(line.Text).Y + config.spacing;
             }
+            return new[] { maxW + 5 , maxH - 5 };
+        }
 
+        internal static void ScreenBoundsCheck(ref Rectangle rect)
+        {
+            rect.X = Math.Clamp(rect.X, 0, screenWidth - rect.Width);
+            rect.Y = Math.Clamp(rect.Y, 0, screenHeight - rect.Height);
+        }
 
-            if (x + width + config.paddingRight + spriteOffsetX > screenWidth)
-            {
-                x = _x = screenWidth - width - config.paddingRight - spriteOffsetX;
-                _x += 4;
-            }
-
-            if (y + height + config.paddingBottom > screenHeight)
-            {
-                y = _y = screenHeight - height - config.paddingBottom;
-                _y += 4;
-            }
-
-            if (x - config.paddingLeft < 0)
-                x = _x = config.paddingLeft;
-
-            if (y - config.paddingTop < 0)
-                y = _y = config.paddingTop;
-
-            // adjust the width of the tooltip box with item icon frame
-            width += spriteOffsetX + config.paddingRight;
-
-            // adjust the tooltip list x position to make it appear on the right
-            _x += spriteOffsetX;
-
-            Utils.DrawInvBG(spriteBatch, new Rectangle(x - config.paddingLeft, y - config.paddingTop, width + config.paddingLeft + config.paddingRight, height + config.paddingTop + config.paddingBottom), new Color(config.bgColor.R * config.bgColor.A / 255, config.bgColor.G * config.bgColor.A / 255, config.bgColor.B * config.bgColor.A / 255, config.bgColor.A));
-            if (config.sprite) spriteBatch.Draw(texture, new Vector2(x + (max - dimensions.Width) / 2, y + (max - dimensions.Height) / 2), dimensions, Color.White);
-
-            return true;
+        internal static void MyInventoryBackground(Rectangle rect, Color color)
+        {
+            Utils.DrawInvBG(spriteBatch, rect, new Color(color.R * color.A / 255, color.G * color.A / 255, color.B * color.A / 255, color.A));
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> lines)
         {
-            Config config = GetInstance<Config>();
             float itemKnockback = item.knockBack;
             Player player = LocalPlayer;
 
@@ -112,7 +145,7 @@
 
                 lines.InsertRange(1, new[] { new TooltipLine(Mod, "Damage", "0 ranged damage"), new TooltipLine(Mod, "CritChance", coinGunCrit + "% critical strike chance"), new TooltipLine(Mod, "Speed", ""), new TooltipLine(Mod, "Knockback", "") });
             }
-
+                
             TooltipLine ammoLine = new(Mod, "AmmoLine", currentAmmo?.HoverName) { OverrideColor = rarityColor },
                         ammo = lines.Find(l => l.Name == "Ammo"),
                         axePow = lines.Find(l => l.Name == "AxePower"),
@@ -321,6 +354,13 @@
         {
             if (currentAmmo != null)
                 rarityColor = RarityColor(currentAmmo);
+        }
+
+        public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset)
+        {
+            if (config.spacing != 0)
+                yOffset = config.spacing;
+            return base.PreDrawTooltipLine(item, line, ref yOffset);
         }
 
         internal static Color RarityColor(Item item) => RarityColor(item.rare);
