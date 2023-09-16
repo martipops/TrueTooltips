@@ -14,21 +14,28 @@ Configs: {
 		velocityLine: {
 			Label: Velocity Line
 			Tooltip: Shows the item's velocity. May not always be accurate due to items shooting multiple different projectiles, projectiles changing velocity mid flight, etc..
+			Display: " velocity"
 		}
 
 		priceLine: {
 			Label: Better Price Line
 			Tooltip: Correct sell price for items with custom price, always visible, better color coding, cleaner. Replaces vanilla price line.
+			platinum: "[c/{0}:{1} {$LegacyInterface.15} ]"
+			gold: "[c/{0}:{1} {$LegacyInterface.16} ]"
+			silver: "[c/{0}:{1} {$LegacyInterface.17} ]"
+			copper: "[c/{0}:{1} {$LegacyInterface.18}]"
 		}
 
 		speedLine: {
 			Label: Better Speed Line
 			Tooltip: Shows attacks per second. Replaces vanilla speed line.
+			Display: " attacks per second"
 		}
 
 		knockbackLine: {
 			Label: Better Knockback Line
 			Tooltip: Shows knockback as a number. Replaces vanilla knockback line.
+			Display: " knockback"
 		}
 
 		wpnPlusAmmoDmg: {
