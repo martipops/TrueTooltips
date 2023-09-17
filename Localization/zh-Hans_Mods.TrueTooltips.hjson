@@ -9,6 +9,16 @@ Configs: {
 				显示物品使用的弹药名称、数量和稀有度（对钓鱼竿和物品魔棒也生效）
 				如果启用“显示物品来源的模组”，则显示弹药所属的模组名称；如果背包中没有可用的弹药，则显示物品所需的弹药种类
 				'''
+			No: 无
+			Bait: 鱼饵
+			Arrow: 箭矢
+			Coin: 钱币
+			Bullet: 子弹
+			Sand: 沙块
+			Dart: 种子/飞镖
+			Rocket: 火箭
+			Solution: 溶液
+			Flare: 照明弹
 		}
 
 		velocityLine: {

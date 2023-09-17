@@ -9,6 +9,16 @@ Configs: {
 				Shows the item's ammo's name, amount and rarity, shows the mod that adds the ammo if "Mod name next to item name" is on and shows the ammo the item needs if the item has no ammo.
 				Works with fishing poles and tile wands.
 				'''
+			No: "No "
+			Bait: Bait
+			Arrow: Arrow
+			Coin: Coin
+			Bullet: Bullet
+			Sand: Sand
+			Dart: Dart
+			Rocket: Rocket
+			Solution: Solution
+			Flare: Flare
 		}
 
 		velocityLine: {
