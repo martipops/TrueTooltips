@@ -1,0 +1,309 @@
+Configs: {
+	Config: {
+		DisplayName: 更好的工具提示设置
+
+		ammoLine: {
+			Label: 弹药详细显示
+			Tooltip:
+				'''
+				显示物品使用的弹药名称、数量和稀有度（对钓鱼竿和物品魔棒也生效）
+				如果启用“显示物品来源的模组”，则显示弹药所属的模组名称；如果背包中没有可用的弹药，则显示物品所需的弹药种类
+				'''
+			No: 无
+			Bait: 鱼饵
+			Arrow: 箭矢
+			Coin: 钱币
+			Bullet: 子弹
+			Sand: 沙块
+			Dart: 种子/飞镖
+			Rocket: 火箭
+			Solution: 溶液
+			Flare: 照明弹
+		}
+
+		velocityLine: {
+			Label: 射弹速度显示
+			Tooltip: 显示物品射弹的速度（不一定准确，因为物品可能发射多个不同的射弹、射弹在飞行中会改变速度等）
+			Display: " 射弹速度"
+		}
+
+		priceLine: {
+			Label: 售价详细显示
+			Tooltip: 正确显示具有自定义的售价（可调整颜色且商店外可见、取代了原版的售价行显示）
+			platinum: "[c/{0}:{1} {$LegacyInterface.15} ]"
+			gold: "[c/{0}:{1} {$LegacyInterface.16} ]"
+			silver: "[c/{0}:{1} {$LegacyInterface.17} ]"
+			copper: "[c/{0}:{1} {$LegacyInterface.18}]"
+		}
+
+		speedLine: {
+			Label: 攻速详细显示
+			Tooltip: 显示每秒的攻击次数（取代了原版的使用时间行显示）
+			Display: " 攻击次数/秒"
+		}
+
+		knockbackLine: {
+			Label: 击退详细显示
+			Tooltip: 以数字显示击退（取代了原版的击退行显示）
+			Display: " 击退力"
+		}
+
+		wpnPlusAmmoDmg: {
+			Label: 显示武器和弹药总计的伤害
+			Tooltip: ""
+		}
+
+		wpnPlusAmmoKb: {
+			Label: 显示武器和弹药总计的击退
+			Tooltip: 需要启用“更好的击退行显示”
+		}
+
+		wpnPlusAmmoVelocity: {
+			Label: 显示武器和弹药总计的射弹速度
+			Tooltip: ""
+		}
+
+		modName: {
+			Label: 显示物品来源的模组
+			Tooltip: 在物品名称旁边显示来源的模组名称
+		}
+
+		bgColor: {
+			Label: 颜色
+			Tooltip: ""
+		}
+
+		paddingRight: {
+			Label: 右空列
+			Tooltip: ""
+		}
+
+		paddingLeft: {
+			Label: 左空列
+			Tooltip: ""
+		}
+
+		paddingTop: {
+			Label: 上空行
+			Tooltip: ""
+		}
+
+		paddingBottom: {
+			Label: 下空行
+			Tooltip: ""
+		}
+
+		x: {
+			Label: 横向偏移量
+			Tooltip: 工具提示的 X 轴偏移量
+		}
+
+		y: {
+			Label: 纵向偏移量
+			Tooltip: 工具提示的 Y 轴偏移量
+		}
+
+		spacing: {
+			Label: 空行
+			Tooltip: 在提示行后添加空行
+		}
+
+		sprite: {
+			Label: 物品图标
+			Tooltip: 在工具提示中显示物品图标
+		}
+
+		spriteMax: {
+			Label: 物品图标大小
+			Tooltip: 在工具提示中显示物品图标的最大尺寸
+		}
+
+		textPulse: {
+			Label: 文本闪烁效果
+			Tooltip: ""
+		}
+
+		ammoCrit: {
+			Label: 弹药暴击率显示
+			Tooltip: 默认为关闭，因为弹药不影响实际暴击率
+		}
+
+		tileBoost: {
+			Label: +/- X 范围
+			Tooltip: 工具对物块的使用范围（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		ammo: {
+			Label: 弹药
+			Tooltip: 表示此物品是弹药（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		badMod: {
+			Label: 负面修饰语
+			Tooltip: （透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		placeable: {
+			Label: 可放置
+			Tooltip: 表示此物品可放置（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		consumable: {
+			Label: 可消耗
+			Tooltip: 表示此物品可消耗（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		wandConsumes: {
+			Label: 消耗物块种类
+			Tooltip: 物品魔棒消耗哪种物块（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		dmg: {
+			Label: 伤害
+			Tooltip: 物品的伤害大小和类型（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		equipable: {
+			Label: 可装备
+			Tooltip: 表示此物品可装备（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		social: {
+			Label: 可装备在社交栏
+			Tooltip: 表示此物品可装备在社交栏（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		etherianMana: {
+			Label: 埃特尼亚水晶使用条件
+			Tooltip: '''"在埃特尼亚水晶得到保护之前，无法在没有天国魔力的情况下使用"（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）'''
+		}
+
+		expert: {
+			Label: 专家模式
+			Tooltip: 表示此物品来自专家模式（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		fav: {
+			Label: 标记为收藏
+			Tooltip: （透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		favDescr: {
+			Label: 收藏的物品无法进行的动作
+			Tooltip: '''"快速丢弃、堆叠和出售将被阻止"（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）'''
+		}
+
+		goodMod: {
+			Label: 正面修饰语
+			Tooltip: （透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		wellFedExpert: {
+			Label: 食物增加生命再生
+			Tooltip: 专家模式中，显示食物增加生命再生（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		knockback: {
+			Label: 击退
+			Tooltip: 物品的击退（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		material: {
+			Label: 材料
+			Tooltip: 表示此物品可以参与制作合成（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		quest: {
+			Label: 任务物品
+			Tooltip: 表示此物品是一件任务物品（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		needsBait: {
+			Label: 钓鱼需要鱼饵
+			Tooltip: 使用钓鱼竿需要鱼饵（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		healLife: {
+			Label: 恢复 X 生命值
+			Tooltip: 使用物品后恢复 X 生命值（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		healMana: {
+			Label: 恢复 X 魔力
+			Tooltip: 使用物品后恢复 X 魔力（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		setBonus: {
+			Label: 套装奖励
+			Tooltip: 盔甲的套装奖励提示（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		socialDescr: {
+			Label: 社交栏物品提示
+			Tooltip: '''"不会获得任何属性"（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）'''
+		}
+
+		speed: {
+			Label: 攻击速度
+			Tooltip: 物品的攻击速度（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		useMana: {
+			Label: 使用 X 魔力
+			Tooltip: 使用物品后消耗 X 魔力（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		vanity: {
+			Label: 原版物品
+			Tooltip: 表示此物品是原版物品（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		defense: {
+			Label: X 防御力
+			Tooltip: 物品的防御力（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		buffTime: {
+			Label: X 分钟持续时间
+			Tooltip: 物品的增益持续时间（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		axePow: {
+			Label: X% 斧力
+			Tooltip: 物品的斧力（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		baitPow: {
+			Label: X% 鱼饵力
+			Tooltip: 鱼饵的鱼饵力（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		critChance: {
+			Label: X% 暴击率
+			Tooltip: 物品的暴击率（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		fishingPow: {
+			Label: X% 渔力
+			Tooltip: 钓竿的渔力（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		hammerPow: {
+			Label: X% 锤力
+			Tooltip: 物品的锤力（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		pickPow: {
+			Label: X% 稿力
+			Tooltip: 物品的稿力（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		Headers: {
+			CustomTooltipLines: 自定义工具提示显示内容
+			Background: 自定义工具提示显示背景
+			Offset: 自定义工具提示显示位置
+			Miscellaneous: 其它设置
+			VanillaTooltipLines: 原版工具提示显示颜色
+		}
+	}
+}

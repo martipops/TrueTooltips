@@ -15,6 +15,8 @@
     using static Terraria.ID.Colors;
     using static Terraria.Main;
     using static Terraria.ModLoader.ModContent;
+    using Terraria.Localization;
+    using Humanizer;
 
     class MyGlobalItem : GlobalItem
     {
@@ -149,7 +151,7 @@
                         wellFedExpert = lines.Find(l => l.Name == "WellFedExpert");
 
             if (config.velocityLine.A > 0 && item.shootSpeed > 0)
-                lines.Insert(lines.IndexOf(knockback ?? speed ?? critChance ?? dmg ?? equipable ?? name) + 1, new TooltipLine(Mod, "Velocity", item.shootSpeed + (currentAmmo != null && config.wpnPlusAmmoVelocity ? currentAmmo.shootSpeed : 0) + " velocity") { OverrideColor = config.velocityLine });
+                lines.Insert(lines.IndexOf(knockback ?? speed ?? critChance ?? dmg ?? equipable ?? name) + 1, new TooltipLine(Mod, "Velocity", item.shootSpeed + (currentAmmo != null && config.wpnPlusAmmoVelocity ? currentAmmo.shootSpeed : 0) + Language.GetTextValue("Mods.TrueTooltips.Configs.Config.velocityLine.Display")) { OverrideColor = config.velocityLine });
 
             int index = lines.FindLastIndex(l => names.Contains(l.Name)) + 1;
 
@@ -179,7 +181,7 @@
                     copper = price % 100;
 
                 if (price > 0 && !(item.type > ItemID.WormFood && item.type < ItemID.FallenStar))
-                    lines.Insert(index, new TooltipLine(Mod, "PriceLine", item.buy && item.shopSpecialCurrency >= 0 ? new Regex($@"{Lang.tip[50].Value}\s").Replace(lines.Find(l => l.Name == "SpecialPrice").Text, "", 1) : (plat > 0 ? $"[c/{TextPulse(CoinPlatinum).Hex3()}:{plat} platinum] " : "") + (gold > 0 ? $"[c/{TextPulse(CoinGold).Hex3()}:{gold} gold] " : "") + (silver > 0 ? $"[c/{TextPulse(CoinSilver).Hex3()}:{silver} silver] " : "") + (copper > 0 ? $"[c/{TextPulse(CoinCopper).Hex3()}:{copper} copper]" : "")));
+                    lines.Insert(index, new TooltipLine(Mod, "PriceLine", item.buy && item.shopSpecialCurrency >= 0 ? new Regex($@"{Lang.tip[50].Value}\s").Replace(lines.Find(l => l.Name == "SpecialPrice").Text, "", 1) : (plat > 0 ? Language.GetTextValue("Mods.TrueTooltips.Configs.Config.priceLine.platinum").FormatWith(TextPulse(CoinPlatinum).Hex3(), plat) : "") + (gold > 0 ? Language.GetTextValue("Mods.TrueTooltips.Configs.Config.priceLine.gold").FormatWith(TextPulse(CoinGold).Hex3(), gold) : "") + (silver > 0 ? Language.GetTextValue("Mods.TrueTooltips.Configs.Config.priceLine.silver").FormatWith(TextPulse(CoinSilver).Hex3(), silver) : "") + (copper > 0 ? Language.GetTextValue("Mods.TrueTooltips.Configs.Config.priceLine.copper").FormatWith(TextPulse(CoinCopper).Hex3(), copper) : "")));
 
                 lines.RemoveAll(l => l.Name == "Price" || l.Name == "SpecialPrice");
             }
@@ -189,7 +191,7 @@
                 if (currentAmmo != null)
                     lines.Insert(index, ammoLine);
                 else if (item.useAmmo > 0 || item.fishingPole > 0 || item.tileWand > 0)
-                    lines.Insert(index, new TooltipLine(Mod, "AmmoLine", "No " + (item.fishingPole > 0 ? "Bait" : new Dictionary<int, string> { [40] = "Arrow", [71] = "Coin", [97] = "Bullet", [169] = "Sand", [283] = "Dart", [771] = "Rocket", [780] = "Solution", [931] = "Flare" }.TryGetValue(item.useAmmo, out string value) ? value : Lang.GetItemNameValue(item.useAmmo > 0 ? item.useAmmo : item.tileWand))) { OverrideColor = RarityTrash });
+                    lines.Insert(index, new TooltipLine(Mod, "AmmoLine", Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.No") + (item.fishingPole > 0 ? Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Bait") : new Dictionary<int, string> { [40] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Arrow"), [71] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Coin"), [97] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Bullet"), [169] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Sand"), [283] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Dart"), [771] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Rocket"), [780] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Solution"), [931] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Flare") }.TryGetValue(item.useAmmo, out string value) ? value : Lang.GetItemNameValue(item.useAmmo > 0 ? item.useAmmo : item.tileWand))) { OverrideColor = RarityTrash });
 
                 lines.Remove(needsBait);
                 lines.Remove(wandConsumes);
@@ -244,7 +246,7 @@
                 itemKnockback = player.GetWeaponKnockback(item);
 
                 if (config.knockbackLine)
-                    knockback.Text = Math.Round(itemKnockback + (currentAmmo != null && config.wpnPlusAmmoKb ? player.GetWeaponKnockback(currentAmmo, currentAmmo.knockBack) : 0), 2) + " knockback";
+                    knockback.Text = Math.Round(itemKnockback + (currentAmmo != null && config.wpnPlusAmmoKb ? player.GetWeaponKnockback(currentAmmo, currentAmmo.knockBack) : 0), 2) + Language.GetTextValue("Mods.TrueTooltips.Configs.Config.knockbackLine.Display");
 
                 knockback.OverrideColor = config.knockback;
             }
@@ -261,7 +263,7 @@
             if (speed != null)
             {
                 if (config.speedLine)
-                    speed.Text = Math.Round(60 / (item.reuseDelay + (item.useAnimation * (item.CountsAsClass(DamageClass.Melee) ? player.GetAttackSpeed(DamageClass.Melee) : 1))), 2) + " attacks per second";
+                    speed.Text = Math.Round(60 / (item.reuseDelay + (item.useAnimation * (item.CountsAsClass(DamageClass.Melee) ? player.GetAttackSpeed(DamageClass.Melee) : 1))), 2) + Language.GetTextValue("Mods.TrueTooltips.Configs.Config.speedLine.Display");
 
                 speed.OverrideColor = config.speed;
             }
