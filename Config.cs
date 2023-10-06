@@ -12,9 +12,6 @@
         [DefaultValue(true)]
         public bool ammoLine;
 
-        [DefaultValue(typeof(Color), "255,255,255,255")]
-        public Color velocityLine;
-
         [DefaultValue(true)]
         public bool priceLine;
 
@@ -184,9 +181,13 @@
         public Color fishingPow;
 
         [DefaultValue(typeof(Color), "255,255,255,255")]
+        public Color velocityLine;
+
+        [DefaultValue(typeof(Color), "255,255,255,255")]
         public Color hammerPow;
 
         [DefaultValue(typeof(Color), "255,255,255,255")]
         public Color pickPow;
+        
     }
 }

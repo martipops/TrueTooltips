@@ -207,30 +207,30 @@
             }
 
             if (ammo != null  && !config.ammo.Equals(Color.White)) ammo.OverrideColor = config.ammo;
-            if (axePow != null && !config.ammo.Equals(Color.White)) axePow.OverrideColor = config.axePow;
-            if (baitPow != null && !config.ammo.Equals(Color.White)) baitPow.OverrideColor = config.baitPow;
-            if (buffTime != null && !config.ammo.Equals(Color.White)) buffTime.OverrideColor = config.buffTime;
-            if (consumable != null && !config.ammo.Equals(Color.White)) consumable.OverrideColor = config.consumable;
-            if (critChance != null && !config.ammo.Equals(Color.White)) critChance.OverrideColor = config.critChance;
-            if (defense != null && !config.ammo.Equals(Color.White)) defense.OverrideColor = config.defense;
+            if (axePow != null && !config.axePow.Equals(Color.White)) axePow.OverrideColor = config.axePow;
+            if (baitPow != null && !config.baitPow.Equals(Color.White)) baitPow.OverrideColor = config.baitPow;
+            if (buffTime != null && !config.buffTime.Equals(Color.White)) buffTime.OverrideColor = config.buffTime;
+            if (consumable != null && !config.consumable.Equals(Color.White)) consumable.OverrideColor = config.consumable;
+            if (critChance != null && !config.critChance.Equals(Color.White)) critChance.OverrideColor = config.critChance;
+            if (defense != null && !config.defense.Equals(Color.White)) defense.OverrideColor = config.defense;
 
             if (dmg != null)
             {
                 if (config.wpnPlusAmmoDmg && currentAmmo != null)
                     dmg.Text = dmg.Text.Replace(dmg.Text.Split(' ').First(), player.GetWeaponDamage(item) + player.GetWeaponDamage(currentAmmo) + "");
 
-                if(!config.ammo.Equals(Color.White)) dmg.OverrideColor = config.dmg;
+                if(!config.dmg.Equals(Color.White)) dmg.OverrideColor = config.dmg;
             }
 
-            if (equipable != null && !config.ammo.Equals(Color.White)) equipable.OverrideColor = config.equipable;
-            if (etherianMana != null && !config.ammo.Equals(Color.White)) etherianMana.OverrideColor = config.etherianMana;
-            if (expert != null && !config.ammo.Equals(Color.White)) expert.OverrideColor = config.expert;
-            if (fav != null && !config.ammo.Equals(Color.White)) fav.OverrideColor = config.fav;
-            if (favDescr != null && !config.ammo.Equals(Color.White)) favDescr.OverrideColor = config.favDescr;
-            if (fishingPow != null && !config.ammo.Equals(Color.White)) fishingPow.OverrideColor = config.fishingPow;
-            if (hammerPow != null && !config.ammo.Equals(Color.White)) hammerPow.OverrideColor = config.hammerPow;
-            if (healLife != null && !config.ammo.Equals(Color.White)) healLife.OverrideColor = config.healLife;
-            if (healMana != null && !config.ammo.Equals(Color.White)) healMana.OverrideColor = config.healMana;
+            if (equipable != null && !config.equipable.Equals(Color.White)) equipable.OverrideColor = config.equipable;
+            if (etherianMana != null && !config.etherianMana.Equals(Color.White)) etherianMana.OverrideColor = config.etherianMana;
+            if (expert != null && !config.expert.Equals(Color.White)) expert.OverrideColor = config.expert;
+            if (fav != null && !config.fav.Equals(Color.White)) fav.OverrideColor = config.fav;
+            if (favDescr != null && !config.favDescr.Equals(Color.White)) favDescr.OverrideColor = config.favDescr;
+            if (fishingPow != null && !config.fishingPow.Equals(Color.White)) fishingPow.OverrideColor = config.fishingPow;
+            if (hammerPow != null && !config.hammerPow.Equals(Color.White)) hammerPow.OverrideColor = config.hammerPow;
+            if (healLife != null && !config.healLife.Equals(Color.White)) healLife.OverrideColor = config.healLife;
+            if (healMana != null && !config.healMana.Equals(Color.White)) healMana.OverrideColor = config.healMana;
 
             if (knockback != null)
             {
@@ -248,35 +248,35 @@
                 if (config.knockbackLine)
                     knockback.Text = Math.Round(itemKnockback + (currentAmmo != null && config.wpnPlusAmmoKb ? player.GetWeaponKnockback(currentAmmo, currentAmmo.knockBack) : 0), 2) + Language.GetTextValue("Mods.TrueTooltips.Configs.Config.knockbackLine.Display");
 
-                if (!config.ammo.Equals(Color.White)) knockback.OverrideColor = config.knockback;
+                if (!config.knockback.Equals(Color.White)) knockback.OverrideColor = config.knockback;
             }
 
-            if (material != null && !config.ammo.Equals(Color.White)) material.OverrideColor = config.material;
-            if (needsBait != null && !config.ammo.Equals(Color.White)) needsBait.OverrideColor = config.needsBait;
-            if (pickPow != null && !config.ammo.Equals(Color.White)) pickPow.OverrideColor = config.pickPow;
-            if (placeable != null && !config.ammo.Equals(Color.White)) placeable.OverrideColor = config.placeable;
-            if (quest != null && !config.ammo.Equals(Color.White)) quest.OverrideColor = config.quest;
-            if (setBonus != null && !config.ammo.Equals(Color.White)) setBonus.OverrideColor = config.setBonus;
-            if (social != null && !config.ammo.Equals(Color.White)) social.OverrideColor = config.social;
-            if (socialDescr != null && !config.ammo.Equals(Color.White)) socialDescr.OverrideColor = config.socialDescr;
+            if (material != null && !config.material.Equals(Color.White)) material.OverrideColor = config.material;
+            if (needsBait != null && !config.needsBait.Equals(Color.White)) needsBait.OverrideColor = config.needsBait;
+            if (pickPow != null && !config.pickPow.Equals(Color.White)) pickPow.OverrideColor = config.pickPow;
+            if (placeable != null && !config.placeable.Equals(Color.White)) placeable.OverrideColor = config.placeable;
+            if (quest != null && !config.quest.Equals(Color.White)) quest.OverrideColor = config.quest;
+            if (setBonus != null && !config.setBonus.Equals(Color.White)) setBonus.OverrideColor = config.setBonus;
+            if (social != null && !config.social.Equals(Color.White)) social.OverrideColor = config.social;
+            if (socialDescr != null && !config.socialDescr.Equals(Color.White)) socialDescr.OverrideColor = config.socialDescr;
 
             if (speed != null)
             {
                 if (config.speedLine)
                     speed.Text = Math.Round(60 / (item.reuseDelay + (item.useAnimation * (item.CountsAsClass(DamageClass.Melee) ? player.GetAttackSpeed(DamageClass.Melee) : 1))), 2) + Language.GetTextValue("Mods.TrueTooltips.Configs.Config.speedLine.Display");
 
-                if (!config.ammo.Equals(Color.White))  speed.OverrideColor = config.speed;
+                if (!config.speed.Equals(Color.White))  speed.OverrideColor = config.speed;
             }
 
-            if (tileBoost != null && !config.ammo.Equals(Color.White)) tileBoost.OverrideColor = config.tileBoost;
-            if (useMana != null && !config.ammo.Equals(Color.White)) useMana.OverrideColor = config.useMana;
-            if (vanity != null && !config.ammo.Equals(Color.White)) vanity.OverrideColor = config.vanity;
-            if (wandConsumes != null && !config.ammo.Equals(Color.White)) wandConsumes.OverrideColor = config.wandConsumes;
-            if (wellFedExpert != null && !config.ammo.Equals(Color.White)) wellFedExpert.OverrideColor = config.wellFedExpert;
+            if (tileBoost != null && !config.tileBoost.Equals(Color.White)) tileBoost.OverrideColor = config.tileBoost;
+            if (useMana != null && !config.useMana.Equals(Color.White)) useMana.OverrideColor = config.useMana;
+            if (vanity != null && !config.vanity.Equals(Color.White)) vanity.OverrideColor = config.vanity;
+            if (wandConsumes != null && !config.wandConsumes.Equals(Color.White)) wandConsumes.OverrideColor = config.wandConsumes;
+            if (wellFedExpert != null && !config.wellFedExpert.Equals(Color.White)) wellFedExpert.OverrideColor = config.wellFedExpert;
 
             foreach (TooltipLine line in lines)
             {
-                if (line.IsModifier && !config.ammo.Equals(Color.White))
+                if (line.IsModifier && !config.badMod.Equals(Color.White))
                     line.OverrideColor = line.IsModifierBad ? config.badMod : config.goodMod;
             }
 
