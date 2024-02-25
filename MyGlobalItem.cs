@@ -15,6 +15,8 @@ namespace TrueTooltips
     using static Terraria.ID.Colors;
     using static Terraria.Main;
     using static Terraria.ModLoader.ModContent;
+    using Terraria.Localization;
+    using Humanizer;
 
     class MyGlobalItem : GlobalItem
     {
@@ -180,7 +182,7 @@ namespace TrueTooltips
                         specialPrice = lines.Find(l => l.Name == "SpecialPrice");
 
             if (config.velocityLine.A > 0 && item.shootSpeed > 0)
-                lines.Insert(lines.IndexOf(knockback ?? speed ?? critChance ?? dmg ?? equipable ?? name) + 1, new TooltipLine(Mod, "Velocity", item.shootSpeed + (currentAmmo != null && config.wpnPlusAmmoVelocity ? currentAmmo.shootSpeed : 0) + " velocity") { OverrideColor = config.velocityLine });
+                lines.Insert(lines.IndexOf(knockback ?? speed ?? critChance ?? dmg ?? equipable ?? name) + 1, new TooltipLine(Mod, "Velocity", item.shootSpeed + (currentAmmo != null && config.wpnPlusAmmoVelocity ? currentAmmo.shootSpeed : 0) + Language.GetTextValue("Mods.TrueTooltips.Configs.Config.velocityLine.Display")) { OverrideColor = config.velocityLine });
 
             int index = lines.FindLastIndex(l => names.Contains(l.Name)) + 1;
 
@@ -231,11 +233,32 @@ namespace TrueTooltips
                     silver = priceOfStack / 100 % 100,
                     copper = priceOfStack % 100;
 
+                if (priceOfStack > 0 && !(item.type > ItemID.WormFood && item.type < ItemID.FallenStar))
+                {
+                    string specialPriceText = item.buy && item.shopSpecialCurrency >= 0 ?
+                        new Regex($@"{Lang.tip[50].Value}\s").Replace(
+                            lines.Find(l => l.Name == "SpecialPrice").Text, "", 1) : "";
 
-                if (price > 0 && !(item.type > ItemID.WormFood && item.type < ItemID.FallenStar))
-                    lines.Insert(index, new TooltipLine(Mod, "PriceLine", item.buy && item.shopSpecialCurrency >= 0 ? new Regex($@"{Lang.tip[50].Value}\s").Replace(lines.Find(l => l.Name == "SpecialPrice").Text, "", 1) : (plat > 0 ? $"[c/{TextPulse(CoinPlatinum).Hex3()}:{plat} platinum] " : "") + (gold > 0 ? $"[c/{TextPulse(CoinGold).Hex3()}:{gold} gold] " : "") + (silver > 0 ? $"[c/{TextPulse(CoinSilver).Hex3()}:{silver} silver] " : "") + (copper > 0 ? $"[c/{TextPulse(CoinCopper).Hex3()}:{copper} copper]" : "")));
+                    string platinumText = plat > 0 ?
+                        Language.GetTextValue("Mods.TrueTooltips.Configs.Config.priceLine.platinum")
+                            .FormatWith(TextPulse(CoinPlatinum).Hex3(), plat) : "";
+                    string goldText = gold > 0 ?
+                        Language.GetTextValue("Mods.TrueTooltips.Configs.Config.priceLine.gold")
+                            .FormatWith(TextPulse(CoinGold).Hex3(), gold) : "";
+                    string silverText = silver > 0 ?
+                        Language.GetTextValue("Mods.TrueTooltips.Configs.Config.priceLine.silver")
+                            .FormatWith(TextPulse(CoinSilver).Hex3(), silver) : "";
+                    string copperText = copper > 0 ?
+                        Language.GetTextValue("Mods.TrueTooltips.Configs.Config.priceLine.copper")
+                            .FormatWith(TextPulse(CoinCopper).Hex3(), copper) : "";
 
-                lines.RemoveAll(l => l.Name == "Price" || l.Name == "SpecialPrice");
+                    string totalPriceLine = specialPriceText + platinumText + goldText + silverText + copperText;
+
+                    lines.Insert(index, new TooltipLine(Mod, "PriceLine", totalPriceLine));
+                }
+                price?.Hide();
+                specialPrice?.Hide();
+                // lines.FindAll(l => l.Name == "Price" || l.Name == "SpecialPrice").ForEach(line => line?.Hide());
             }
 
             if (config.ammoLine)
@@ -258,20 +281,20 @@ namespace TrueTooltips
                     name.Text += " - " + item.ModItem.Mod.DisplayName;
             }
 
-            if (ammo != null) ammo.OverrideColor = config.ammo;
-            if (axePow != null) axePow.OverrideColor = config.axePow;
-            if (baitPow != null) baitPow.OverrideColor = config.baitPow;
-            if (buffTime != null) buffTime.OverrideColor = config.buffTime;
-            if (consumable != null) consumable.OverrideColor = config.consumable;
-            if (critChance != null) critChance.OverrideColor = config.critChance;
-            if (defense != null) defense.OverrideColor = config.defense;
+            if (ammo != null && !config.ammo.Equals(Color.White)) ammo.OverrideColor = config.ammo;
+            if (axePow != null && !config.axePow.Equals(Color.White)) axePow.OverrideColor = config.axePow;
+            if (baitPow != null && !config.baitPow.Equals(Color.White)) baitPow.OverrideColor = config.baitPow;
+            if (buffTime != null && !config.buffTime.Equals(Color.White)) buffTime.OverrideColor = config.buffTime;
+            if (consumable != null && !config.consumable.Equals(Color.White)) consumable.OverrideColor = config.consumable;
+            if (critChance != null && !config.critChance.Equals(Color.White)) critChance.OverrideColor = config.critChance;
+            if (defense != null && !config.defense.Equals(Color.White)) defense.OverrideColor = config.defense;
 
             if (dmg != null)
             {
                 if (config.wpnPlusAmmoDmg && currentAmmo != null)
                     dmg.Text = dmg.Text.Replace(dmg.Text.Split(' ').First(), player.GetWeaponDamage(item) + player.GetWeaponDamage(currentAmmo) + "");
 
-                dmg.OverrideColor = config.dmg;
+                if (!config.dmg.Equals(Color.White)) dmg.OverrideColor = config.dmg;
             }
 
             if (equipable != null && !config.equipable.Equals(Color.White)) equipable.OverrideColor = config.equipable;
@@ -316,7 +339,7 @@ namespace TrueTooltips
                 if (config.speedLine)
                     speed.Text = Math.Round(60 / (item.reuseDelay + (item.useAnimation * (item.CountsAsClass(DamageClass.Melee) ? player.GetAttackSpeed(DamageClass.Melee) : 1))), 2) + Language.GetTextValue("Mods.TrueTooltips.Configs.Config.speedLine.Display");
 
-                speed.OverrideColor = config.speed;
+                if (!config.speed.Equals(Color.White)) speed.OverrideColor = config.speed;
             }
 
             if (tileBoost != null && !config.tileBoost.Equals(Color.White)) tileBoost.OverrideColor = config.tileBoost;
