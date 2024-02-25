@@ -324,10 +324,7 @@ Configs: {
 			Offset: Offset
 			Miscellaneous: Miscellaneous
 			VanillaTooltipLines: Vanilla Tooltip Lines & Color
-<<<<<<< HEAD
 			ItemSprite: Item Sprite Header
-=======
->>>>>>> 9e700ddd73d4c9c799a41c08d7eb6b23fcdb33f9
 		}
 	}
 }

@@ -1,10 +1,6 @@
 displayName = True Tooltips
 author = Martipops
-<<<<<<< HEAD
 version = 2024.2.25.3
-=======
-version = 2023.10.5.1
->>>>>>> 9e700ddd73d4c9c799a41c08d7eb6b23fcdb33f9
 homepage = https://discord.gg/MKcjBKwBVu
 side = Client
 hideCode = false
