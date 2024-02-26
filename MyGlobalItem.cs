@@ -141,7 +141,7 @@ namespace TrueTooltips
 
                 coinGunCrit = player.GetWeaponCrit(item);
 
-                lines.InsertRange(1, new[] { new TooltipLine(Mod, "Damage", "0 ranged damage"), new TooltipLine(Mod, "CritChance", coinGunCrit + "% critical strike chance"), new TooltipLine(Mod, "Speed", ""), new TooltipLine(Mod, "Knockback", "") });
+                lines.InsertRange(1, new[] { new TooltipLine(Mod, "Damage", "0" + Language.GetTextValue("LegacyTooltip.3")), new TooltipLine(Mod, "CritChance", coinGunCrit + Language.GetTextValue("LegacyTooltip.41")), new TooltipLine(Mod, "Speed", ""), new TooltipLine(Mod, "Knockback", "") });
             }
 
             TooltipLine ammoLine = new(Mod, "AmmoLine", currentAmmo?.HoverName) { OverrideColor = rarityColor },
@@ -190,13 +190,13 @@ namespace TrueTooltips
             {
                 if (!lines.Contains(dmg))
                 {
-                    lines.Insert(1, new TooltipLine(Mod, "Damage", player.GetWeaponDamage(item) + " ranged damage"));
+                    lines.Insert(1, new TooltipLine(Mod, "Damage", player.GetWeaponDamage(item) + " " + Language.GetTextValue("LegacyTooltip.3")));
 
                     dmg = lines.Find(l => l.Name == "Damage");
                 }
 
-                lines.Insert(lines.IndexOf(lines.Find(l => l.Name == "Velocity") ?? dmg ?? name) + 1, new TooltipLine(Mod, "Ammo", "Ammo"));
-                lines.Add(new TooltipLine(Mod, "Material", "Material"));
+                lines.Insert(lines.IndexOf(lines.Find(l => l.Name == "Velocity") ?? dmg ?? name) + 1, new TooltipLine(Mod, "Ammo", Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammo.Label")));
+                lines.Add(new TooltipLine(Mod, "Material", Language.GetTextValue("Mods.TrueTooltips.Configs.Config.material.Label")));
 
                 ammo = lines.Find(l => l.Name == "Ammo");
                 material = lines.Find(l => l.Name == "Material");
