@@ -23,7 +23,7 @@ namespace TrueTooltips
         static Item currentAmmo;
         static readonly Config config = GetInstance<Config>();
 
-        static readonly string[] names = { "Ammo", "AmmoLine", "AxePower", "BaitPower", "Consumable", "CritChance", "Damage", "Defense", "Equipable", "FishingPower", "HammerPower", "HealLife", "HealMana", "ItemName", "Knockback", "Material", "PickPower", "Placeable", "PriceLine", "Speed", "TileBoost", "UseMana", "Velocity" };
+        static readonly string[] names = { "Ammo", "AmmoLine", "AxePower", "BaitPower", "Consumable", "CritChance", "Damage", "Defense", "Equipable", "FishingPower", "HammerPower", "HealLife", "HealMana", "ItemName", "Knockback", "Material", "PickPower", "Placeable", "PriceLine", "Speed", "TileBoost", "UseMana", "Velocity", };
 
         public override bool PreDrawTooltip(Item item, ReadOnlyCollection<TooltipLine> lines, ref int _x, ref int _y)
         {
@@ -176,7 +176,8 @@ namespace TrueTooltips
                         wandConsumes = lines.Find(l => l.Name == "WandConsumes"),
                         wellFedExpert = lines.Find(l => l.Name == "WellFedExpert"),
                         price = lines.Find(l => l.Name == "Price"),
-                        specialPrice = lines.Find(l => l.Name == "SpecialPrice");
+                        specialPrice = lines.Find(l => l.Name == "SpecialPrice"),
+                        journeyResearch = lines.Find(l => l.Name == "JourneyResearch");
 
             if (config.velocityLine.A > 0 && item.shootSpeed > 0)
                 lines.Insert(lines.IndexOf(knockback ?? speed ?? critChance ?? dmg ?? equipable ?? name) + 1, new TooltipLine(Mod, "Velocity", item.shootSpeed + (currentAmmo != null && config.wpnPlusAmmoVelocity ? currentAmmo.shootSpeed : 0) + Language.GetTextValue("Mods.TrueTooltips.Configs.Config.velocityLine.Display")) { OverrideColor = config.velocityLine });
@@ -265,13 +266,15 @@ namespace TrueTooltips
                 wandConsumes?.Hide();
             }
 
-            if (config.modName)
+            if (config.modNameNextToItemName)
             {
                 if (currentAmmo?.ModItem != null)
                     ammoLine.Text += " - " + currentAmmo.ModItem.Mod.DisplayName;
 
                 if (item.ModItem != null)
                     name.Text += " - " + item.ModItem.Mod.DisplayName;
+            } else if (config.modNameColor.A != 0 && item.ModItem != null) {
+                lines.Add(new TooltipLine(Mod, "ModName", item.ModItem.Mod.DisplayName) {OverrideColor = config.modNameColor});
             }
 
             if (ammo != null && !config.ammo.Equals(Color.White)) ammo.OverrideColor = config.ammo;
@@ -299,6 +302,7 @@ namespace TrueTooltips
             if (hammerPow != null && !config.hammerPow.Equals(Color.White)) hammerPow.OverrideColor = config.hammerPow;
             if (healLife != null && !config.healLife.Equals(Color.White)) healLife.OverrideColor = config.healLife;
             if (healMana != null && !config.healMana.Equals(Color.White)) healMana.OverrideColor = config.healMana;
+            if (journeyResearch != null && !config.journeyResearch.Equals(Color.White)) journeyResearch.OverrideColor = config.journeyResearch;
 
             if (knockback != null && config.knockbackLine)
             {
@@ -387,6 +391,7 @@ namespace TrueTooltips
             if (config.vanity.A == 0) vanity?.Hide();
             if (config.wandConsumes.A == 0) wandConsumes?.Hide();
             if (config.wellFedExpert.A == 0) wellFedExpert?.Hide();
+            if (config.journeyResearch.A == 0) journeyResearch?.Hide();
         }
 
         public override void PostDrawTooltip(Item item, ReadOnlyCollection<DrawableTooltipLine> lines)

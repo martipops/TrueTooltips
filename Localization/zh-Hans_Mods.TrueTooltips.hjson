@@ -63,9 +63,9 @@ Configs: {
 			Tooltip: ""
 		}
 
-		modName: {
-			Label: 显示物品来源的模组
-			Tooltip: 在物品名称旁边显示来源的模组名称
+		modNameNextToItemName: {
+			// Label: Mod name next to item name
+			// Tooltip: Shows the mod that adds the item next to the item's name.
 		}
 
 		bgColor: {
@@ -316,6 +316,16 @@ Configs: {
 		pickPow: {
 			Label: X% 稿力
 			Tooltip: 物品的稿力（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
+		}
+
+		journeyResearch: {
+			// Label: Journey Research
+			// Tooltip: The research progress of the item (Journey Mode Only) (A=0 to disable, White to bypass override)
+		}
+
+		modNameColor: {
+			// Label: Mod Name
+			// Tooltip: The mod that the item is from. (A=0 to disable, White to bypass override)
 		}
 
 		Headers: {

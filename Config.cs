@@ -30,8 +30,8 @@
         [DefaultValue(true)]
         public bool wpnPlusAmmoVelocity;
 
-        [DefaultValue(true)]
-        public bool modName;
+        [DefaultValue(false)]
+        public bool modNameNextToItemName;
 
         [Header("Background")]
 
@@ -206,5 +206,10 @@
         [DefaultValue(typeof(Color), "255,255,255,255")]
         public Color pickPow;
         
+        [DefaultValue(typeof(Color), "255,255,255,255")]
+        public Color journeyResearch;
+
+        [DefaultValue(typeof(Color), "255,255,255,255")]
+        public Color modNameColor;
     }
 }
