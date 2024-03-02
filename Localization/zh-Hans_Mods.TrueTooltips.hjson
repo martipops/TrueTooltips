@@ -64,18 +64,18 @@ Configs: {
 		}
 
 		modNameNextToItemName: {
-			// Label: Mod name next to item name
-			// Tooltip: Shows the mod that adds the item next to the item's name.
+		  Label: 显示物品来源的模组
+      Tooltip: 在物品名称旁边显示来源的模组名称
 		}
 
 		bgColor: {
-			Label: 颜色
+			Label: 工具提示边框颜色
 			Tooltip: ""
 		}
 
 		spritebgColor: {
-			// Label: Icon Frame Color
-			// Tooltip: The background color of the border behind the item icon
+			Label: 物品图标边框颜色
+			Tooltip: 调整图标边框显示的颜色
 		}
 
 		paddingRight: {
@@ -119,23 +119,23 @@ Configs: {
 		}
 
 		spriteBorderPadding: {
-			// Label: Icon Border Padding
-			// Tooltip: Distance between edge of item sprite, and icon border.
+			Label: 图标和边框间距
+			Tooltip: 图标和边框之间的距离
 		}
 
 		spriteBorder: {
-			// Label: Icon Border
-			// Tooltip: Toggle icon border
+			Label: 物品图标边框
+			Tooltip: 显示物品图标边框
 		}
 
 		spriteMin: {
-			// Label: Icon Minimum Size
-			// Tooltip: The minimum size of the Item Icon.
+			Label: 物品图标大小
+			Tooltip: 物品图标的最小尺寸
 		}
 
 		spriteTextPadding: {
-			// Label: Icon-Text Padding
-			// Tooltip: Distance between Item Icon and tooltip text.
+			Label: 图标和文本间距
+			Tooltip: 图标和文本之间的距离
 		}
 
 		textPulse: {
@@ -317,24 +317,24 @@ Configs: {
 			Label: X% 稿力
 			Tooltip: 物品的稿力（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
 		}
+    
+    journeyResearch: {
+      Label: 科研进度
+      Tooltip: 物品的科研进度（仅旅程模式）（将 A 设为 0 以禁用显示此行，设为白色以忽略重写覆盖）
+    }
 
-		journeyResearch: {
-			// Label: Journey Research
-			// Tooltip: The research progress of the item (Journey Mode Only) (A=0 to disable, White to bypass override)
-		}
-
-		modNameColor: {
-			// Label: Mod Name
-			// Tooltip: The mod that the item is from. (A=0 to disable, White to bypass override)
-		}
+    modNameColor: {
+      Label: Mod 名称
+      Tooltip: 显示物品来源的模组。（将 A 设为 0 以禁用显示此行，设为白色以忽略重写覆盖）
+    }
 
 		Headers: {
-			CustomTooltipLines: 自定义工具提示显示内容
-			Background: 自定义工具提示显示背景
-			Offset: 自定义工具提示显示位置
+			CustomTooltipLines: 自定义显示内容
+			Background: 自定义显示边框
+			Offset: 自定义显示位置
 			Miscellaneous: 其它设置
-			VanillaTooltipLines: 原版工具提示显示颜色
-			// ItemSprite: Item Sprite Header
+			VanillaTooltipLines: 自定义文本显示颜色
+			ItemSprite: 物品图标
 		}
 	}
 }
