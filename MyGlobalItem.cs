@@ -138,7 +138,7 @@ namespace TrueTooltips
 
                 coinGunCrit = player.GetWeaponCrit(item);
 
-                lines.InsertRange(1, new[] { new TooltipLine(Mod, "Damage", "0" + Lang.tip[55].Value), new TooltipLine(Mod, "CritChance", coinGunCrit + Lang.tip[5].Value), new TooltipLine(Mod, "Speed", ""), new TooltipLine(Mod, "Knockback", "") });
+                lines.InsertRange(1, new[] { new TooltipLine(Mod, "Damage", "0" + Language.GetTextValue("LegacyTooltip.55")), new TooltipLine(Mod, "CritChance", coinGunCrit + Language.GetTextValue("LegacyTooltip.5")), new TooltipLine(Mod, "Speed", ""), new TooltipLine(Mod, "Knockback", "") });
             }
 
             TooltipLine ammoLine = new(Mod, "AmmoLine", currentAmmo?.HoverName) { OverrideColor = rarityColor },
@@ -231,7 +231,7 @@ namespace TrueTooltips
                     string priceText = "";
                     if ( item.shopSpecialCurrency >= 0) {
                         priceText += item.buy ?
-                            new Regex($@"{Lang.tip[50].Value}\s").Replace(
+                            new Regex($@"{Language.GetTextValue("LegacyTooltip.50")}\s").Replace(
                                 lines.Find(l => l.Name == "SpecialPrice").Text ?? "", "", 1) : "";
                     } else {
                         priceText += plat > 0 ?
