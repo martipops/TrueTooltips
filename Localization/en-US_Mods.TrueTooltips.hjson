@@ -9,7 +9,7 @@ Configs: {
 				Shows the item's ammo's name, amount and rarity, shows the mod that adds the ammo if "Mod name next to item name" is on and shows the ammo the item needs if the item has no ammo.
 				Works with fishing poles and tile wands.
 				'''
-			No: "No "
+			No: "No "	
 			Bait: Bait
 			Arrow: Arrow
 			Coin: Coin
@@ -63,7 +63,7 @@ Configs: {
 			Tooltip: ""
 		}
 
-		modName: {
+		modNameNextToItemName: {
 			Label: Mod name next to item name
 			Tooltip: Shows the mod that adds the item next to the item's name.
 		}
@@ -316,6 +316,16 @@ Configs: {
 		pickPow: {
 			Label: X% pickaxe power
 			Tooltip: The item's pickaxe power. (A=0 to disable, White to bypass override)
+		}
+
+		journeyResearch: {
+			Label: Journey Research
+			Tooltip: The research progress of the item (Journey Mode Only) (A=0 to disable, White to bypass override)
+		}
+
+		modNameColor: {
+			Label: Mod Name
+			Tooltip: The mod that the item is from. (A=0 to disable, White to bypass override)
 		}
 
 		Headers: {

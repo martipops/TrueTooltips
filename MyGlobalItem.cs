@@ -16,7 +16,6 @@ namespace TrueTooltips
     using static Terraria.Main;
     using static Terraria.ModLoader.ModContent;
     using Terraria.Localization;
-    using Humanizer;
 
     class MyGlobalItem : GlobalItem
     {
@@ -37,11 +36,12 @@ namespace TrueTooltips
                 height = -config.spacing,
                 max = new[] { dimensions.Width, dimensions.Height, config.spriteMin }.Max(),
                 index = lines.ToList().FindLastIndex(l => names.Contains(l.Name)),
-                spriteOffsetX = config.sprite ? max : 0;
+                spriteOffsetX = config.sprite ? max + config.spriteTextPadding : 0,
+                borderPadding = config.spriteBorder ? config.spriteBorderPadding : 0;
 
             foreach (TooltipLine line in lines)
             {
-                int lineWidth = (int)ChatManager.GetStringSize(FontAssets.MouseText.Value, line.Text, Vector2.One).X + 10;
+                int lineWidth = (int) ChatManager.GetStringSize(FontAssets.MouseText.Value, line.Text, Vector2.One).X + 10;
 
                 if (lineWidth > width)
                     width = lineWidth;
@@ -50,15 +50,15 @@ namespace TrueTooltips
             }
 
 
-            if (x + width + config.paddingRight + spriteOffsetX > screenWidth)
+            if (x + width + config.paddingRight + config.paddingLeft + spriteOffsetX + borderPadding  > screenWidth)
             {
-                x = _x = screenWidth - width - config.paddingRight - spriteOffsetX;
+                x = _x = screenWidth - width - config.paddingRight - config.paddingLeft - borderPadding - spriteOffsetX;
                 _x += 4;
             }
 
-            if (y + height + config.paddingBottom > screenHeight)
+            if (y + height + config.paddingBottom + borderPadding > screenHeight)
             {
-                y = _y = screenHeight - height - config.paddingBottom;
+                y = _y = screenHeight - height - borderPadding - config.paddingBottom;
                 _y += 4;
             }
 
@@ -68,9 +68,8 @@ namespace TrueTooltips
             if (y - config.paddingTop < 0)
                 y = _y = config.paddingTop;
 
-            // adjust the tooltip list x position to make it appear on the right
-            _x += config.paddingLeft;
             _y += config.paddingTop;
+
 
             int bgX = x,
                 bgY = y,
@@ -80,24 +79,22 @@ namespace TrueTooltips
             {
                 _x += config.spriteTextPadding + spriteOffsetX;
                 bgWidth += config.spriteTextPadding + spriteOffsetX;
+                int spriteX = x + (max - dimensions.Width) / 2 + borderPadding + config.paddingLeft,
+                    spriteY = y + (max - dimensions.Height) / 2 + borderPadding + config.paddingTop;
                 if (config.spriteBorder)
                 {
-                    int spriteX = x + (max - dimensions.Width) / 2 + config.spriteBorderPadding + config.paddingLeft,
-                        spriteY = y + (max - dimensions.Height) / 2 + config.spriteBorderPadding + config.paddingTop,
-                        borderX = x + config.paddingLeft,
+                    int borderX = x + config.paddingLeft,
                         borderY = y + config.paddingTop,
-                        borderWidth = max + config.spriteBorderPadding * 2,
-                        borderHeight = max + config.spriteBorderPadding * 2;
-                    bgWidth += config.spriteBorderPadding;
-                    _x += config.spriteBorderPadding + 5;
+                        borderWidth = max + borderPadding * 2,
+                        borderHeight = max + borderPadding * 2;
+                    bgWidth += borderPadding;
+                    _x += borderPadding + 5;
                     Utils.DrawInvBG(spriteBatch, new Rectangle(bgX, bgY, bgWidth, bgHeight), new Color(config.bgColor.R * config.bgColor.A / 255, config.bgColor.G * config.bgColor.A / 255, config.bgColor.B * config.bgColor.A / 255, config.bgColor.A));
-                    Utils.DrawInvBG(spriteBatch, new Rectangle(borderX, borderY, borderWidth, borderHeight), new Color(config.bgColor.R * config.bgColor.A / 255, config.bgColor.G * config.bgColor.A / 255, config.bgColor.B * config.bgColor.A / 255, config.bgColor.A));
+                    Utils.DrawInvBG(spriteBatch, new Rectangle(borderX, borderY, borderWidth, borderHeight), new Color(config.spritebgColor.R * config.spritebgColor.A / 255, config.spritebgColor.G * config.spritebgColor.A / 255, config.spritebgColor.B * config.spritebgColor.A / 255, config.spritebgColor.A));
                     spriteBatch.Draw(texture, new Vector2(spriteX, spriteY), dimensions, Color.White);
                 }
                 else
                 {
-                    int spriteX = x + (max - dimensions.Width) / 2 + config.paddingLeft,
-                        spriteY = y + (max - dimensions.Height) / 2 + config.paddingTop;
                     Utils.DrawInvBG(spriteBatch, new Rectangle(bgX, bgY, bgWidth, bgHeight), new Color(config.bgColor.R * config.bgColor.A / 255, config.bgColor.G * config.bgColor.A / 255, config.bgColor.B * config.bgColor.A / 255, config.bgColor.A));
                     spriteBatch.Draw(texture, new Vector2(spriteX, spriteY), dimensions, Color.White);
                 }
@@ -179,7 +176,8 @@ namespace TrueTooltips
                         wandConsumes = lines.Find(l => l.Name == "WandConsumes"),
                         wellFedExpert = lines.Find(l => l.Name == "WellFedExpert"),
                         price = lines.Find(l => l.Name == "Price"),
-                        specialPrice = lines.Find(l => l.Name == "SpecialPrice");
+                        specialPrice = lines.Find(l => l.Name == "SpecialPrice"),
+                        journeyResearch = lines.Find(l => l.Name == "JourneyResearch");
 
             if (config.velocityLine.A > 0 && item.shootSpeed > 0)
                 lines.Insert(lines.IndexOf(knockback ?? speed ?? critChance ?? dmg ?? equipable ?? name) + 1, new TooltipLine(Mod, "Velocity", item.shootSpeed + (currentAmmo != null && config.wpnPlusAmmoVelocity ? currentAmmo.shootSpeed : 0) + Language.GetTextValue("Mods.TrueTooltips.Configs.Config.velocityLine.Display")) { OverrideColor = config.velocityLine });
@@ -215,10 +213,6 @@ namespace TrueTooltips
                 else
                 {
                     priceOfStack = itemPrice / 5;
-                    if (priceOfStack < 1)
-                    {
-                        priceOfStack = 1L;
-                    }
                     long num3 = priceOfStack;
                     priceOfStack *= item.stack;
                     int amount = shopSellbackHelper.GetAmount(item);
@@ -235,27 +229,27 @@ namespace TrueTooltips
 
                 if (priceOfStack > 0 && !(item.type > ItemID.WormFood && item.type < ItemID.FallenStar))
                 {
-                    string specialPriceText = item.buy && item.shopSpecialCurrency >= 0 ?
-                        new Regex($@"{Lang.tip[50].Value}\s").Replace(
-                            lines.Find(l => l.Name == "SpecialPrice").Text, "", 1) : "";
+                    string priceText = "";
+                    if ( item.shopSpecialCurrency >= 0) {
+                        priceText += item.buy ?
+                            new Regex($@"{Language.GetTextValue("LegacyTooltip.50")}\s").Replace(
+                                lines.Find(l => l.Name == "SpecialPrice").Text ?? "", "", 1) : "";
+                    } else {
+                        priceText += plat > 0 ?
+                            "[c/"+ TextPulse(CoinPlatinum).Hex3() + ":" + plat + " " + Lang.inter[15].Value + " ]" : "";
+                        priceText += gold > 0 ?
+                            "[c/"+ TextPulse(CoinGold).Hex3() + ":" + gold + " " + Lang.inter[16].Value + " ]" : "";
+                            
+                        priceText += silver > 0 ?
+                            "[c/"+ TextPulse(CoinSilver).Hex3() + ":" + silver + " " + Lang.inter[17].Value + " ]" : "";
+                        priceText += copper > 0 ?
+                            "[c/"+ TextPulse(CoinCopper).Hex3() + ":" + copper + " " + Lang.inter[18].Value + " ]" : "";
+                    }
 
-                    string platinumText = plat > 0 ?
-                        Language.GetTextValue("Mods.TrueTooltips.Configs.Config.priceLine.platinum")
-                            .FormatWith(TextPulse(CoinPlatinum).Hex3(), plat) : "";
-                    string goldText = gold > 0 ?
-                        Language.GetTextValue("Mods.TrueTooltips.Configs.Config.priceLine.gold")
-                            .FormatWith(TextPulse(CoinGold).Hex3(), gold) : "";
-                    string silverText = silver > 0 ?
-                        Language.GetTextValue("Mods.TrueTooltips.Configs.Config.priceLine.silver")
-                            .FormatWith(TextPulse(CoinSilver).Hex3(), silver) : "";
-                    string copperText = copper > 0 ?
-                        Language.GetTextValue("Mods.TrueTooltips.Configs.Config.priceLine.copper")
-                            .FormatWith(TextPulse(CoinCopper).Hex3(), copper) : "";
 
-                    string totalPriceLine = specialPriceText + platinumText + goldText + silverText + copperText;
-
-                    lines.Insert(index, new TooltipLine(Mod, "PriceLine", totalPriceLine));
+                    lines.Insert(index, new TooltipLine(Mod, "PriceLine", priceText));
                 }
+
                 price?.Hide();
                 specialPrice?.Hide();
                 // lines.FindAll(l => l.Name == "Price" || l.Name == "SpecialPrice").ForEach(line => line?.Hide());
@@ -272,13 +266,15 @@ namespace TrueTooltips
                 wandConsumes?.Hide();
             }
 
-            if (config.modName)
+            if (config.modNameNextToItemName)
             {
                 if (currentAmmo?.ModItem != null)
                     ammoLine.Text += " - " + currentAmmo.ModItem.Mod.DisplayName;
 
                 if (item.ModItem != null)
                     name.Text += " - " + item.ModItem.Mod.DisplayName;
+            } else if (config.modNameColor.A != 0 && item.ModItem != null) {
+                lines.Add(new TooltipLine(Mod, "ModName", item.ModItem.Mod.DisplayName) {OverrideColor = config.modNameColor});
             }
 
             if (ammo != null && !config.ammo.Equals(Color.White)) ammo.OverrideColor = config.ammo;
@@ -306,23 +302,27 @@ namespace TrueTooltips
             if (hammerPow != null && !config.hammerPow.Equals(Color.White)) hammerPow.OverrideColor = config.hammerPow;
             if (healLife != null && !config.healLife.Equals(Color.White)) healLife.OverrideColor = config.healLife;
             if (healMana != null && !config.healMana.Equals(Color.White)) healMana.OverrideColor = config.healMana;
+            if (journeyResearch != null && !config.journeyResearch.Equals(Color.White)) journeyResearch.OverrideColor = config.journeyResearch;
 
-            if (knockback != null)
+            if (knockback != null && config.knockbackLine)
             {
-                if (item.CountsAsClass(DamageClass.Summon))
-                    itemKnockback += player.GetKnockback(DamageClass.Summon).Base;
+                float kbScale = 1f;
+                if (item.CountsAsClass(DamageClass.Melee) && player.kbGlove)
+                    kbScale += 1f;
 
-                if (item.type == ItemID.PsychoKnife && player.inventory[player.selectedItem].type == ItemID.PsychoKnife)
-                    itemKnockback *= 2 - player.stealth;
+                if (player.kbBuff)
+                    kbScale += 0.5f;
 
-                if (item.useAmmo == 1836 || (item.useAmmo == 40 && player.magicQuiver))
-                    itemKnockback *= 1.1f;
+                if (kbScale != 1f)
+                    itemKnockback *= kbScale;
 
-                itemKnockback = player.GetWeaponKnockback(item);
-                if (config.knockbackLine)
-                    knockback.Text = Math.Round(itemKnockback + (currentAmmo != null && config.wpnPlusAmmoKb ? player.GetWeaponKnockback(currentAmmo, currentAmmo.knockBack) : 0), 2) + Language.GetTextValue("Mods.TrueTooltips.Configs.Config.knockbackLine.Display");
+                if (item.CountsAsClass(DamageClass.Ranged) && player.shroomiteStealth)
+                    itemKnockback *= 1f + (1f - player.stealth) * 0.5f;
+                
+                knockback.Text = Math.Round(itemKnockback + (currentAmmo != null && config.wpnPlusAmmoKb ? player.GetWeaponKnockback(currentAmmo, currentAmmo.knockBack) : 0), 2) + Language.GetTextValue("Mods.TrueTooltips.Configs.Config.knockbackLine.Display");
 
                 if (!config.knockback.Equals(Color.White)) knockback.OverrideColor = config.knockback;
+                
             }
 
             if (material != null && !config.material.Equals(Color.White)) material.OverrideColor = config.material;
@@ -391,6 +391,7 @@ namespace TrueTooltips
             if (config.vanity.A == 0) vanity?.Hide();
             if (config.wandConsumes.A == 0) wandConsumes?.Hide();
             if (config.wellFedExpert.A == 0) wellFedExpert?.Hide();
+            if (config.journeyResearch.A == 0) journeyResearch?.Hide();
         }
 
         public override void PostDrawTooltip(Item item, ReadOnlyCollection<DrawableTooltipLine> lines)
