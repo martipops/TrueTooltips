@@ -121,12 +121,12 @@ namespace TrueTooltips
             if (item.type == ItemID.CoinGun)
             {
                 int coinGunCrit = Main.LocalPlayer.GetWeaponCrit(item);
-                lines.InsertRange(1, [
+                lines.InsertRange(1, new[] {
                     new TooltipLine(Mod, "Damage", "0" + Language.GetTextValue("LegacyTooltip.3")),
                     new TooltipLine(Mod, "CritChance", coinGunCrit + Language.GetTextValue("LegacyTooltip.41")),
                     new TooltipLine(Mod, "Speed", ""),
                     new TooltipLine(Mod, "Knockback", "")
-                    ]);
+            });
             }
 
             TooltipLine ammoLine = new(Mod, "AmmoLine", currentAmmo?.HoverName),
@@ -169,7 +169,7 @@ namespace TrueTooltips
 
             if (config.velocityLine.A > 0 && item.shootSpeed > 0)
             {
-                TooltipLine velocityLine = new TooltipLine(Mod, "Velocity", item.shootSpeed + (currentAmmo != null && config.wpnPlusAmmoVelocity ? currentAmmo.shootSpeed : 0) + Language.GetTextValue("Mods.TrueTooltips.Configs.Config.velocityLine.Display")) { OverrideColor = config.velocityLine };
+                TooltipLine velocityLine = new TooltipLine(Mod, "Velocity", item.shootSpeed + (currentAmmo != null && config.wpnPlusAmmoVelocity ? currentAmmo.shootSpeed : 0) + Language.GetTextValue("LegacyTooltip.44").Substring(1)) { OverrideColor = config.velocityLine };
                 lines.Insert(lines.IndexOf(knockback ?? speed ?? critChance ?? dmg ?? equipable ?? name) + 1, velocityLine);
             }
 
@@ -184,8 +184,8 @@ namespace TrueTooltips
                     dmg = lines.Find(l => l.Name == "Damage");
                 }
 
-                lines.Insert(lines.IndexOf(lines.Find(l => l.Name == "Velocity") ?? dmg ?? name) + 1, new TooltipLine(Mod, "Ammo", Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammo.Label")));
-                lines.Add(new TooltipLine(Mod, "Material", Language.GetTextValue("Mods.TrueTooltips.Configs.Config.material.Label")));
+                lines.Insert(lines.IndexOf(lines.Find(l => l.Name == "Velocity") ?? dmg ?? name) + 1, new TooltipLine(Mod, "Ammo", Language.GetTextValue("LegacyTooltip.34")));
+                lines.Add(new TooltipLine(Mod, "Material", Language.GetTextValue("LegacyTooltip.36")));
 
                 ammo = lines.Find(l => l.Name == "Ammo");
                 material = lines.Find(l => l.Name == "Material");
@@ -291,7 +291,7 @@ namespace TrueTooltips
                 if (item.CountsAsClass(DamageClass.Ranged) && Main.LocalPlayer.shroomiteStealth)
                     item.knockBack *= 1f + (1f - Main.LocalPlayer.stealth) * 0.5f;
 
-                knockback.Text = Math.Round(item.knockBack + (currentAmmo != null && config.wpnPlusAmmoKb ? Main.LocalPlayer.GetWeaponKnockback(currentAmmo, currentAmmo.knockBack) : 0), 2) + Language.GetTextValue("Mods.TrueTooltips.Configs.Config.knockbackLine.Display");
+                knockback.Text = Math.Round(item.knockBack + (currentAmmo != null && config.wpnPlusAmmoKb ? Main.LocalPlayer.GetWeaponKnockback(currentAmmo, currentAmmo.knockBack) : 0), 2) + Language.GetTextValue("LegacyTooltip.45").Substring(1);
 
                 if (!config.knockback.Equals(Color.White)) knockback.OverrideColor = config.knockback;
 

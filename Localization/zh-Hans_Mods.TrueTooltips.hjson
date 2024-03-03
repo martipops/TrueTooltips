@@ -24,16 +24,11 @@ Configs: {
 		velocityLine: {
 			Label: 射弹速度显示
 			Tooltip: 显示物品射弹的速度（不一定准确，因为物品可能发射多个不同的射弹、射弹在飞行中会改变速度等）
-			Display: " 射弹速度"
 		}
 
 		priceLine: {
 			Label: 售价详细显示
 			Tooltip: 正确显示具有自定义的售价（可调整颜色且商店外可见、取代了原版的售价行显示）
-			platinum: "[c/{0}:{1} {$LegacyInterface.15} ]"
-			gold: "[c/{0}:{1} {$LegacyInterface.16} ]"
-			silver: "[c/{0}:{1} {$LegacyInterface.17} ]"
-			copper: "[c/{0}:{1} {$LegacyInterface.18}]"
 		}
 
 		speedLine: {
@@ -45,7 +40,6 @@ Configs: {
 		knockbackLine: {
 			Label: 击退详细显示
 			Tooltip: 以数字显示击退（取代了原版的击退行显示）
-			Display: " 击退力"
 		}
 
 		wpnPlusAmmoDmg: {
