@@ -12,26 +12,19 @@ namespace TrueTooltips
     using Terraria.ID;
     using Terraria.ModLoader;
     using Terraria.UI.Chat;
-    using static Terraria.ID.Colors;
-    using static Terraria.Main;
-    using static Terraria.ModLoader.ModContent;
     using Terraria.Localization;
 
     class MyGlobalItem : GlobalItem
     {
-        static Color rarityColor;
-        static Item currentAmmo;
-        static readonly Config config = GetInstance<Config>();
-
-        static readonly string[] names = { "Ammo", "AmmoLine", "AxePower", "BaitPower", "Consumable", "CritChance", "Damage", "Defense", "Equipable", "FishingPower", "HammerPower", "HealLife", "HealMana", "ItemName", "Knockback", "Material", "PickPower", "Placeable", "PriceLine", "Speed", "TileBoost", "UseMana", "Velocity" };
+        static readonly Config config = ModContent.GetInstance<Config>();
 
         public override bool PreDrawTooltip(Item item, ReadOnlyCollection<TooltipLine> lines, ref int _x, ref int _y)
         {
             var texture = TextureAssets.Item[item.type].Value;
-            Rectangle dimensions = itemAnimations[item.type]?.GetFrame(texture) ?? texture.Frame();
+            Rectangle dimensions = Main.itemAnimations[item.type]?.GetFrame(texture) ?? texture.Frame();
 
-            int x = mouseX + config.x + (ThickMouse ? 6 : 0),
-                y = mouseY + config.y + (ThickMouse ? 6 : 0),
+            int x = Main.mouseX + config.x + (Main.ThickMouse ? 6 : 0),
+                y = Main.mouseY + config.y + (Main.ThickMouse ? 6 : 0),
                 width = 0,
                 height = -config.spacing,
                 max = new[] { dimensions.Width, dimensions.Height, config.spriteMin }.Max(),
@@ -50,15 +43,15 @@ namespace TrueTooltips
             }
 
 
-            if (x + width + config.paddingRight + config.paddingLeft + spriteOffsetX + borderPadding  > screenWidth)
+            if (x + width + config.paddingRight + config.paddingLeft + spriteOffsetX + borderPadding  > Main.screenWidth)
             {
-                x = _x = screenWidth - width - config.paddingRight - config.paddingLeft - borderPadding - spriteOffsetX;
+                x = _x = Main.screenWidth - width - config.paddingRight - config.paddingLeft - borderPadding - spriteOffsetX;
                 _x += 4;
             }
 
-            if (y + height + config.paddingBottom + borderPadding > screenHeight)
+            if (y + height + config.paddingBottom + borderPadding > Main.screenHeight)
             {
-                y = _y = screenHeight - height - borderPadding - config.paddingBottom;
+                y = _y = Main.screenHeight - height - borderPadding - config.paddingBottom;
                 _y += 4;
             }
 
@@ -89,33 +82,36 @@ namespace TrueTooltips
                         borderHeight = max + borderPadding * 2;
                     bgWidth += borderPadding;
                     _x += borderPadding + 5;
-                    Utils.DrawInvBG(spriteBatch, new Rectangle(bgX, bgY, bgWidth, bgHeight), new Color(config.bgColor.R * config.bgColor.A / 255, config.bgColor.G * config.bgColor.A / 255, config.bgColor.B * config.bgColor.A / 255, config.bgColor.A));
-                    Utils.DrawInvBG(spriteBatch, new Rectangle(borderX, borderY, borderWidth, borderHeight), new Color(config.spritebgColor.R * config.spritebgColor.A / 255, config.spritebgColor.G * config.spritebgColor.A / 255, config.spritebgColor.B * config.spritebgColor.A / 255, config.spritebgColor.A));
-                    spriteBatch.Draw(texture, new Vector2(spriteX, spriteY), dimensions, Color.White);
+                    Utils.DrawInvBG(Main.spriteBatch, new Rectangle(bgX, bgY, bgWidth, bgHeight), new Color(config.bgColor.R * config.bgColor.A / 255, config.bgColor.G * config.bgColor.A / 255, config.bgColor.B * config.bgColor.A / 255, config.bgColor.A));
+                    Utils.DrawInvBG(Main.spriteBatch, new Rectangle(borderX, borderY, borderWidth, borderHeight), new Color(config.spritebgColor.R * config.spritebgColor.A / 255, config.spritebgColor.G * config.spritebgColor.A / 255, config.spritebgColor.B * config.spritebgColor.A / 255, config.spritebgColor.A));
+                    Main.spriteBatch.Draw(texture, new Vector2(spriteX, spriteY), dimensions, Color.White);
                 }
                 else
                 {
-                    Utils.DrawInvBG(spriteBatch, new Rectangle(bgX, bgY, bgWidth, bgHeight), new Color(config.bgColor.R * config.bgColor.A / 255, config.bgColor.G * config.bgColor.A / 255, config.bgColor.B * config.bgColor.A / 255, config.bgColor.A));
-                    spriteBatch.Draw(texture, new Vector2(spriteX, spriteY), dimensions, Color.White);
+                    Utils.DrawInvBG(Main.spriteBatch, new Rectangle(bgX, bgY, bgWidth, bgHeight), new Color(config.bgColor.R * config.bgColor.A / 255, config.bgColor.G * config.bgColor.A / 255, config.bgColor.B * config.bgColor.A / 255, config.bgColor.A));
+                    Main.spriteBatch.Draw(texture, new Vector2(spriteX, spriteY), dimensions, Color.White);
                 }
             }
             else
             {
-                Utils.DrawInvBG(spriteBatch, new Rectangle(bgX, bgY, bgWidth, bgHeight), new Color(config.bgColor.R * config.bgColor.A / 255, config.bgColor.G * config.bgColor.A / 255, config.bgColor.B * config.bgColor.A / 255, config.bgColor.A));
+                Utils.DrawInvBG(Main.spriteBatch, new Rectangle(bgX, bgY, bgWidth, bgHeight), new Color(config.bgColor.R * config.bgColor.A / 255, config.bgColor.G * config.bgColor.A / 255, config.bgColor.B * config.bgColor.A / 255, config.bgColor.A));
             }
 
             return true;
         }
 
+        
+        static readonly string[] names = { "Ammo", "AmmoLine", "AxePower", "BaitPower", "Consumable", "CritChance", "Damage", "Defense", "Equipable", "FishingPower", "HammerPower", "HealLife", "HealMana", "ItemName", "Knockback", "Material", "PickPower", "Placeable", "PriceLine", "Speed", "TileBoost", "UseMana", "Velocity" };
+
+
         public override void ModifyTooltips(Item item, List<TooltipLine> lines)
         {
-            Config config = GetInstance<Config>();
             float itemKnockback = item.knockBack;
-            Player player = LocalPlayer;
+            Item currentAmmo = null;
 
             if (item.useAmmo > 0 || item.fishingPole > 0 || item.tileWand > 0)
             {
-                foreach (Item invItem in player.inventory)
+                foreach (Item invItem in Main.LocalPlayer.inventory)
                     if (invItem.active && (item.useAmmo > 0 && invItem.ammo == item.useAmmo || item.fishingPole > 0 && invItem.bait > 0 || item.tileWand > 0 && invItem.type == item.tileWand))
                     {
                         currentAmmo = invItem;
@@ -124,9 +120,9 @@ namespace TrueTooltips
                     else currentAmmo = null;
 
                 for (int i = 54; i < 58; i++)
-                    if (player.inventory[i].active && item.useAmmo > 0 && player.inventory[i].ammo == item.useAmmo)
+                    if (Main.LocalPlayer.inventory[i].active && item.useAmmo > 0 && Main.LocalPlayer.inventory[i].ammo == item.useAmmo)
                     {
-                        currentAmmo = player.inventory[i];
+                        currentAmmo = Main.LocalPlayer.inventory[i];
                         break;
                     }
             }
@@ -134,14 +130,14 @@ namespace TrueTooltips
 
             if (item.type == ItemID.CoinGun)
             {
-                int coinGunCrit = (int)(player.GetCritChance(DamageClass.Ranged) - player.inventory[player.selectedItem].crit);
+                int coinGunCrit = (int)(Main.LocalPlayer.GetCritChance(DamageClass.Ranged) - Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem].crit);
 
-                coinGunCrit = player.GetWeaponCrit(item);
+                coinGunCrit = Main.LocalPlayer.GetWeaponCrit(item);
 
                 lines.InsertRange(1, new[] { new TooltipLine(Mod, "Damage", "0" + Language.GetTextValue("LegacyTooltip.3")), new TooltipLine(Mod, "CritChance", coinGunCrit + Language.GetTextValue("LegacyTooltip.41")), new TooltipLine(Mod, "Speed", ""), new TooltipLine(Mod, "Knockback", "") });
             }
 
-            TooltipLine ammoLine = new(Mod, "AmmoLine", currentAmmo?.HoverName) { OverrideColor = rarityColor },
+            TooltipLine ammoLine = new(Mod, "AmmoLine", currentAmmo?.HoverName),
                         ammo = lines.Find(l => l.Name == "Ammo"),
                         axePow = lines.Find(l => l.Name == "AxePower"),
                         baitPow = lines.Find(l => l.Name == "BaitPower"),
@@ -188,7 +184,7 @@ namespace TrueTooltips
             {
                 if (!lines.Contains(dmg))
                 {
-                    lines.Insert(1, new TooltipLine(Mod, "Damage", player.GetWeaponDamage(item) + " " + Language.GetTextValue("LegacyTooltip.3")));
+                    lines.Insert(1, new TooltipLine(Mod, "Damage", Main.LocalPlayer.GetWeaponDamage(item) + " " + Language.GetTextValue("LegacyTooltip.3")));
 
                     dmg = lines.Find(l => l.Name == "Damage");
                 }
@@ -202,8 +198,8 @@ namespace TrueTooltips
 
             if (config.priceLine)
             {
-                int sellbackStack = shopSellbackHelper.GetAmount(item);
-                player.GetItemExpectedPrice(item, out var calcForSelling, out var calcForBuying);
+                int sellbackStack = Main.shopSellbackHelper.GetAmount(item);
+                Main.LocalPlayer.GetItemExpectedPrice(item, out var calcForSelling, out var calcForBuying);
                 long itemPrice = (item.isAShopItem || item.buyOnce) ? calcForBuying : calcForSelling;
                 long priceOfStack = itemPrice * item.stack;
                 if (item.buy)
@@ -215,7 +211,7 @@ namespace TrueTooltips
                     priceOfStack = itemPrice / 5;
                     long num3 = priceOfStack;
                     priceOfStack *= item.stack;
-                    int amount = shopSellbackHelper.GetAmount(item);
+                    int amount = Main.shopSellbackHelper.GetAmount(item);
                     if (amount > 0)
                     {
                         priceOfStack += (-num3 + calcForBuying) * Math.Min(amount, item.stack);
@@ -236,14 +232,14 @@ namespace TrueTooltips
                                 lines.Find(l => l.Name == "SpecialPrice").Text ?? "", "", 1) : "";
                     } else {
                         priceText += plat > 0 ?
-                            "[c/"+ TextPulse(CoinPlatinum).Hex3() + ":" + plat + " " + Lang.inter[15].Value + " ]" : "";
+                            "[c/"+ TextPulse(Colors.CoinPlatinum).Hex3() + ":" + plat + " " + Lang.inter[15].Value + " ]" : "";
                         priceText += gold > 0 ?
-                            "[c/"+ TextPulse(CoinGold).Hex3() + ":" + gold + " " + Lang.inter[16].Value + " ]" : "";
+                            "[c/"+ TextPulse(Colors.CoinGold).Hex3() + ":" + gold + " " + Lang.inter[16].Value + " ]" : "";
                             
                         priceText += silver > 0 ?
-                            "[c/"+ TextPulse(CoinSilver).Hex3() + ":" + silver + " " + Lang.inter[17].Value + " ]" : "";
+                            "[c/"+ TextPulse(Colors.CoinSilver).Hex3() + ":" + silver + " " + Lang.inter[17].Value + " ]" : "";
                         priceText += copper > 0 ?
-                            "[c/"+ TextPulse(CoinCopper).Hex3() + ":" + copper + " " + Lang.inter[18].Value + " ]" : "";
+                            "[c/"+ TextPulse(Colors.CoinCopper).Hex3() + ":" + copper + " " + Lang.inter[18].Value + " ]" : "";
                     }
 
 
@@ -260,7 +256,7 @@ namespace TrueTooltips
                 if (currentAmmo != null)
                     lines.Insert(index, ammoLine);
                 else if (item.useAmmo > 0 || item.fishingPole > 0 || item.tileWand > 0)
-                    lines.Insert(index, new TooltipLine(Mod, "AmmoLine", Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.No") + (item.fishingPole > 0 ? Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Bait") : new Dictionary<int, string> { [40] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Arrow"), [71] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Coin"), [97] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Bullet"), [169] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Sand"), [283] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Dart"), [771] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Rocket"), [780] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Solution"), [931] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Flare") }.TryGetValue(item.useAmmo, out string value) ? value : Lang.GetItemNameValue(item.useAmmo > 0 ? item.useAmmo : item.tileWand))) { OverrideColor = RarityTrash });
+                    lines.Insert(index, new TooltipLine(Mod, "AmmoLine", Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.No") + (item.fishingPole > 0 ? Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Bait") : new Dictionary<int, string> { [40] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Arrow"), [71] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Coin"), [97] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Bullet"), [169] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Sand"), [283] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Dart"), [771] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Rocket"), [780] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Solution"), [931] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Flare") }.TryGetValue(item.useAmmo, out string value) ? value : Lang.GetItemNameValue(item.useAmmo > 0 ? item.useAmmo : item.tileWand))) { OverrideColor = RarityColor(currentAmmo) });
 
                 needsBait?.Hide();
                 wandConsumes?.Hide();
@@ -288,7 +284,7 @@ namespace TrueTooltips
             if (dmg != null)
             {
                 if (config.wpnPlusAmmoDmg && currentAmmo != null)
-                    dmg.Text = dmg.Text.Replace(dmg.Text.Split(' ').First(), player.GetWeaponDamage(item) + player.GetWeaponDamage(currentAmmo) + "");
+                    dmg.Text = dmg.Text.Replace(dmg.Text.Split(' ').First(), Main.LocalPlayer.GetWeaponDamage(item) + Main.LocalPlayer.GetWeaponDamage(currentAmmo) + "");
 
                 if (!config.dmg.Equals(Color.White)) dmg.OverrideColor = config.dmg;
             }
@@ -307,19 +303,19 @@ namespace TrueTooltips
             if (knockback != null && config.knockbackLine)
             {
                 float kbScale = 1f;
-                if (item.CountsAsClass(DamageClass.Melee) && player.kbGlove)
+                if (item.CountsAsClass(DamageClass.Melee) && Main.LocalPlayer.kbGlove)
                     kbScale += 1f;
 
-                if (player.kbBuff)
+                if (Main.LocalPlayer.kbBuff)
                     kbScale += 0.5f;
 
                 if (kbScale != 1f)
                     itemKnockback *= kbScale;
 
-                if (item.CountsAsClass(DamageClass.Ranged) && player.shroomiteStealth)
-                    itemKnockback *= 1f + (1f - player.stealth) * 0.5f;
+                if (item.CountsAsClass(DamageClass.Ranged) && Main.LocalPlayer.shroomiteStealth)
+                    itemKnockback *= 1f + (1f - Main.LocalPlayer.stealth) * 0.5f;
                 
-                knockback.Text = Math.Round(itemKnockback + (currentAmmo != null && config.wpnPlusAmmoKb ? player.GetWeaponKnockback(currentAmmo, currentAmmo.knockBack) : 0), 2) + Language.GetTextValue("Mods.TrueTooltips.Configs.Config.knockbackLine.Display");
+                knockback.Text = Math.Round(itemKnockback + (currentAmmo != null && config.wpnPlusAmmoKb ? Main.LocalPlayer.GetWeaponKnockback(currentAmmo, currentAmmo.knockBack) : 0), 2) + Language.GetTextValue("Mods.TrueTooltips.Configs.Config.knockbackLine.Display");
 
                 if (!config.knockback.Equals(Color.White)) knockback.OverrideColor = config.knockback;
                 
@@ -337,7 +333,7 @@ namespace TrueTooltips
             if (speed != null)
             {
                 if (config.speedLine)
-                    speed.Text = Math.Round(60 / (item.reuseDelay + (item.useAnimation * (item.CountsAsClass(DamageClass.Melee) ? player.GetAttackSpeed(DamageClass.Melee) : 1))), 2) + Language.GetTextValue("Mods.TrueTooltips.Configs.Config.speedLine.Display");
+                    speed.Text = Math.Round(60 / (item.reuseDelay + (item.useAnimation * (item.CountsAsClass(DamageClass.Melee) ? Main.LocalPlayer.GetAttackSpeed(DamageClass.Melee) : 1))), 2) + Language.GetTextValue("Mods.TrueTooltips.Configs.Config.speedLine.Display");
 
                 if (!config.speed.Equals(Color.White)) speed.OverrideColor = config.speed;
             }
@@ -360,7 +356,6 @@ namespace TrueTooltips
             if (config.baitPow.A == 0) baitPow?.Hide();
             if (config.buffTime.A == 0) buffTime?.Hide();
             if (config.consumable.A == 0) consumable?.Hide();
-
             if (config.critChance.A == 0 || (item.ammo > 0 && !config.ammoCrit)) critChance?.Hide();
             if (config.defense.A == 0) defense?.Hide();
             if (config.dmg.A == 0) dmg?.Hide();
@@ -374,8 +369,7 @@ namespace TrueTooltips
             if (config.hammerPow.A == 0) hammerPow?.Hide();
             if (config.healLife.A == 0) healLife?.Hide();
             if (config.healMana.A == 0) healMana?.Hide();
-
-            if (config.knockback.A == 0 || itemKnockback + (currentAmmo != null ? player.GetWeaponKnockback(currentAmmo, currentAmmo.knockBack) : 0) == 0) knockback?.Hide();
+            if (config.knockback.A == 0 || itemKnockback + (currentAmmo != null ? Main.LocalPlayer.GetWeaponKnockback(currentAmmo, currentAmmo.knockBack) : 0) == 0) knockback?.Hide();
             if (config.material.A == 0) material?.Hide();
             if (config.needsBait.A == 0) needsBait?.Hide();
             if (config.pickPow.A == 0) pickPow?.Hide();
@@ -384,7 +378,6 @@ namespace TrueTooltips
             if (config.setBonus.A == 0) setBonus?.Hide();
             if (config.social.A == 0) social?.Hide();
             if (config.socialDescr.A == 0) socialDescr?.Hide();
-
             if (config.speed.A == 0 || (item.type > ItemID.WormFood && item.type < ItemID.FallenStar)) speed?.Hide();
             if (config.tileBoost.A == 0) tileBoost?.Hide();
             if (config.useMana.A == 0) useMana?.Hide();
@@ -392,12 +385,6 @@ namespace TrueTooltips
             if (config.wandConsumes.A == 0) wandConsumes?.Hide();
             if (config.wellFedExpert.A == 0) wellFedExpert?.Hide();
             if (config.journeyResearch.A == 0) journeyResearch?.Hide();
-        }
-
-        public override void PostDrawTooltip(Item item, ReadOnlyCollection<DrawableTooltipLine> lines)
-        {
-            if (currentAmmo != null)
-                rarityColor = RarityColor(currentAmmo);
         }
 
         internal static Color RarityColor(Item item) => RarityColor(item.rare);
@@ -409,6 +396,6 @@ namespace TrueTooltips
             return ItemRarity.GetColor(rare);
         }
 
-        internal static Color TextPulse(Color color) => new(color.R * mouseTextColor / 255, color.G * mouseTextColor / 255, color.B * mouseTextColor / 255, mouseTextColor);
+        internal static Color TextPulse(Color color) => new(color.R * Main.mouseTextColor / 255, color.G * Main.mouseTextColor / 255, color.B * Main.mouseTextColor / 255, 255);
     }
 }

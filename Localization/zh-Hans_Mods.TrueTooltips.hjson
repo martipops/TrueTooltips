@@ -64,8 +64,8 @@ Configs: {
 		}
 
 		modNameNextToItemName: {
-		  Label: 显示物品来源的模组
-      Tooltip: 在物品名称旁边显示来源的模组名称
+			Label: 显示物品来源的模组
+			Tooltip: 在物品名称旁边显示来源的模组名称
 		}
 
 		bgColor: {
@@ -317,16 +317,16 @@ Configs: {
 			Label: X% 稿力
 			Tooltip: 物品的稿力（透明度调为 0 以完全禁用显示此行，调为白色以忽略重写覆盖）
 		}
-    
-    journeyResearch: {
-      Label: 科研进度
-      Tooltip: 物品的科研进度（仅旅程模式）（将 A 设为 0 以禁用显示此行，设为白色以忽略重写覆盖）
-    }
 
-    modNameColor: {
-      Label: Mod 名称
-      Tooltip: 显示物品来源的模组。（将 A 设为 0 以禁用显示此行，设为白色以忽略重写覆盖）
-    }
+		journeyResearch: {
+			Label: 科研进度
+			Tooltip: 物品的科研进度（仅旅程模式）（将 A 设为 0 以禁用显示此行，设为白色以忽略重写覆盖）
+		}
+
+		modNameColor: {
+			Label: Mod 名称
+			Tooltip: 显示物品来源的模组。（将 A 设为 0 以禁用显示此行，设为白色以忽略重写覆盖）
+		}
 
 		Headers: {
 			CustomTooltipLines: 自定义显示内容
