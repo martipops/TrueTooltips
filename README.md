@@ -1,4 +1,6 @@
-Original mod Author: Graumen
+Original mod Author: Graumen - [Terraria Fourms Post](https://forums.terraria.org/index.php?threads/true-tooltips-1-4.89106/)
+
+
 ### Join my [Discord server](https://discord.gg/MKcjBKwBVu) to discuss the mod!
 
 # Features
@@ -21,3 +23,9 @@ Original mod Author: Graumen
 - Adds a background to tooltips.
 - Gives text that appears when hovering over items with custom rarity that are dropped or in the hotbar the right color and shows the name of the frontmost dropped item instead of the backmost.
 - Turn off text pulse.
+
+## Disclaimer for programmers
+This code is absolutely horrendous and I'm sorry for those who try to read it. I should have redone this instead of forking it. Good luck.
+
+## What happened to the original mod?
+My best guess is that the original creator saw [the 20+ discord messages making fun of his code](https://discord.com/channels/103110554649894912/271236615823687680/934934445260177458), or [this issue on his GitHub page](https://discord.com/channels/103110554649894912/271236615823687680/934964011253006366), so he got frustrated and deleted every trace of his mod. Needless to say I was very disappointed to find these messages even if the code was pretty terrible. He made the mod for fun, and it worked. No reason to shame someone for that.

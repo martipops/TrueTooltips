@@ -1,8 +1,6 @@
 ﻿namespace TrueTooltips
 {
-    using Microsoft.Xna.Framework;
     using Terraria;
-    using Terraria.UI;
     using Terraria.ModLoader;
 
     class MyMod : ModSystem
