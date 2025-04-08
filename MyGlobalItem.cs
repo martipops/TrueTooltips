@@ -13,7 +13,6 @@ namespace TrueTooltips
     using Terraria.ModLoader;
     using Terraria.UI.Chat;
     using Terraria.Localization;
-    using System.Diagnostics;
 
     class MyGlobalItem : GlobalItem
     {
@@ -142,8 +141,6 @@ namespace TrueTooltips
 
         public override void ModifyTooltips(Item item, List<TooltipLine> lines)
         {
-            Stopwatch stopwatch = Stopwatch.StartNew();
-
             Item currentAmmo = null;
 
             if (config.ammoLine && (item.useAmmo > 0 || item.fishingPole > 0 || item.tileWand > 0))
@@ -163,20 +160,18 @@ namespace TrueTooltips
             {
                 int coinGunCrit = Main.LocalPlayer.GetWeaponCrit(item);
                 lines.InsertRange(1, new[] {
-            new TooltipLine(Mod, "Damage", "0" + Language.GetTextValue("LegacyTooltip.3")),
-            new TooltipLine(Mod, "CritChance", coinGunCrit + Language.GetTextValue("LegacyTooltip.41")),
-            new TooltipLine(Mod, "Speed", ""),
-            new TooltipLine(Mod, "Knockback", "")
-        });
+                    new TooltipLine(Mod, "Damage", "0" + Language.GetTextValue("LegacyTooltip.3")),
+                    new TooltipLine(Mod, "CritChance", coinGunCrit + Language.GetTextValue("LegacyTooltip.41")),
+                    new TooltipLine(Mod, "Speed", ""),
+                    new TooltipLine(Mod, "Knockback", "")
+                });
             }
 
             // Get tooltip line cache for faster lookups
             var lineCache = GetTooltipLineCache(lines);
 
-            // Create ammo line for later use if needed
             TooltipLine ammoLine = new(Mod, "AmmoLine", currentAmmo?.HoverName);
 
-            // Get existing lines from cache instead of searching the list repeatedly
             lineCache.TryGetValue("Ammo", out var ammo);
             lineCache.TryGetValue("AxePower", out var axePow);
             lineCache.TryGetValue("BaitPower", out var baitPow);
@@ -227,7 +222,6 @@ namespace TrueTooltips
                 if (!lines.Contains(dmg))
                 {
                     lines.Insert(1, new TooltipLine(Mod, "Damage", Main.LocalPlayer.GetWeaponDamage(item) + " " + Language.GetTextValue("LegacyTooltip.3")));
-
                     dmg = lines.Find(l => l.Name == "Damage");
                 }
 
@@ -440,16 +434,6 @@ namespace TrueTooltips
                     }
                 }
             }
-
-            stopwatch.Stop();
-
-            timerLogs.Add((int)stopwatch.ElapsedTicks);
-            if (timerLogs.Count > 100)
-                timerLogs.RemoveAt(0);
-
-            Main.NewText($"Average time: {timerLogs.Average()} ms");
-
-            // Main.NewText($"Elapsed time: {stopwatch.ElapsedTicks} ms");
         }
 
         internal static long GetAdjustedPrice(Item item)
