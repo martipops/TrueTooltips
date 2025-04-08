@@ -13,15 +13,21 @@ namespace TrueTooltips
     using Terraria.ModLoader;
     using Terraria.UI.Chat;
     using Terraria.Localization;
+  using System.Diagnostics;
 
-    class MyGlobalItem : GlobalItem
+  class MyGlobalItem : GlobalItem
     {
+
+
         static readonly Config config = ModContent.GetInstance<Config>();
+
+        static List<int> timerLogs = new List<int>();
 
         static readonly string[] names = { "Ammo", "AmmoLine", "AxePower", "BaitPower", "Consumable", "CritChance", "Damage", "Defense", "Equipable", "FishingPower", "HammerPower", "HealLife", "HealMana", "ItemName", "Knockback", "Material", "PickPower", "Placeable", "PriceLine", "Speed", "TileBoost", "UseMana", "Velocity" };
 
         public override bool PreDrawTooltip(Item item, ReadOnlyCollection<TooltipLine> lines, ref int _x, ref int _y)
         {
+
             var texture = TextureAssets.Item[item.type].Value;
             Rectangle dimensions = Main.itemAnimations[item.type]?.GetFrame(texture) ?? texture.Frame();
 
@@ -100,6 +106,7 @@ namespace TrueTooltips
             }
 
             return true;
+            
         }
         private Dictionary<string, TooltipLine> GetTooltipLineCache(List<TooltipLine> lines)
         {
@@ -114,6 +121,8 @@ namespace TrueTooltips
 
         public override void ModifyTooltips(Item item, List<TooltipLine> lines)
         {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
             Item currentAmmo = null;
 
             if (config.ammoLine && (item.useAmmo > 0 || item.fishingPole > 0 || item.tileWand > 0))
@@ -378,6 +387,16 @@ namespace TrueTooltips
             if (config.wandConsumes.A == 0) wandConsumes?.Hide();
             if (config.wellFedExpert.A == 0) wellFedExpert?.Hide();
             if (config.journeyResearch.A == 0) journeyResearch?.Hide();
+
+            stopwatch.Stop();
+
+            timerLogs.Add((int)stopwatch.ElapsedTicks);
+            if (timerLogs.Count > 100)
+                timerLogs.RemoveAt(0);
+
+            Main.NewText($"Average time: {timerLogs.Average()} ms");
+
+            // Main.NewText($"Elapsed time: {stopwatch.ElapsedTicks} ms");
         }
 
         internal static long GetAdjustedPrice(Item item)
