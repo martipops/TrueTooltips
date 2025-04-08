@@ -13,11 +13,10 @@ namespace TrueTooltips
     using Terraria.ModLoader;
     using Terraria.UI.Chat;
     using Terraria.Localization;
-  using System.Diagnostics;
+    using System.Diagnostics;
 
-  class MyGlobalItem : GlobalItem
+    class MyGlobalItem : GlobalItem
     {
-
 
         static readonly Config config = ModContent.GetInstance<Config>();
 
@@ -25,6 +24,20 @@ namespace TrueTooltips
 
         static readonly string[] names = { "Ammo", "AmmoLine", "AxePower", "BaitPower", "Consumable", "CritChance", "Damage", "Defense", "Equipable", "FishingPower", "HammerPower", "HealLife", "HealMana", "ItemName", "Knockback", "Material", "PickPower", "Placeable", "PriceLine", "Speed", "TileBoost", "UseMana", "Velocity" };
 
+
+        static readonly Dictionary<int, string> AmmoTypeNames = new Dictionary<int, string>()
+        {
+            [40] = "Mods.TrueTooltips.Configs.Config.ammoLine.Arrow",
+            [71] = "Mods.TrueTooltips.Configs.Config.ammoLine.Coin",
+            [97] = "Mods.TrueTooltips.Configs.Config.ammoLine.Bullet",
+            [169] = "Mods.TrueTooltips.Configs.Config.ammoLine.Sand",
+            [283] = "Mods.TrueTooltips.Configs.Config.ammoLine.Dart",
+            [771] = "Mods.TrueTooltips.Configs.Config.ammoLine.Rocket",
+            [780] = "Mods.TrueTooltips.Configs.Config.ammoLine.Solution",
+            [931] = "Mods.TrueTooltips.Configs.Config.ammoLine.Flare"
+        };
+
+        static readonly Regex specialPriceRegex = new Regex($@"{Language.GetTextValue("LegacyTooltip.50")}\s");
         public override bool PreDrawTooltip(Item item, ReadOnlyCollection<TooltipLine> lines, ref int _x, ref int _y)
         {
 
@@ -36,9 +49,17 @@ namespace TrueTooltips
                 width = 0,
                 height = -config.spacing,
                 max = new[] { dimensions.Width, dimensions.Height, config.spriteMin }.Max(),
-                index = lines.ToList().FindLastIndex(l => names.Contains(l.Name)),
                 spriteOffsetX = config.sprite ? max + config.spriteTextPadding : 0,
-                borderPadding = config.spriteBorder ? config.spriteBorderPadding : 0;
+                borderPadding = config.spriteBorder ? config.spriteBorderPadding : 0,
+                index = -1;
+            for (int i = lines.Count - 1; i >= 0; i--)
+            {
+                if (Array.IndexOf(names, lines[i].Name) >= 0)
+                {
+                    index = i;
+                    break;
+                }
+            }
 
             foreach (TooltipLine line in lines)
             {
@@ -106,7 +127,7 @@ namespace TrueTooltips
             }
 
             return true;
-            
+
         }
         private Dictionary<string, TooltipLine> GetTooltipLineCache(List<TooltipLine> lines)
         {
@@ -226,7 +247,7 @@ namespace TrueTooltips
                     if (item.shopSpecialCurrency >= 0)
                     {
                         priceText += item.buy ?
-                            new Regex($@"{Language.GetTextValue("LegacyTooltip.50")}\s").Replace(
+                            specialPriceRegex.Replace(
                                 lines.Find(l => l.Name == "SpecialPrice").Text ?? "", "", 1) : "";
                     }
                     else
@@ -257,8 +278,27 @@ namespace TrueTooltips
                 if (currentAmmo != null)
                     lines.Insert(index, ammoLine);
                 else if (item.useAmmo > 0 || item.fishingPole > 0 || item.tileWand > 0)
-                    lines.Insert(index, new TooltipLine(Mod, "AmmoLine", Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.No") + (item.fishingPole > 0 ? Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Bait") : new Dictionary<int, string> { [40] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Arrow"), [71] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Coin"), [97] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Bullet"), [169] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Sand"), [283] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Dart"), [771] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Rocket"), [780] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Solution"), [931] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Flare") }.TryGetValue(item.useAmmo, out string value) ? value : Lang.GetItemNameValue(item.useAmmo > 0 ? item.useAmmo : item.tileWand))) { OverrideColor = RarityColor(currentAmmo) });
+                {
+                    string ammoName;
+                    if (item.fishingPole > 0)
+                    {
+                        ammoName = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Bait");
+                    }
+                    else if (AmmoTypeNames.TryGetValue(item.useAmmo, out string value))
+                    {
+                        ammoName = Language.GetTextValue(value);
+                    }
+                    else
+                    {
+                        ammoName = Lang.GetItemNameValue(item.useAmmo > 0 ? item.useAmmo : item.tileWand);
+                    }
 
+                    lines.Insert(index, new TooltipLine(Mod, "AmmoLine",
+                        Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.No") + ammoName)
+                    {
+                        OverrideColor = RarityColor(currentAmmo)
+                    });
+                }
                 needsBait?.Hide();
                 wandConsumes?.Hide();
             }
@@ -354,7 +394,6 @@ namespace TrueTooltips
 
             if (config.ammo.A == 0) ammo?.Hide();
             if (config.axePow.A == 0) axePow?.Hide();
-            if (config.badMod.A == 0) lines.FindAll(l => l.IsModifierBad).ForEach(line => line?.Hide());
             if (config.baitPow.A == 0) baitPow?.Hide();
             if (config.buffTime.A == 0) buffTime?.Hide();
             if (config.consumable.A == 0) consumable?.Hide();
@@ -367,7 +406,6 @@ namespace TrueTooltips
             if (config.fav.A == 0) fav?.Hide();
             if (config.favDescr.A == 0) favDescr?.Hide();
             if (config.fishingPow.A == 0) fishingPow?.Hide();
-            if (config.goodMod.A == 0) lines.FindAll(l => !l.IsModifierBad && l.IsModifier).ForEach(line => line?.Hide());
             if (config.hammerPow.A == 0) hammerPow?.Hide();
             if (config.healLife.A == 0) healLife?.Hide();
             if (config.healMana.A == 0) healMana?.Hide();
@@ -387,6 +425,21 @@ namespace TrueTooltips
             if (config.wandConsumes.A == 0) wandConsumes?.Hide();
             if (config.wellFedExpert.A == 0) wellFedExpert?.Hide();
             if (config.journeyResearch.A == 0) journeyResearch?.Hide();
+            if (config.badMod.A == 0 || config.goodMod.A == 0)
+            {
+                for (int i = 0; i < lines.Count; i++)
+                {
+                    var line = lines[i];
+                    if (line.IsModifierBad && config.badMod.A == 0)
+                    {
+                        line.Hide();
+                    }
+                    else if (line.IsModifier && config.goodMod.A == 0)
+                    {
+                        line.Hide();
+                    }
+                }
+            }
 
             stopwatch.Stop();
 
