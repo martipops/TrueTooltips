@@ -142,6 +142,9 @@ namespace TrueTooltips
         {
             Item currentAmmo = null;
 
+            // Main.NewText(ArmorIDs.Wing.Sets.Stats[item.wingSlot].FlyTime);
+            // Main.NewText(item.wingSlot);
+
             if (config.ammoLine)
             {
                 if (item.fishingPole > 0)
@@ -258,6 +261,17 @@ namespace TrueTooltips
                 material = lines.Find(l => l.Name == "Material");
             }
 
+            if (item.wingSlot > 0 && config.wingFlyTimeLine)
+            {
+                string unit = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.wingFlyTimeLine.Unit");
+                int wingTime = ArmorIDs.Wing.Sets.Stats[item.wingSlot].FlyTime;
+                lines.Insert(
+                    lines.IndexOf(lines.Find(l => l.Name == "Equipable") ?? name) + 1, 
+                    new TooltipLine(Mod, "WingTime", string.Format(unit, wingTime))
+                );
+                index++;
+            }
+
             if (config.priceLine)
             {
                 long priceOfStack = GetAdjustedPrice(item);
@@ -285,7 +299,7 @@ namespace TrueTooltips
                         if (copper > 0)
                             priceText += "[c/" + TextPulse(Colors.CoinCopper).Hex3() + ":" + copper + " " + Lang.inter[18].Value + " ]";
                     }
-                    lines.Insert(index, new TooltipLine(Mod, "PriceLine", priceText));
+                    lines.Add(new TooltipLine(Mod, "PriceLine", priceText));
                 }
 
                 price?.Hide();

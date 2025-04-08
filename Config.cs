@@ -22,6 +22,9 @@
         public bool knockbackLine;
 
         [DefaultValue(true)]
+        public bool wingFlyTimeLine;
+
+        [DefaultValue(true)]
         public bool wpnPlusAmmoDmg;
 
         [DefaultValue(true)]

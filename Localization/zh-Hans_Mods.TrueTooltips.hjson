@@ -42,6 +42,12 @@ Configs: {
 			Tooltip: 以数字显示击退（取代了原版的击退行显示）
 		}
 
+		wingFlyTimeLine: {
+			Label: 翅膀飞行时间
+			Tooltip: 显示翅膀的飞行时间
+			Unit: 飞行时间: {0}
+		}
+
 		wpnPlusAmmoDmg: {
 			Label: 显示武器和弹药总计的伤害
 			Tooltip: ""
@@ -327,7 +333,7 @@ Configs: {
 			Background: 自定义显示边框
 			Offset: 自定义显示位置
 			Miscellaneous: 其它设置
-			VanillaTooltipLines: 自定义文本显示颜色
+			VanillaTooltipLines: 自定义文本显示颜色 [c/ff2222:(ALPHA=0 以禁用)]
 			ItemSprite: 物品图标
 		}
 	}

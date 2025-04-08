@@ -42,6 +42,12 @@ Configs: {
 			Tooltip: Shows knockback as a number. Replaces vanilla knockback line.
 		}
 
+		wingFlyTimeLine: {
+			Label: Wing Fly Time
+			Tooltip: Shows the flight time of wings
+			Unit: Fly Time: {0}
+		}
+
 		wpnPlusAmmoDmg: {
 			Label: Combine weapon and ammo damage
 			Tooltip: ""
@@ -327,7 +333,7 @@ Configs: {
 			Background: Background
 			Offset: Offset
 			Miscellaneous: Miscellaneous
-			VanillaTooltipLines: Vanilla Tooltip Lines & Color
+			VanillaTooltipLines: Vanilla Tooltip Lines & Color [c/ff2222:(ALPHA=0 TO DISABLE)]
 			ItemSprite: Item Sprite Header
 		}
 	}
