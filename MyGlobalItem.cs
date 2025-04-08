@@ -49,7 +49,7 @@ namespace TrueTooltips
                 spriteOffsetX = config.sprite ? max + config.spriteTextPadding : 0,
                 borderPadding = config.spriteBorder ? config.spriteBorderPadding : 0,
                 index = -1;
-            
+
             for (int i = lines.Count - 1; i >= 0; i--)
             {
                 if (Array.IndexOf(names, lines[i].Name) >= 0)
@@ -142,18 +142,45 @@ namespace TrueTooltips
         {
             Item currentAmmo = null;
 
-            if (config.ammoLine && (item.useAmmo > 0 || item.fishingPole > 0 || item.tileWand > 0))
+            if (config.ammoLine)
             {
-                foreach (Item invItem in Main.LocalPlayer.inventory)
+                if (item.fishingPole > 0)
                 {
-                    if (invItem.active && (invItem.ammo == item.useAmmo || invItem.bait > 0 || invItem.type == item.tileWand))
+                    // Find bait for fishing poles
+                    foreach (Item invItem in Main.LocalPlayer.inventory)
                     {
-                        currentAmmo = invItem;
-                        break;
+                        if (invItem.active && invItem.bait > 0)
+                        {
+                            currentAmmo = invItem;
+                            break;
+                        }
+                    }
+                }
+                else if (item.useAmmo > 0)
+                {
+                    // Find ammo for weapons
+                    foreach (Item invItem in Main.LocalPlayer.inventory)
+                    {
+                        if (invItem.active && invItem.ammo == item.useAmmo)
+                        {
+                            currentAmmo = invItem;
+                            break;
+                        }
+                    }
+                }
+                else if (item.tileWand > 0)
+                {
+                    // Find tiles for wands
+                    foreach (Item invItem in Main.LocalPlayer.inventory)
+                    {
+                        if (invItem.active && invItem.type == item.tileWand)
+                        {
+                            currentAmmo = invItem;
+                            break;
+                        }
                     }
                 }
             }
-            else currentAmmo = null;
 
             if (item.type == ItemID.CoinGun)
             {
