@@ -16,12 +16,28 @@ namespace TrueTooltips
 
     class MyGlobalItem : GlobalItem
     {
+
         static readonly Config config = ModContent.GetInstance<Config>();
 
         static readonly string[] names = { "Ammo", "AmmoLine", "AxePower", "BaitPower", "Consumable", "CritChance", "Damage", "Defense", "Equipable", "FishingPower", "HammerPower", "HealLife", "HealMana", "ItemName", "Knockback", "Material", "PickPower", "Placeable", "PriceLine", "Speed", "TileBoost", "UseMana", "Velocity" };
 
+
+        static readonly Dictionary<int, string> AmmoTypeNames = new Dictionary<int, string>()
+        {
+            [40] = "Mods.TrueTooltips.Configs.Config.ammoLine.Arrow",
+            [71] = "Mods.TrueTooltips.Configs.Config.ammoLine.Coin",
+            [97] = "Mods.TrueTooltips.Configs.Config.ammoLine.Bullet",
+            [169] = "Mods.TrueTooltips.Configs.Config.ammoLine.Sand",
+            [283] = "Mods.TrueTooltips.Configs.Config.ammoLine.Dart",
+            [771] = "Mods.TrueTooltips.Configs.Config.ammoLine.Rocket",
+            [780] = "Mods.TrueTooltips.Configs.Config.ammoLine.Solution",
+            [931] = "Mods.TrueTooltips.Configs.Config.ammoLine.Flare"
+        };
+
+        static readonly Regex specialPriceRegex = new Regex($@"{Language.GetTextValue("LegacyTooltip.50")}\s");
         public override bool PreDrawTooltip(Item item, ReadOnlyCollection<TooltipLine> lines, ref int _x, ref int _y)
         {
+
             var texture = TextureAssets.Item[item.type].Value;
             Rectangle dimensions = Main.itemAnimations[item.type]?.GetFrame(texture) ?? texture.Frame();
 
@@ -30,9 +46,18 @@ namespace TrueTooltips
                 width = 0,
                 height = -config.spacing,
                 max = new[] { dimensions.Width, dimensions.Height, config.spriteMin }.Max(),
-                index = lines.ToList().FindLastIndex(l => names.Contains(l.Name)),
                 spriteOffsetX = config.sprite ? max + config.spriteTextPadding : 0,
-                borderPadding = config.spriteBorder ? config.spriteBorderPadding : 0;
+                borderPadding = config.spriteBorder ? config.spriteBorderPadding : 0,
+                index = -1;
+            
+            for (int i = lines.Count - 1; i >= 0; i--)
+            {
+                if (Array.IndexOf(names, lines[i].Name) >= 0)
+                {
+                    index = i;
+                    break;
+                }
+            }
 
             foreach (TooltipLine line in lines)
             {
@@ -100,7 +125,19 @@ namespace TrueTooltips
             }
 
             return true;
+
         }
+        private Dictionary<string, TooltipLine> GetTooltipLineCache(List<TooltipLine> lines)
+        {
+            Dictionary<string, TooltipLine> cache = new Dictionary<string, TooltipLine>(40);
+            foreach (var line in lines)
+            {
+                if (!cache.ContainsKey(line.Name))
+                    cache[line.Name] = line;
+            }
+            return cache;
+        }
+
         public override void ModifyTooltips(Item item, List<TooltipLine> lines)
         {
             Item currentAmmo = null;
@@ -126,46 +163,50 @@ namespace TrueTooltips
                     new TooltipLine(Mod, "CritChance", coinGunCrit + Language.GetTextValue("LegacyTooltip.41")),
                     new TooltipLine(Mod, "Speed", ""),
                     new TooltipLine(Mod, "Knockback", "")
-            });
+                });
             }
 
-            TooltipLine ammoLine = new(Mod, "AmmoLine", currentAmmo?.HoverName),
-                        ammo = lines.Find(l => l.Name == "Ammo"),
-                        axePow = lines.Find(l => l.Name == "AxePower"),
-                        baitPow = lines.Find(l => l.Name == "BaitPower"),
-                        buffTime = lines.Find(l => l.Name == "BuffTime"),
-                        consumable = lines.Find(l => l.Name == "Consumable"),
-                        critChance = lines.Find(l => l.Name == "CritChance"),
-                        defense = lines.Find(l => l.Name == "Defense"),
-                        dmg = lines.Find(l => l.Name == "Damage"),
-                        equipable = lines.Find(l => l.Name == "Equipable"),
-                        etherianMana = lines.Find(l => l.Name == "EtherianManaWarning"),
-                        expert = lines.Find(l => l.Name == "Expert"),
-                        fav = lines.Find(l => l.Name == "Favorite"),
-                        favDescr = lines.Find(l => l.Name == "FavoriteDesc"),
-                        fishingPow = lines.Find(l => l.Name == "FishingPower"),
-                        hammerPow = lines.Find(l => l.Name == "HammerPower"),
-                        healLife = lines.Find(l => l.Name == "HealLife"),
-                        healMana = lines.Find(l => l.Name == "HealMana"),
-                        knockback = lines.Find(l => l.Name == "Knockback"),
-                        material = lines.Find(l => l.Name == "Material"),
-                        name = lines.Find(l => l.Name == "ItemName"),
-                        needsBait = lines.Find(l => l.Name == "NeedsBait"),
-                        pickPow = lines.Find(l => l.Name == "PickPower"),
-                        placeable = lines.Find(l => l.Name == "Placeable"),
-                        quest = lines.Find(l => l.Name == "Quest"),
-                        setBonus = lines.Find(l => l.Name == "SetBonus"),
-                        social = lines.Find(l => l.Name == "Social"),
-                        socialDescr = lines.Find(l => l.Name == "SocialDesc"),
-                        speed = lines.Find(l => l.Name == "Speed"),
-                        tileBoost = lines.Find(l => l.Name == "TileBoost"),
-                        useMana = lines.Find(l => l.Name == "UseMana"),
-                        vanity = lines.Find(l => l.Name == "Vanity"),
-                        wandConsumes = lines.Find(l => l.Name == "WandConsumes"),
-                        wellFedExpert = lines.Find(l => l.Name == "WellFedExpert"),
-                        price = lines.Find(l => l.Name == "Price"),
-                        specialPrice = lines.Find(l => l.Name == "SpecialPrice"),
-                        journeyResearch = lines.Find(l => l.Name == "JourneyResearch");
+            // Get tooltip line cache for faster lookups
+            var lineCache = GetTooltipLineCache(lines);
+
+            TooltipLine ammoLine = new(Mod, "AmmoLine", currentAmmo?.HoverName);
+
+            lineCache.TryGetValue("Ammo", out var ammo);
+            lineCache.TryGetValue("AxePower", out var axePow);
+            lineCache.TryGetValue("BaitPower", out var baitPow);
+            lineCache.TryGetValue("BuffTime", out var buffTime);
+            lineCache.TryGetValue("Consumable", out var consumable);
+            lineCache.TryGetValue("CritChance", out var critChance);
+            lineCache.TryGetValue("Defense", out var defense);
+            lineCache.TryGetValue("Damage", out var dmg);
+            lineCache.TryGetValue("Equipable", out var equipable);
+            lineCache.TryGetValue("EtherianManaWarning", out var etherianMana);
+            lineCache.TryGetValue("Expert", out var expert);
+            lineCache.TryGetValue("Favorite", out var fav);
+            lineCache.TryGetValue("FavoriteDesc", out var favDescr);
+            lineCache.TryGetValue("FishingPower", out var fishingPow);
+            lineCache.TryGetValue("HammerPower", out var hammerPow);
+            lineCache.TryGetValue("HealLife", out var healLife);
+            lineCache.TryGetValue("HealMana", out var healMana);
+            lineCache.TryGetValue("Knockback", out var knockback);
+            lineCache.TryGetValue("Material", out var material);
+            lineCache.TryGetValue("ItemName", out var name);
+            lineCache.TryGetValue("NeedsBait", out var needsBait);
+            lineCache.TryGetValue("PickPower", out var pickPow);
+            lineCache.TryGetValue("Placeable", out var placeable);
+            lineCache.TryGetValue("Quest", out var quest);
+            lineCache.TryGetValue("SetBonus", out var setBonus);
+            lineCache.TryGetValue("Social", out var social);
+            lineCache.TryGetValue("SocialDesc", out var socialDescr);
+            lineCache.TryGetValue("Speed", out var speed);
+            lineCache.TryGetValue("TileBoost", out var tileBoost);
+            lineCache.TryGetValue("UseMana", out var useMana);
+            lineCache.TryGetValue("Vanity", out var vanity);
+            lineCache.TryGetValue("WandConsumes", out var wandConsumes);
+            lineCache.TryGetValue("WellFedExpert", out var wellFedExpert);
+            lineCache.TryGetValue("Price", out var price);
+            lineCache.TryGetValue("SpecialPrice", out var specialPrice);
+            lineCache.TryGetValue("JourneyResearch", out var journeyResearch);
 
             if (config.velocityLine.A > 0 && item.shootSpeed > 0)
             {
@@ -180,7 +221,6 @@ namespace TrueTooltips
                 if (!lines.Contains(dmg))
                 {
                     lines.Insert(1, new TooltipLine(Mod, "Damage", Main.LocalPlayer.GetWeaponDamage(item) + " " + Language.GetTextValue("LegacyTooltip.3")));
-
                     dmg = lines.Find(l => l.Name == "Damage");
                 }
 
@@ -200,7 +240,7 @@ namespace TrueTooltips
                     if (item.shopSpecialCurrency >= 0)
                     {
                         priceText += item.buy ?
-                            new Regex($@"{Language.GetTextValue("LegacyTooltip.50")}\s").Replace(
+                            specialPriceRegex.Replace(
                                 lines.Find(l => l.Name == "SpecialPrice").Text ?? "", "", 1) : "";
                     }
                     else
@@ -231,8 +271,27 @@ namespace TrueTooltips
                 if (currentAmmo != null)
                     lines.Insert(index, ammoLine);
                 else if (item.useAmmo > 0 || item.fishingPole > 0 || item.tileWand > 0)
-                    lines.Insert(index, new TooltipLine(Mod, "AmmoLine", Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.No") + (item.fishingPole > 0 ? Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Bait") : new Dictionary<int, string> { [40] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Arrow"), [71] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Coin"), [97] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Bullet"), [169] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Sand"), [283] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Dart"), [771] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Rocket"), [780] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Solution"), [931] = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Flare") }.TryGetValue(item.useAmmo, out string value) ? value : Lang.GetItemNameValue(item.useAmmo > 0 ? item.useAmmo : item.tileWand))) { OverrideColor = RarityColor(currentAmmo) });
+                {
+                    string ammoName;
+                    if (item.fishingPole > 0)
+                    {
+                        ammoName = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.Bait");
+                    }
+                    else if (AmmoTypeNames.TryGetValue(item.useAmmo, out string value))
+                    {
+                        ammoName = Language.GetTextValue(value);
+                    }
+                    else
+                    {
+                        ammoName = Lang.GetItemNameValue(item.useAmmo > 0 ? item.useAmmo : item.tileWand);
+                    }
 
+                    lines.Insert(index, new TooltipLine(Mod, "AmmoLine",
+                        Language.GetTextValue("Mods.TrueTooltips.Configs.Config.ammoLine.No") + ammoName)
+                    {
+                        OverrideColor = RarityColor(currentAmmo)
+                    });
+                }
                 needsBait?.Hide();
                 wandConsumes?.Hide();
             }
@@ -328,7 +387,6 @@ namespace TrueTooltips
 
             if (config.ammo.A == 0) ammo?.Hide();
             if (config.axePow.A == 0) axePow?.Hide();
-            if (config.badMod.A == 0) lines.FindAll(l => l.IsModifierBad).ForEach(line => line?.Hide());
             if (config.baitPow.A == 0) baitPow?.Hide();
             if (config.buffTime.A == 0) buffTime?.Hide();
             if (config.consumable.A == 0) consumable?.Hide();
@@ -341,7 +399,6 @@ namespace TrueTooltips
             if (config.fav.A == 0) fav?.Hide();
             if (config.favDescr.A == 0) favDescr?.Hide();
             if (config.fishingPow.A == 0) fishingPow?.Hide();
-            if (config.goodMod.A == 0) lines.FindAll(l => !l.IsModifierBad && l.IsModifier).ForEach(line => line?.Hide());
             if (config.hammerPow.A == 0) hammerPow?.Hide();
             if (config.healLife.A == 0) healLife?.Hide();
             if (config.healMana.A == 0) healMana?.Hide();
@@ -361,6 +418,21 @@ namespace TrueTooltips
             if (config.wandConsumes.A == 0) wandConsumes?.Hide();
             if (config.wellFedExpert.A == 0) wellFedExpert?.Hide();
             if (config.journeyResearch.A == 0) journeyResearch?.Hide();
+            if (config.badMod.A == 0 || config.goodMod.A == 0)
+            {
+                for (int i = 0; i < lines.Count; i++)
+                {
+                    var line = lines[i];
+                    if (line.IsModifierBad && config.badMod.A == 0)
+                    {
+                        line.Hide();
+                    }
+                    else if (line.IsModifier && config.goodMod.A == 0)
+                    {
+                        line.Hide();
+                    }
+                }
+            }
         }
 
         internal static long GetAdjustedPrice(Item item)
