@@ -19,8 +19,6 @@ namespace TrueTooltips
 
         static readonly Config config = ModContent.GetInstance<Config>();
 
-        static List<int> timerLogs = new List<int>();
-
         static readonly string[] names = { "Ammo", "AmmoLine", "AxePower", "BaitPower", "Consumable", "CritChance", "Damage", "Defense", "Equipable", "FishingPower", "HammerPower", "HealLife", "HealMana", "ItemName", "Knockback", "Material", "PickPower", "Placeable", "PriceLine", "Speed", "TileBoost", "UseMana", "Velocity" };
 
 
@@ -51,6 +49,7 @@ namespace TrueTooltips
                 spriteOffsetX = config.sprite ? max + config.spriteTextPadding : 0,
                 borderPadding = config.spriteBorder ? config.spriteBorderPadding : 0,
                 index = -1;
+            
             for (int i = lines.Count - 1; i >= 0; i--)
             {
                 if (Array.IndexOf(names, lines[i].Name) >= 0)
