@@ -30,3 +30,9 @@ New Features in 1.4.4
 
 Join the discord to see the full changelog, report bugs & suggest changes:
 https://discord.gg/MKcjBKwBVu
+
+GitHub:
+https://github.dev/martipops/TrueTooltips
+
+If you like what I do, consider buying me a coffee! ☕
+https://ko-fi.com/martipops
