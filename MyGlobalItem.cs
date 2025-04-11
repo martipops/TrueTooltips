@@ -44,11 +44,13 @@ namespace TrueTooltips
             int x = Main.mouseX + config.x + (Main.ThickMouse ? 6 : 0),
                 y = Main.mouseY + config.y + (Main.ThickMouse ? 6 : 0),
                 width = 0,
-                height = -config.spacing,
                 max = new[] { dimensions.Width, dimensions.Height, config.spriteMin }.Max(),
                 spriteOffsetX = config.sprite ? max + config.spriteTextPadding : 0,
                 borderPadding = config.spriteBorder ? config.spriteBorderPadding : 0,
                 index = -1;
+
+            int minSpriteHeight = config.sprite ? max + (borderPadding * 2) : 0;
+            int height = -config.spacing;
 
             for (int i = lines.Count - 1; i >= 0; i--)
             {
@@ -65,11 +67,12 @@ namespace TrueTooltips
 
                 width = Math.Max(width, (int)lineSize.X + 10);
                 height += (int)lineSize.Y + config.spacing;
-                if (config.sprite && lines.IndexOf(line) == index + 1 && height < dimensions.Height)
-                    height += dimensions.Height - height;
-
             }
 
+            if (config.sprite)
+            {
+                height = Math.Max(height, minSpriteHeight);
+            }
 
             if (x + width + config.paddingRight + config.paddingLeft + spriteOffsetX + borderPadding > Main.screenWidth)
             {
@@ -141,9 +144,6 @@ namespace TrueTooltips
         public override void ModifyTooltips(Item item, List<TooltipLine> lines)
         {
             Item currentAmmo = null;
-
-            // Main.NewText(ArmorIDs.Wing.Sets.Stats[item.wingSlot].FlyTime);
-            // Main.NewText(item.wingSlot);
 
             if (config.ammoLine)
             {
@@ -266,7 +266,7 @@ namespace TrueTooltips
                 string unit = Language.GetTextValue("Mods.TrueTooltips.Configs.Config.wingFlyTimeLine.Unit");
                 int wingTime = ArmorIDs.Wing.Sets.Stats[item.wingSlot].FlyTime;
                 lines.Insert(
-                    lines.IndexOf(lines.Find(l => l.Name == "Equipable") ?? name) + 1, 
+                    lines.IndexOf(lines.Find(l => l.Name == "Equipable") ?? name) + 1,
                     new TooltipLine(Mod, "WingTime", string.Format(unit, wingTime))
                 );
                 index++;
