@@ -124,6 +124,7 @@ namespace TrueTooltips
             }
             else
             {
+                _x += config.paddingLeft;
                 Utils.DrawInvBG(Main.spriteBatch, new Rectangle(bgX, bgY, bgWidth, bgHeight), new Color(config.bgColor.R * config.bgColor.A / 255, config.bgColor.G * config.bgColor.A / 255, config.bgColor.B * config.bgColor.A / 255, config.bgColor.A));
             }
 
