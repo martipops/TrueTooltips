@@ -409,9 +409,12 @@ namespace TrueTooltips
 
             if (speed != null)
             {
-                if (config.speedLine)
-                    speed.Text = Math.Round(60 / (item.reuseDelay + (item.useAnimation * (item.CountsAsClass(DamageClass.Melee) ? Main.LocalPlayer.GetAttackSpeed(DamageClass.Melee) : 1))), 2) + Language.GetTextValue("Mods.TrueTooltips.Configs.Config.speedLine.Display");
-
+                if (config.speedLine) {
+                    float attackSpeedModifier = item.CountsAsClass(DamageClass.Melee) ? Main.LocalPlayer.GetAttackSpeed(DamageClass.Melee) : 1f;
+                    float useTime = item.useAnimation / attackSpeedModifier;
+                    float totalDelay = item.reuseDelay > 0 ? item.reuseDelay : useTime;
+                    speed.Text = Math.Round(60f / totalDelay, 2) + Language.GetTextValue("Mods.TrueTooltips.Configs.Config.speedLine.Display");
+                }
                 if (!config.speed.Equals(Color.White)) speed.OverrideColor = config.speed;
             }
 
