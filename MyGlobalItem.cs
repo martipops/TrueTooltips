@@ -41,8 +41,8 @@ namespace TrueTooltips
             var texture = TextureAssets.Item[item.type].Value;
             Rectangle dimensions = Main.itemAnimations[item.type]?.GetFrame(texture) ?? texture.Frame();
 
-            int x = Main.mouseX + config.x + (Main.ThickMouse ? 6 : 0),
-                y = Main.mouseY + config.y + (Main.ThickMouse ? 6 : 0),
+            int x = _x,
+                y = _y,
                 width = 0,
                 max = new[] { dimensions.Width, dimensions.Height, config.spriteMin }.Max(),
                 spriteOffsetX = config.sprite ? max + config.spriteTextPadding : 0,
@@ -50,7 +50,9 @@ namespace TrueTooltips
                 index = -1;
 
             int minSpriteHeight = config.sprite ? max + (borderPadding * 2) : 0;
-            int height = -config.spacing;
+            int height = 0 - config.spacing;
+
+
 
             for (int i = lines.Count - 1; i >= 0; i--)
             {
@@ -74,25 +76,35 @@ namespace TrueTooltips
                 height = Math.Max(height, minSpriteHeight);
             }
 
-            if (x + width + config.paddingRight + config.paddingLeft + spriteOffsetX + borderPadding > Main.screenWidth)
+            int totalWidth = width + config.paddingRight + config.paddingLeft + spriteOffsetX + borderPadding;
+            int totalHeight = height + config.paddingBottom + config.paddingTop + borderPadding;
+
+            // Check screen boundaries and adjust position
+            if (x + totalWidth > Main.screenWidth)
             {
-                x = _x = Main.screenWidth - width - config.paddingRight - config.paddingLeft - borderPadding - spriteOffsetX;
-                _x += 4;
+                x = _x = Main.screenWidth - totalWidth;
             }
 
-            if (y + height + config.paddingBottom + borderPadding > Main.screenHeight)
+            if (y + totalHeight > Main.screenHeight)
             {
-                y = _y = Main.screenHeight - height - borderPadding - config.paddingBottom;
-                _y += 4;
+                y = _y = Main.screenHeight - totalHeight;
             }
 
-            if (x - config.paddingLeft < 0)
+            if (x < config.paddingLeft)
+            {
                 x = _x = config.paddingLeft;
+            }
 
-            if (y - config.paddingTop < 0)
+            if (y < config.paddingTop)
+            {
                 y = _y = config.paddingTop;
+            }
 
-            _y += config.paddingTop;
+            // Apply final offsets
+            _x += config.paddingLeft + config.x;
+            _y += config.paddingTop + config.y;
+            x += config.x;
+            y += config.y;
 
 
             int bgX = x,
@@ -112,7 +124,7 @@ namespace TrueTooltips
                         borderWidth = max + borderPadding * 2,
                         borderHeight = max + borderPadding * 2;
                     bgWidth += borderPadding;
-                    _x += borderPadding + 5;
+                    _x += borderPadding;
                     Utils.DrawInvBG(Main.spriteBatch, new Rectangle(bgX, bgY, bgWidth, bgHeight), new Color(config.bgColor.R * config.bgColor.A / 255, config.bgColor.G * config.bgColor.A / 255, config.bgColor.B * config.bgColor.A / 255, config.bgColor.A));
                     Utils.DrawInvBG(Main.spriteBatch, new Rectangle(borderX, borderY, borderWidth, borderHeight), new Color(config.spritebgColor.R * config.spritebgColor.A / 255, config.spritebgColor.G * config.spritebgColor.A / 255, config.spritebgColor.B * config.spritebgColor.A / 255, config.spritebgColor.A));
                 }
@@ -124,9 +136,11 @@ namespace TrueTooltips
             }
             else
             {
-                _x += config.paddingLeft;
+                // _x += config.paddingLeft;
                 Utils.DrawInvBG(Main.spriteBatch, new Rectangle(bgX, bgY, bgWidth, bgHeight), new Color(config.bgColor.R * config.bgColor.A / 255, config.bgColor.G * config.bgColor.A / 255, config.bgColor.B * config.bgColor.A / 255, config.bgColor.A));
             }
+
+            // Main.NewText(" x" + x + " y" + y + " _x" + _x + " _y" + _y + " w" + width + " h" + height, Color.White);
 
             return true;
 
@@ -409,7 +423,8 @@ namespace TrueTooltips
 
             if (speed != null)
             {
-                if (config.speedLine) {
+                if (config.speedLine)
+                {
                     float attackSpeedModifier = item.CountsAsClass(DamageClass.Melee) ? Main.LocalPlayer.GetAttackSpeed(DamageClass.Melee) : 1f;
                     float useTime = item.useAnimation / attackSpeedModifier;
                     float totalDelay = item.reuseDelay > 0 ? item.reuseDelay : useTime;

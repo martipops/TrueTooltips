@@ -62,12 +62,12 @@
 
         [Header("Offset")]
 
-        [Range(0, 999),
-        DefaultValue(16)]
+        [Range(-100, 100),
+        DefaultValue(0)]
         public int x;
 
-        [Range(0, 999),
-        DefaultValue(16)]
+        [Range(-100, 100),
+        DefaultValue(0)]
         public int y;
 
         [Range(-15, 999),
