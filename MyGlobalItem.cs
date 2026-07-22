@@ -13,6 +13,7 @@ namespace TrueTooltips
     using Terraria.ModLoader;
     using Terraria.UI.Chat;
     using Terraria.Localization;
+    using Microsoft.Xna.Framework.Graphics;
 
     class MyGlobalItem : GlobalItem
     {
@@ -37,114 +38,69 @@ namespace TrueTooltips
         static readonly Regex specialPriceRegex = new Regex($@"{Language.GetTextValue("LegacyTooltip.50")}\s");
         public override bool PreDrawTooltip(Item item, ReadOnlyCollection<TooltipLine> lines, ref int _x, ref int _y)
         {
+            Texture2D texture = TextureAssets.Item[item.type].Value;
+            Rectangle frame = Main.itemAnimations[item.type]?.GetFrame(texture) ?? texture.Frame();
 
-            var texture = TextureAssets.Item[item.type].Value;
-            Rectangle dimensions = Main.itemAnimations[item.type]?.GetFrame(texture) ?? texture.Frame();
+            var (width, textHeight) = MeasureTooltipLines(lines);
 
-            int x = _x,
-                y = _y,
-                width = 0,
-                max = new[] { dimensions.Width, dimensions.Height, config.spriteMin }.Max(),
-                spriteOffsetX = config.sprite ? max + config.spriteTextPadding : 0,
-                borderPadding = config.spriteBorder ? config.spriteBorderPadding : 0,
-                index = -1;
+            int spriteSize = config.sprite ? new[] { frame.Width, frame.Height, config.spriteMin }.Max() : 0;
+            int borderPadding = config.sprite && config.spriteBorder ? config.spriteBorderPadding : 0;
+            int spriteOffsetX = config.sprite ? spriteSize + config.spriteTextPadding : 0;
+            int minSpriteHeight = config.sprite ? spriteSize + borderPadding * 2 : 0;
+            int height = Math.Max(textHeight, minSpriteHeight);
 
-            int minSpriteHeight = config.sprite ? max + (borderPadding * 2) : 0;
-            int height = 0 - config.spacing;
+            int totalWidth = width + config.paddingLeft + config.paddingRight + spriteOffsetX + borderPadding;
+            int totalHeight = height + config.paddingTop + config.paddingBottom + borderPadding;
 
+            int x = _x, y = _y;
+            ClampToScreen(ref x, totalWidth, Main.screenWidth, config.paddingLeft);
+            ClampToScreen(ref y, totalHeight, Main.screenHeight, config.paddingTop);
+            _x = x;
+            _y = y;
 
-
-            for (int i = lines.Count - 1; i >= 0; i--)
-            {
-                if (Array.IndexOf(names, lines[i].Name) >= 0)
-                {
-                    index = i;
-                    break;
-                }
-            }
-
-            foreach (TooltipLine line in lines)
-            {
-                Vector2 lineSize = ChatManager.GetStringSize(FontAssets.MouseText.Value, line.Text, Vector2.One);
-
-                width = Math.Max(width, (int)lineSize.X + 10);
-                height += (int)lineSize.Y + config.spacing;
-            }
-
-            if (config.sprite)
-            {
-                height = Math.Max(height, minSpriteHeight);
-            }
-
-            int totalWidth = width + config.paddingRight + config.paddingLeft + spriteOffsetX + borderPadding;
-            int totalHeight = height + config.paddingBottom + config.paddingTop + borderPadding;
-
-            // Check screen boundaries and adjust position
-            if (x + totalWidth > Main.screenWidth)
-            {
-                x = _x = Main.screenWidth - totalWidth;
-            }
-
-            if (y + totalHeight > Main.screenHeight)
-            {
-                y = _y = Main.screenHeight - totalHeight;
-            }
-
-            if (x < config.paddingLeft)
-            {
-                x = _x = config.paddingLeft;
-            }
-
-            if (y < config.paddingTop)
-            {
-                y = _y = config.paddingTop;
-            }
-
-            // Apply final offsets
+            // apply configured offset
             _x += config.paddingLeft + config.x;
             _y += config.paddingTop + config.y;
             x += config.x;
             y += config.y;
 
+            int bgX = x, bgY = y;
+            int bgWidth = width + config.paddingLeft + config.paddingRight;
+            int bgHeight = height + config.paddingTop + config.paddingBottom;
 
-            int bgX = x,
-                bgY = y,
-                bgWidth = width + config.paddingLeft + config.paddingRight,
-                bgHeight = height + config.paddingTop + config.paddingBottom;
             if (config.sprite)
             {
                 _x += config.spriteTextPadding + spriteOffsetX;
                 bgWidth += config.spriteTextPadding + spriteOffsetX;
-                int spriteX = x + (max - dimensions.Width) / 2 + borderPadding + config.paddingLeft,
-                    spriteY = y + (max - dimensions.Height) / 2 + borderPadding + config.paddingTop;
+
                 if (config.spriteBorder)
                 {
-                    int borderX = x + config.paddingLeft,
-                        borderY = y + config.paddingTop,
-                        borderWidth = max + borderPadding * 2,
-                        borderHeight = max + borderPadding * 2;
                     bgWidth += borderPadding;
                     _x += borderPadding;
-                    Utils.DrawInvBG(Main.spriteBatch, new Rectangle(bgX, bgY, bgWidth, bgHeight), new Color(config.bgColor.R * config.bgColor.A / 255, config.bgColor.G * config.bgColor.A / 255, config.bgColor.B * config.bgColor.A / 255, config.bgColor.A));
-                    Utils.DrawInvBG(Main.spriteBatch, new Rectangle(borderX, borderY, borderWidth, borderHeight), new Color(config.spritebgColor.R * config.spritebgColor.A / 255, config.spritebgColor.G * config.spritebgColor.A / 255, config.spritebgColor.B * config.spritebgColor.A / 255, config.spritebgColor.A));
                 }
-                else
+
+                DrawTooltipBG(bgX, bgY, bgWidth, bgHeight, config.bgColor, config.borderColor);
+
+                if (config.spriteBorder)
                 {
-                    Utils.DrawInvBG(Main.spriteBatch, new Rectangle(bgX, bgY, bgWidth, bgHeight), new Color(config.bgColor.R * config.bgColor.A / 255, config.bgColor.G * config.bgColor.A / 255, config.bgColor.B * config.bgColor.A / 255, config.bgColor.A));
+                    int borderX = x + config.paddingLeft;
+                    int borderY = y + config.paddingTop;
+                    int borderSide = spriteSize + borderPadding * 2;
+                    DrawTooltipBG(borderX, borderY, borderSide, borderSide, config.spritebgColor, config.borderColor);
                 }
-                Main.spriteBatch.Draw(texture, new Vector2(spriteX, spriteY), dimensions, Color.White);
+
+                int spriteX = x + (spriteSize - frame.Width) / 2 + borderPadding + config.paddingLeft;
+                int spriteY = y + (spriteSize - frame.Height) / 2 + borderPadding + config.paddingTop;
+                Main.spriteBatch.Draw(texture, new Vector2(spriteX, spriteY), frame, Color.White);
             }
             else
             {
-                // _x += config.paddingLeft;
-                Utils.DrawInvBG(Main.spriteBatch, new Rectangle(bgX, bgY, bgWidth, bgHeight), new Color(config.bgColor.R * config.bgColor.A / 255, config.bgColor.G * config.bgColor.A / 255, config.bgColor.B * config.bgColor.A / 255, config.bgColor.A));
+                DrawTooltipBG(bgX, bgY, bgWidth, bgHeight, config.bgColor, config.borderColor);
             }
 
-            // Main.NewText(" x" + x + " y" + y + " _x" + _x + " _y" + _y + " w" + width + " h" + height, Color.White);
-
             return true;
-
         }
+
         private Dictionary<string, TooltipLine> GetTooltipLineCache(List<TooltipLine> lines)
         {
             Dictionary<string, TooltipLine> cache = new Dictionary<string, TooltipLine>(40);
@@ -495,7 +451,7 @@ namespace TrueTooltips
             }
         }
 
-        internal static long GetAdjustedPrice(Item item)
+        private static long GetAdjustedPrice(Item item)
         {
             if (item.value == 0) return 0;
             Main.LocalPlayer.GetItemExpectedPrice(item, out var calcForSelling, out var calcForBuying);
@@ -519,8 +475,8 @@ namespace TrueTooltips
             return priceOfStack;
         }
 
-        internal static Color RarityColor(Item item) => item != null ? RarityColor(item.rare) : Color.White;
-        internal static Color RarityColor(int rare)
+        private static Color RarityColor(Item item) => item != null ? RarityColor(item.rare) : Color.White;
+        private static Color RarityColor(int rare)
         {
             if (rare >= ItemRarityID.Count)
                 return RarityLoader.GetRarity(rare).RarityColor;
@@ -528,6 +484,62 @@ namespace TrueTooltips
             return ItemRarity.GetColor(rare);
         }
 
-        internal static Color TextPulse(Color color) => new(color.R * Main.mouseTextColor / 255, color.G * Main.mouseTextColor / 255, color.B * Main.mouseTextColor / 255, 255);
+        private static Color TextPulse(Color color) => new(color.R * Main.mouseTextColor / 255, color.G * Main.mouseTextColor / 255, color.B * Main.mouseTextColor / 255, 255);
+
+        private static (int width, int height) MeasureTooltipLines(ReadOnlyCollection<TooltipLine> lines)
+        {
+            int width = 0;
+            int height = -config.spacing;
+            foreach (TooltipLine line in lines)
+            {
+                Vector2 size = ChatManager.GetStringSize(FontAssets.MouseText.Value, line.Text, Vector2.One);
+                width = Math.Max(width, (int)size.X + 10);
+                height += (int)size.Y + config.spacing;
+            }
+            return (width, height);
+        }
+
+        private static void ClampToScreen(ref int pos, int totalSize, int screenSize, int padding)
+        {
+            if (pos + totalSize > screenSize) pos = screenSize - totalSize;
+            if (pos < padding) pos = padding;
+        }
+
+        private static void DrawTooltipBG(int x, int y, int width, int height, Color fillColor, Color borderColor)
+        {
+            DrawCustomTooltip(Main.spriteBatch, x, y, width, height, Premultiply(fillColor), Premultiply(borderColor));
+        }
+
+        private static Color Premultiply(Color c) =>
+            new Color(c.R * c.A / 255, c.G * c.A / 255, c.B * c.A / 255, c.A);
+
+        private static void DrawCustomTooltip(SpriteBatch sb, int x, int y, int w, int h, Color fillColor, Color borderColor)
+        {
+            Texture2D fillTex = ModContent.Request<Texture2D>("TrueTooltips/Assets/InvBgInner").Value;
+            Texture2D borderTex = ModContent.Request<Texture2D>("TrueTooltips/Assets/InvBgBorder").Value;
+            if (w < 20) w = 20;
+            if (h < 20) h = 20;
+            DrawNineSlice(sb, fillTex, x, y, w, h, fillColor);
+            DrawNineSlice(sb, borderTex, x, y, w, h, borderColor);
+        }
+
+        private static void DrawNineSlice(SpriteBatch sb, Texture2D tex, int x, int y, int w, int h, Color c)
+        {
+            const int corner = 10;
+            int texW = tex.Width, texH = tex.Height;
+
+            // corners
+            sb.Draw(tex, new Rectangle(x, y, corner, corner), new Rectangle(0, 0, corner, corner), c);
+            sb.Draw(tex, new Rectangle(x + w - corner, y, corner, corner), new Rectangle(texW - corner, 0, corner, corner), c);
+            sb.Draw(tex, new Rectangle(x, y + h - corner, corner, corner), new Rectangle(0, texH - corner, corner, corner), c);
+            sb.Draw(tex, new Rectangle(x + w - corner, y + h - corner, corner, corner), new Rectangle(texW - corner, texH - corner, corner, corner), c);
+            // edges
+            sb.Draw(tex, new Rectangle(x + corner, y, w - corner * 2, corner), new Rectangle(corner, 0, corner, corner), c);
+            sb.Draw(tex, new Rectangle(x + corner, y + h - corner, w - corner * 2, corner), new Rectangle(corner, texH - corner, corner, corner), c);
+            sb.Draw(tex, new Rectangle(x, y + corner, corner, h - corner * 2), new Rectangle(0, corner, corner, corner), c);
+            sb.Draw(tex, new Rectangle(x + w - corner, y + corner, corner, h - corner * 2), new Rectangle(texW - corner, corner, corner, corner), c);
+            // center
+            sb.Draw(tex, new Rectangle(x + corner, y + corner, w - corner * 2, h - corner * 2), new Rectangle(corner, corner, corner, corner), c);
+        }
     }
 }

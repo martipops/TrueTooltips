@@ -44,6 +44,9 @@
         [DefaultValue(typeof(Color), "63,81,151,255")]
         public Color spritebgColor;
 
+        [DefaultValue(typeof(Color), "19,30,39,255")]
+        public Color borderColor;
+
         [Range(0, 999),
         DefaultValue(10)]
         public int paddingRight;

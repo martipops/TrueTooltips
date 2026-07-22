@@ -70,12 +70,17 @@ Configs: {
 
 		bgColor: {
 			Label: Color
-			Tooltip: ""
+			Tooltip: The background color of the tooltip frame.
 		}
 
 		spritebgColor: {
 			Label: Icon Frame Color
-			Tooltip: The background color of the border behind the item icon
+			Tooltip: The background color of the frame behind the item icon.
+		}
+
+		borderColor: {
+			Label: Border Color
+			Tooltip: The color of the outer border.
 		}
 
 		paddingRight: {
@@ -335,6 +340,11 @@ Configs: {
 			Miscellaneous: Miscellaneous
 			VanillaTooltipLines: Vanilla Tooltip Lines & Color [c/ff2222:(ALPHA=0 TO DISABLE)]
 			ItemSprite: Item Sprite Header
+		}
+
+		borderColor: {
+			Label: border Color
+			Tooltip: ""
 		}
 	}
 }
