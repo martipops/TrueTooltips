@@ -77,10 +77,10 @@ Configs: {
 			Label: 物品图标背景颜色
 			Tooltip: 调整图标背景显示的颜色。
 		}
-		
+
 		borderColor: {
-			Label: 外边框颜色
-			Tooltip: 外边框显示的颜色。
+			// Label: border Color
+			// Tooltip: ""
 		}
 
 		paddingRight: {
@@ -340,11 +340,6 @@ Configs: {
 			Miscellaneous: 其它设置
 			VanillaTooltipLines: 自定义文本显示颜色 [c/ff2222:(ALPHA=0 以禁用)]
 			ItemSprite: 物品图标
-		}
-
-		borderColor: {
-			// Label: border Color
-			// Tooltip: ""
 		}
 	}
 }

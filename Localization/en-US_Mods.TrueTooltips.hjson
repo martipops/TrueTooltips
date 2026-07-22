@@ -79,8 +79,8 @@ Configs: {
 		}
 
 		borderColor: {
-			Label: Border Color
-			Tooltip: The color of the outer border.
+			Label: border Color
+			Tooltip: ""
 		}
 
 		paddingRight: {
@@ -340,11 +340,6 @@ Configs: {
 			Miscellaneous: Miscellaneous
 			VanillaTooltipLines: Vanilla Tooltip Lines & Color [c/ff2222:(ALPHA=0 TO DISABLE)]
 			ItemSprite: Item Sprite Header
-		}
-
-		borderColor: {
-			Label: border Color
-			Tooltip: ""
 		}
 	}
 }
