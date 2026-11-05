@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace TrueTooltips;
@@ -9,9 +10,10 @@ namespace TrueTooltips;
 /// </summary>
 internal static class TooltipLineCompat
 {
-    public static void SetColor(this TooltipLine line, Color color) => line.OverrideColor = color;
+    public static void SetColor(this TooltipLine line, Color color) => line.Color = color;
 
-    public static bool IsGoodPrefix(this TooltipLine line) => line.IsModifier && !line.IsModifierBad;
+    public static bool IsGoodPrefix(this TooltipLine line) =>
+        !line.IsBadPrefix() && (line.Color == Colors.PrefixGood || line.Name.StartsWith("Prefix"));
 
-    public static bool IsBadPrefix(this TooltipLine line) => line.IsModifier && line.IsModifierBad;
+    public static bool IsBadPrefix(this TooltipLine line) => line.Color == Colors.PrefixBad;
 }
