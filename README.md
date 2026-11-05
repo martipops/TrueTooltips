@@ -21,9 +21,4 @@ Original mod Author: Graumen - [Terraria Fourms Post](https://forums.terraria.or
 - Combines weapon and ammo damage and weapon and ammo velocity and combines weapon and ammo knockback if "Better Knockback Line" is on.
 - Shows the mod that adds the item next to the item's name.
 - Adds a background to tooltips.
-- Gives text that appears when hovering over items with custom rarity that are dropped or in the hotbar the right color and shows the name of the frontmost dropped item instead of the backmost.
 - Turn off text pulse.
-
-## Disclaimer for programmers
-This code is absolutely horrendous and I'm sorry for those who try to read it. I should have redone this instead of forking it. Good luck.
-

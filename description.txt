@@ -21,7 +21,6 @@ Other Features
 - Shows the mod that adds the item next to the item's name.
 - Adds a customizable background to tooltips.
 - Changes the layout of the tooltip to be more readable.
-- Gives text that appears when hovering over items with custom rarity that are dropped or in the hotbar the right color and shows the name of the frontmost dropped item instead of the backmost.
 - Allows you to turn off text pulse.
 
 New Features in 1.4.4

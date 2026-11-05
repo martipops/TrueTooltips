@@ -79,7 +79,7 @@ Configs: {
 		}
 
 		borderColor: {
-			Label: border Color
+			Label: Border Color
 			Tooltip: ""
 		}
 
